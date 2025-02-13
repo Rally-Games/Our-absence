@@ -10,14 +10,14 @@ public class SmoothMouseLooking : MonoBehaviour
     private InputAction lookAction;
     public Transform player;
     float cameraVerticalRotation = 0;
-    void Awake()
+    void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         playerInput = GetComponent<PlayerInput>();
         lookAction = playerInput.actions["Look"];
-        Camera.main.fieldOfView = POV;
+        GetComponent<Camera>().fieldOfView = POV;
 
     }
 
