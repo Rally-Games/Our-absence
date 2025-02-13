@@ -12,9 +12,12 @@ public class Player_controller : MonoBehaviour
     private CharacterController controller;
     private PlayerInput playerInput;
     private InputAction moveAction;
+    private InputAction jumpAction;
+    private Camera mainCamera;
+    private Vector3 _direction;
 
     [SerializeField] private float speed = 12f;
-    [SerializeField] private float gravity = 9.81f;
+    private float gravity = 9.81f;
     [SerializeField] private float pushForce = 5f; // Force to apply to pushable objects
     private Vector3 velocity;
 
@@ -22,21 +25,35 @@ public class Player_controller : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
+        jumpAction = playerInput.actions["Jump"];
         controller = GetComponent<CharacterController>();
+        mainCamera = GetComponentInChildren<Camera>();
     }
 
     private void Update()
     {
         MovePlayer();
+        if (jumpAction.triggered)
+        {
+            OnJump();
+        }
     }
-
     void MovePlayer()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        Vector3 move = new Vector3(input.x, 0, input.y);
+        Vector3 forward = mainCamera.transform.forward;
+        Vector3 right = mainCamera.transform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        _direction = forward * input.y + right * input.x;
 
         // Move the player using CharacterController
-        controller.Move(move * speed * Time.deltaTime);
+        controller.Move(_direction * speed * Time.deltaTime);
 
         // Apply gravity
         if (!controller.isGrounded)
@@ -51,6 +68,13 @@ public class Player_controller : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    void OnJump()
+    {
+        if (controller.isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(2 * gravity * 1.5f);
+        }
+    }
 
     // here do things that happen when the player collides with something that has a rigidbody
     private void OnControllerColliderHit(ControllerColliderHit hit)
