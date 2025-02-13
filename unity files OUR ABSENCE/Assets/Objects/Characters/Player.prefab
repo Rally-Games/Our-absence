@@ -51,7 +51,7 @@ Camera:
   m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
+  m_FocalLength: 54.1285
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -73,7 +73,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
   m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -215,6 +215,7 @@ MonoBehaviour:
   sensitivity: 10
   POV: 60
   player: {fileID: 7490435404231938392}
+  thirdPersonView: 0
 --- !u!114 &7490435402775891290
 MonoBehaviour:
   m_ObjectHideFlags: 0
