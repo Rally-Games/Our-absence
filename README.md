@@ -6,26 +6,25 @@ This repository contains the Unity project **OUR ABSENCE**. Follow the instructi
 
 ---
 
-## 📝 Project Structure
+## 📝 Project Briff Structure
 
 ```
 Assets/
-│── Animations/        # Animator controllers, animation clips
-│── Audio/             # Music, SFX, ambient sounds
-│── Effects/           # Particle systems, VFX
-│── HDRPDefaultResources/  # HDRP-specific assets
-│── Materials/         # Materials and shaders
-│── Meshes/            # 3D models (FBX, OBJ)
-│── Objects/           # Prefabs, world objects
-│── Prefabs/           # Ready-to-use objects (characters, items)
-│── Resources/         # Special runtime-loaded assets
-│── Scenes/            # Game levels, main menu, UI scenes
-│── Scripts/           # Gameplay logic, AI, interactions
-│── Settings/          # Input settings, physics, lighting
-│── Textures/          # PNG, JPEG, and other texture maps
-│── UI/                # UI elements (buttons, panels)
-│── World/             # Terrain, environment assets
-│── TutorialInfo/      # Unity-provided tutorial files (optional)
+│── Animations/        
+│── Audio/             
+│── Effects/          
+│── Materials/         
+│── Meshes/            
+│── Objects/           
+│── Prefabs/          
+│── Resources/        
+│── Scenes/           
+│── Scripts/           
+│── Settings/          
+│── Textures/          
+│── UI/                
+│── World/             
+│── TutorialInfo/     
 ```
 
 ---
