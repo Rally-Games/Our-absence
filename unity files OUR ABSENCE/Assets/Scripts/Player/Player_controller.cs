@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using UnityEditor.Animations;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +22,7 @@ public class Player_controller : MonoBehaviour
     private float gravity = 9.81f;
     [SerializeField] private float pushForce = 5f; // Force to apply to pushable objects
     private Vector3 velocity;
+    [SerializeField] private Animator animator;
 
     private void Awake()
     {
@@ -43,6 +46,21 @@ public class Player_controller : MonoBehaviour
         Vector2 input = moveAction.ReadValue<Vector2>();
         Vector3 forward = mainCamera.transform.forward;
         Vector3 right = mainCamera.transform.right;
+        print(input);
+        if (input != Vector2.zero)
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
+            {
+                print("Walking trigger");
+                animator.SetTrigger("TrWalking");
+                animator.ResetTrigger("TrIdle");
+            }
+        }
+        else if (input == Vector2.zero && animator.GetCurrentAnimatorStateInfo(0).IsName("Walking") && !animator.IsInTransition(0))
+        {
+            animator.ResetTrigger("TrWalking");
+            animator.SetTrigger("TrIdle");
+        }
 
         forward.y = 0f;
         right.y = 0f;
@@ -73,6 +91,7 @@ public class Player_controller : MonoBehaviour
         if (controller.isGrounded)
         {
             velocity.y = Mathf.Sqrt(2 * gravity * 1.5f);
+            animator.SetTrigger("Jump");
         }
     }
 
