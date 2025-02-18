@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Transactions;
 using UnityEditor.Animations;
 using UnityEditor.Experimental.GraphView;
@@ -13,16 +14,17 @@ public class Player_controller : MonoBehaviour
 {
     private CharacterController controller;
     private PlayerInput playerInput;
-    private InputAction moveAction;
+    public InputAction moveAction;
     private InputAction jumpAction;
     private Camera mainCamera;
     private Vector3 _direction;
 
-    [SerializeField] private float speed = 12f;
+    [SerializeField] private float speed = 2.5f;
     private float gravity = 9.81f;
     [SerializeField] private float pushForce = 5f; // Force to apply to pushable objects
     private Vector3 velocity;
     [SerializeField] private Animator animator;
+    [SerializeField] private float rotationSpeed = 10f;
 
     private void Awake()
     {
@@ -44,9 +46,9 @@ public class Player_controller : MonoBehaviour
     void MovePlayer()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        Vector3 forward = mainCamera.transform.forward;
-        Vector3 right = mainCamera.transform.right;
-        print(input);
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
+
         if (input != Vector2.zero)
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
@@ -70,8 +72,11 @@ public class Player_controller : MonoBehaviour
 
         _direction = forward * input.y + right * input.x;
 
-        // Move the player using CharacterController
+
+
         controller.Move(_direction * speed * Time.deltaTime);
+
+
 
         // Apply gravity
         if (!controller.isGrounded)
@@ -85,6 +90,7 @@ public class Player_controller : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
+
 
     void OnJump()
     {

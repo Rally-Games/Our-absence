@@ -46,17 +46,6 @@ public class SmoothMouseLooking : MonoBehaviour
             transform.position = CameraTarget.position + cameraOffset;
             transform.LookAt(CameraTarget.position + Vector3.up * 1.5f); // Adjust the look at point as needed
         }
-        else
-        {
-            // Return the camera to the player position
-            transform.position = CameraTarget.position + Vector3.up * 0.7f; // Adjust the height and forward offset as needed (player hight + eye level)
-            CameraTarget.Rotate(Vector3.up * mouseX);
 
-
-            // Rotate the camera vertically
-            cameraVerticalRotation -= mouseY;
-            cameraVerticalRotation = Mathf.Clamp(cameraVerticalRotation, -90, 90);
-            transform.localEulerAngles = Vector3.right * cameraVerticalRotation;
-        }
     }
 }
