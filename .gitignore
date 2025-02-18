@@ -33,6 +33,7 @@ ExportedObj/
 *.svd
 *.opendb
 *.VC.db
+*.prefab
 
 # Addressables and Streaming Assets
 Assets/AddressableAssetsData/*/*.bin*
