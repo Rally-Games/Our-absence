@@ -19,6 +19,7 @@ public class Player_controller : MonoBehaviour
     [SerializeField] private float pushForce = 5f;
     private Vector3 velocity;
     [SerializeField] private Animator animator;
+    private string currentAnimation = "Idle";
     [SerializeField] private float rotationSpeed = 10f;
 
     private void Awake()
@@ -40,6 +41,7 @@ public class Player_controller : MonoBehaviour
         {
             OnJump();
         }
+        CheackAnimation();
     }
 
     void MovePlayer()
@@ -61,20 +63,14 @@ public class Player_controller : MonoBehaviour
 
         if (_direction.magnitude > 0)
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
-            {
-                animator.SetTrigger("TrWalking");
-                animator.ResetTrigger("TrIdle");
-            }
 
             // Rotate player towards movement direction
             Quaternion targetRotation = Quaternion.LookRotation(_direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
         }
-        else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Walking") && !animator.IsInTransition(0))
+        else
         {
-            animator.ResetTrigger("TrWalking");
-            animator.SetTrigger("TrIdle");
+
         }
 
         controller.Move(_direction * speed * Time.deltaTime);
@@ -108,6 +104,26 @@ public class Player_controller : MonoBehaviour
         {
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
+        }
+    }
+
+    public void ChangeAnimation(string animation, float CrossFade = 0.2f)
+    {
+        if (currentAnimation == animation) return;
+        currentAnimation = animation;
+        animator.CrossFade(animation, CrossFade);
+    }
+
+    private void CheackAnimation()
+    {
+        Vector2 input = moveAction.ReadValue<Vector2>();
+        if (input.magnitude == 0)
+        {
+            ChangeAnimation("Idle");
+        }
+        else if (input.magnitude > 0)
+        {
+            ChangeAnimation("Walking", 0.05f);
         }
     }
 }
