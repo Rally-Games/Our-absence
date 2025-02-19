@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player_controller : MonoBehaviour
@@ -11,6 +12,7 @@ public class Player_controller : MonoBehaviour
     private PlayerInput playerInput;
     public InputAction moveAction;
     private InputAction jumpAction;
+    private InputAction runAction;
     private Camera mainCamera;
     private Vector3 _direction;
 
@@ -21,17 +23,19 @@ public class Player_controller : MonoBehaviour
     [SerializeField] private Animator animator;
     private string currentAnimation = "Idle";
     [SerializeField] private float rotationSpeed = 10f;
+    [SerializeField] private float jumpForce = 3f;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
         jumpAction = playerInput.actions["Jump"];
+        runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
         mainCamera = Camera.main; // Get the main camera
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
     }
 
     private void Update()
@@ -66,14 +70,20 @@ public class Player_controller : MonoBehaviour
 
             // Rotate player towards movement direction
             Quaternion targetRotation = Quaternion.LookRotation(_direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.7f);
         }
         else
         {
 
         }
-
-        controller.Move(_direction * speed * Time.deltaTime);
+        if (runAction.ReadValue<float>() > 0)
+        {
+            controller.Move(_direction * (speed + 5f) * Time.deltaTime);
+        }
+        else
+        {
+            controller.Move(_direction * speed * Time.deltaTime);
+        }
 
         // Apply gravity
         if (!controller.isGrounded)
@@ -92,8 +102,9 @@ public class Player_controller : MonoBehaviour
     {
         if (controller.isGrounded)
         {
-            velocity.y = Mathf.Sqrt(2 * gravity * 1.5f);
-            animator.SetTrigger("Jump");
+            velocity.y = 0f; // Reset any existing vertical velocity
+            velocity.y += Mathf.Sqrt(jumpForce * gravity * 1.5f);
+            ChangeAnimation("Jump Start", 0);
         }
     }
 
@@ -107,23 +118,57 @@ public class Player_controller : MonoBehaviour
         }
     }
 
-    public void ChangeAnimation(string animation, float CrossFade = 0.2f)
+    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f)
     {
-        if (currentAnimation == animation) return;
-        currentAnimation = animation;
-        animator.CrossFade(animation, CrossFade);
+        if (time > 0) StartCoroutine(Wait());
+        else Validate();
+
+        IEnumerator Wait()
+        {
+            yield return new WaitForSeconds(time);
+            Validate();
+        }
+        void Validate()
+        {
+            if (currentAnimation != animation)
+            {
+                currentAnimation = animation;
+
+                if (currentAnimation == "")
+                {
+                    CheackAnimation();
+                }
+                else
+                    animator.CrossFade(animation, CrossFade);
+            }
+        }
+
     }
 
     private void CheackAnimation()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
+        if (currentAnimation == "Jump Start") return;
+
+        if (currentAnimation == "Jump Air" && controller.isGrounded)
+        {
+            ChangeAnimation("Jump End", 0);
+        }
+
         if (input.magnitude == 0)
         {
             ChangeAnimation("Idle");
         }
         else if (input.magnitude > 0)
         {
-            ChangeAnimation("Walking", 0.05f);
+            if (runAction.ReadValue<float>() > 0)
+            {
+                ChangeAnimation("Running", 0.05f);
+            }
+            else
+                ChangeAnimation("Walking", 0.05f);
         }
+
+
     }
 }
