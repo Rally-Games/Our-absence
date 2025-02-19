@@ -1,13 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Transactions;
-using UnityEditor.Animations;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 
 [RequireComponent(typeof(CharacterController))]
 public class Player_controller : MonoBehaviour
@@ -21,7 +16,7 @@ public class Player_controller : MonoBehaviour
 
     [SerializeField] private float speed = 2.5f;
     private float gravity = 9.81f;
-    [SerializeField] private float pushForce = 5f; // Force to apply to pushable objects
+    [SerializeField] private float pushForce = 5f;
     private Vector3 velocity;
     [SerializeField] private Animator animator;
     [SerializeField] private float rotationSpeed = 10f;
@@ -32,7 +27,10 @@ public class Player_controller : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         jumpAction = playerInput.actions["Jump"];
         controller = GetComponent<CharacterController>();
-        mainCamera = GetComponentInChildren<Camera>();
+        mainCamera = Camera.main; // Get the main camera
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -43,40 +41,43 @@ public class Player_controller : MonoBehaviour
             OnJump();
         }
     }
+
     void MovePlayer()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        Vector3 forward = transform.forward;
-        Vector3 right = transform.right;
 
-        if (input != Vector2.zero)
+        // Get camera-relative movement directions
+        Vector3 cameraForward = mainCamera.transform.forward;
+        Vector3 cameraRight = mainCamera.transform.right;
+
+        // Flatten Y axis to prevent unwanted vertical movement
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        // Movement direction relative to camera
+        _direction = cameraForward * input.y + cameraRight * input.x;
+
+        if (_direction.magnitude > 0)
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
             {
-                print("Walking trigger");
                 animator.SetTrigger("TrWalking");
                 animator.ResetTrigger("TrIdle");
             }
+
+            // Rotate player towards movement direction
+            Quaternion targetRotation = Quaternion.LookRotation(_direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
         }
-        else if (input == Vector2.zero && animator.GetCurrentAnimatorStateInfo(0).IsName("Walking") && !animator.IsInTransition(0))
+        else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Walking") && !animator.IsInTransition(0))
         {
             animator.ResetTrigger("TrWalking");
             animator.SetTrigger("TrIdle");
         }
 
-        forward.y = 0f;
-        right.y = 0f;
-
-        forward.Normalize();
-        right.Normalize();
-
-        _direction = forward * input.y + right * input.x;
-
-
-
         controller.Move(_direction * speed * Time.deltaTime);
-
-
 
         // Apply gravity
         if (!controller.isGrounded)
@@ -85,12 +86,11 @@ public class Player_controller : MonoBehaviour
         }
         else
         {
-            velocity.y = -0.1f; // Small downward force to keep grounded
+            velocity.y = -0.1f;
         }
 
         controller.Move(velocity * Time.deltaTime);
     }
-
 
     void OnJump()
     {
@@ -101,14 +101,11 @@ public class Player_controller : MonoBehaviour
         }
     }
 
-    // here do things that happen when the player collides with something that has a rigidbody
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Check if the object has a Rigidbody and is not kinematic
         Rigidbody rb = hit.collider.attachedRigidbody;
         if (rb != null && !rb.isKinematic)
         {
-            // Calculate push direction (only horizontal)
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
         }

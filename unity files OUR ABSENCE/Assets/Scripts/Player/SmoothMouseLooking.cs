@@ -2,50 +2,18 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.PlayerLoop;
 public class SmoothMouseLooking : MonoBehaviour
 {
-    [SerializeField] private float sensitivity = 2.0f;
-    [SerializeField] private int POV = 60;
-    private PlayerInput playerInput;
-    private InputAction lookAction;
-    public Transform CameraTarget;
-    private GameObject player;
-    float cameraVerticalRotation = 0;
-
-    // third Person View 
-    public bool thirdPersonView = false;
-    public float cameraDistance = 5.0f;
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        playerInput = GetComponent<PlayerInput>();
-        lookAction = playerInput.actions["Look"];
-        GetComponent<Camera>().fieldOfView = POV;
-
-    }
+    [Header("References")]
+    public Transform player;
 
     void Update()
     {
-        // Get the mouse input
-        float mouseX = lookAction.ReadValue<Vector2>().x * sensitivity * Time.deltaTime;
-        float mouseY = lookAction.ReadValue<Vector2>().y * sensitivity * Time.deltaTime;
+        Vector3 playerDir = player.forward;
 
-        if (thirdPersonView)
-        {
-            // Rotate the player horizontally
-            CameraTarget.Rotate(Vector3.up * mouseX);
-            // Calculate the new camera position and rotation
-            cameraVerticalRotation -= mouseY;
-            cameraVerticalRotation = Mathf.Clamp(cameraVerticalRotation, -20, 60); // Adjust the clamp values for third person view
-
-            Quaternion cameraRotation = Quaternion.Euler(cameraVerticalRotation, CameraTarget.eulerAngles.y, 0);
-            Vector3 cameraOffset = cameraRotation * new Vector3(0, 0, -cameraDistance); // Adjust the offset as needed
-
-            transform.position = CameraTarget.position + cameraOffset;
-            transform.LookAt(CameraTarget.position + Vector3.up * 1.5f); // Adjust the look at point as needed
-        }
-
+        //slerp the camera to match the player's forward direction
+        transform.forward = Vector3.Slerp(transform.forward, playerDir, Time.deltaTime * 5f);
     }
 }
