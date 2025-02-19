@@ -2138,9 +2138,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296f24d186fee9942a8ecc4c5f10dc9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b37f95b4-9309-4125-a781-25de11f441c5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   speed: 5
   pushForce: 3
   animator: {fileID: 4590329578444007493}
+  rotationSpeed: 10
 --- !u!114 &7989022657881623922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2594,11 +2604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 246b669f1b3cce74e8d9c8717d974eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 10
-  POV: 60
-  CameraTarget: {fileID: 7589705268525691455}
-  thirdPersonView: 1
-  cameraDistance: 5
+  player: {fileID: 0}
 --- !u!114 &7989022658644623639
 MonoBehaviour:
   m_ObjectHideFlags: 0
