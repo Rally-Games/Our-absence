@@ -122,7 +122,7 @@ public class Player_controller : MonoBehaviour
 
         IEnumerator Wait()
         {
-            yield return new WaitForSeconds(time);
+            yield return new WaitForSeconds(time - CrossFade);
             Validate();
         }
         void Validate()
