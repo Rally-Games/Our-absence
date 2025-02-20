@@ -64,27 +64,25 @@ public class Player_controller : MonoBehaviour
 
         // Movement direction relative to camera
         _direction = cameraForward * input.y + cameraRight * input.x;
-
-        if (_direction.magnitude > 0)
+        if (currentAnimation != "Roll")
         {
+            if (_direction.magnitude > 0)
+            {
 
-            // Rotate player towards movement direction
-            Quaternion targetRotation = Quaternion.LookRotation(_direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.7f);
-        }
-        else
-        {
+                // Rotate player towards movement direction
+                Quaternion targetRotation = Quaternion.LookRotation(_direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.7f);
+            }
 
+            if (runAction.ReadValue<float>() > 0)
+            {
+                controller.Move(_direction * (speed + 5f) * Time.deltaTime);
+            }
+            else
+            {
+                controller.Move(_direction * speed * Time.deltaTime);
+            }
         }
-        if (runAction.ReadValue<float>() > 0)
-        {
-            controller.Move(_direction * (speed + 5f) * Time.deltaTime);
-        }
-        else
-        {
-            controller.Move(_direction * speed * Time.deltaTime);
-        }
-
         // Apply gravity
         if (!controller.isGrounded)
         {
@@ -102,9 +100,8 @@ public class Player_controller : MonoBehaviour
     {
         if (controller.isGrounded)
         {
-            velocity.y = 0f; // Reset any existing vertical velocity
-            velocity.y += Mathf.Sqrt(jumpForce * gravity * 1.5f);
-            ChangeAnimation("Jump Start", 0);
+
+            ChangeAnimation("Roll", 0.05f);
         }
     }
 
@@ -148,12 +145,7 @@ public class Player_controller : MonoBehaviour
     private void CheackAnimation()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        if (currentAnimation == "Jump Start") return;
-
-        if (currentAnimation == "Jump Air" && controller.isGrounded)
-        {
-            ChangeAnimation("Jump End", 0);
-        }
+        if (currentAnimation == "Roll") return;
 
         if (input.magnitude == 0)
         {
