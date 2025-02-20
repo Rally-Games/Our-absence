@@ -101,7 +101,7 @@ public class Player_controller : MonoBehaviour
         if (controller.isGrounded)
         {
 
-            ChangeAnimation("Roll", 0.05f);
+            ChangeAnimation("Roll");
         }
     }
 
