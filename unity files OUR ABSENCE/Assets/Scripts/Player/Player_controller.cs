@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+
 
 [RequireComponent(typeof(CharacterController))]
 public class Player_controller : MonoBehaviour
@@ -15,15 +17,20 @@ public class Player_controller : MonoBehaviour
     private InputAction runAction;
     private Camera mainCamera;
     private Vector3 _direction;
-
-    [SerializeField] private float speed = 2.5f;
-    private float gravity = 9.81f;
-    [SerializeField] private float pushForce = 5f;
     private Vector3 velocity;
+
+    [Header("Player Settings")]
+    [SerializeField] private float speed = 2.5f;
+    [SerializeField] private float gravity = 9.81f;
+    [SerializeField] private float pushForce = 1f;
+
+    [Header("Animation")]
     [SerializeField] private Animator animator;
     private string currentAnimation = "Idle";
-    [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private float jumpForce = 3f;
+
+    [Header("Target Settings")]
+    [SerializeField] private string target_tag = "Enemy";
+    [SerializeField] private float target_distance = 10f;
 
     private void Awake()
     {
@@ -64,6 +71,13 @@ public class Player_controller : MonoBehaviour
 
         // Movement direction relative to camera
         _direction = cameraForward * input.y + cameraRight * input.x;
+
+        // set camera position behind player
+        if (playerInput.actions["LockOn"].triggered)
+        {
+            mainCamera.transform.position = transform.position - transform.forward * 2 + Vector3.up * 1.5f;
+            mainCamera.transform.rotation = Quaternion.LookRotation(transform.forward);
+        }
         if (currentAnimation != "Roll")
         {
             if (_direction.magnitude > 0)
