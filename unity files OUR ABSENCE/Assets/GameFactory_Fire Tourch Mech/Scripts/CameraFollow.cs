@@ -1,65 +1,107 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem; // New Input System
 
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] Transform target;
     [SerializeField] Vector3 offset;
-    [SerializeField] Vector2 clampAxis = new Vector2(60, 60);
-    
+    [SerializeField] Vector2 clampAxis = new Vector2(-40, 80);
     [SerializeField] float follow_smoothing = 5;
     [SerializeField] float rotate_Smoothing = 5;
-    [SerializeField] float senstivity = 60;
+    [SerializeField] float sensitivity = 60;
 
+    private float rotX, rotY;
+    private bool cursorLocked = false;
+    private Transform cam;
+    public bool lockedTarget = false;
+    private Transform lockOnTarget;
 
-    float rotX, rotY;
-    bool cursorLocked = false;
-    Transform cam;
+    private PlayerInput playerInput;
+    private InputAction lookAction;
+    private InputAction lockOnAction;
 
-    public bool lockedTarget;
+    void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
 
-    void Start(){
+        // Assign input actions from Input System
+        lookAction = playerInput.actions["Look"];
+        lockOnAction = playerInput.actions["LockOn"];
+
+        lockOnAction.performed += _ => ToggleLockOn();
+    }
+
+    void Start()
+    {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         cam = Camera.main.transform;
     }
+
     void Update()
     {
-        
-        Vector3 target_P= target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, target_P, follow_smoothing * Time.deltaTime);
+        Vector3 targetPosition = target.position + offset;
+        transform.position = Vector3.Lerp(transform.position, targetPosition, follow_smoothing * Time.deltaTime);
 
-        
-        if(!lockedTarget) CameraTargetRotation(); else LookAtTarget();
-        
-        if(Input.GetKeyDown(KeyCode.Escape)){
-            if(cursorLocked){
-                Cursor.visible= true;
-                Cursor.lockState = CursorLockMode.None;
-            }else{
-                Cursor.visible= false;
-                Cursor.lockState = CursorLockMode.Locked;
-            }
+        if (!lockedTarget)
+        {
+            CameraTargetRotation();
         }
-        
+        else if (lockOnTarget != null)
+        {
+            LookAtTarget();
+        }
+
+        HandleCursorLock();
     }
 
-    void CameraTargetRotation(){
-        Vector2 mouseAxis = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        rotX += (mouseAxis.x * senstivity) * Time.deltaTime;
-        rotY -= (mouseAxis.y * senstivity) * Time.deltaTime;
+    void CameraTargetRotation()
+    {
+        Vector2 mouseAxis = lookAction.ReadValue<Vector2>(); // Get mouse/gamepad input
+        rotX += (mouseAxis.x * sensitivity) * Time.deltaTime;
+        rotY -= (mouseAxis.y * sensitivity) * Time.deltaTime;
 
         rotY = Mathf.Clamp(rotY, clampAxis.x, clampAxis.y);
 
-        Quaternion localRotation = Quaternion.Euler(rotY, rotX, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, localRotation, Time.deltaTime * rotate_Smoothing);
+        Quaternion targetRotation = Quaternion.Euler(rotY, rotX, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotate_Smoothing);
     }
 
-    void LookAtTarget(){
-        transform.rotation = cam.rotation;
-        Vector3 r = cam.eulerAngles;
-        rotX = r.y;
-        rotY = 1.8f;
+    void LookAtTarget()
+    {
+        if (lockOnTarget == null) return;
+
+        Vector3 directionToTarget = lockOnTarget.position - transform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotate_Smoothing);
+    }
+
+    public void LockOn(Transform enemyTarget)
+    {
+        lockedTarget = true;
+        lockOnTarget = enemyTarget;
+    }
+
+    public void Unlock()
+    {
+        lockedTarget = false;
+        lockOnTarget = null;
+    }
+
+    private void ToggleLockOn()
+    {
+        if (lockedTarget) Unlock();
+    }
+
+    void HandleCursorLock()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            cursorLocked = !cursorLocked;
+            Cursor.visible = cursorLocked;
+            Cursor.lockState = cursorLocked ? CursorLockMode.None : CursorLockMode.Locked;
+        }
     }
 }

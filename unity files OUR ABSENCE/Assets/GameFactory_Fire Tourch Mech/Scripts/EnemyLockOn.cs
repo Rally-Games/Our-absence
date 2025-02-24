@@ -128,7 +128,8 @@ public class EnemyLockOn : MonoBehaviour
 
     bool TargetOnRange()
     {
-        float dis = (transform.position - currentTarget.transform.position).magnitude;
+        pos = currentTarget.position + new Vector3(0, currentYOffset, 0);
+        float dis = (transform.position - pos).magnitude;
         print(transform.position + " " + dis);
         if (dis / 2 > noticeZone) return false; else return true;
     }
@@ -142,6 +143,7 @@ public class EnemyLockOn : MonoBehaviour
             return;
         }
         pos = currentTarget.position + new Vector3(0, currentYOffset, 0);
+
         lockOnCanvas.position = pos;
         lockOnCanvas.localScale = Vector3.one * ((cam.position - pos).magnitude * crossHair_Scale);
 
@@ -150,6 +152,7 @@ public class EnemyLockOn : MonoBehaviour
         dir.y = 0;
         Quaternion rot = Quaternion.LookRotation(dir);
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * lookAtSmoothing);
+        camFollow.LockOn(currentTarget);
     }
 
     private void OnDrawGizmos()

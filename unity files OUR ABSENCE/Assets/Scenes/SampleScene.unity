@@ -340,7 +340,7 @@ MonoBehaviour:
   zeroVert_Look: 0
   noticeZone: 10
   lookAtSmoothing: 2
-  maxNoticeAngle: 360
+  maxNoticeAngle: 180
   crossHair_Scale: 0.1
   camFollow: {fileID: 1572800282}
   lockOnCanvas: {fileID: 1185406460}
@@ -1073,9 +1073,9 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_XDamping: 0
+  m_YDamping: 0
+  m_ZDamping: 0
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
@@ -1574,7 +1574,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1468246902}
   - component: {fileID: 1468246905}
-  - component: {fileID: 1468246904}
   - component: {fileID: 1468246903}
   m_Layer: 8
   m_Name: SecVision
@@ -1711,14 +1710,6 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
---- !u!81 &1468246904
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1468246901}
-  m_Enabled: 0
 --- !u!20 &1468246905
 Camera:
   m_ObjectHideFlags: 0
@@ -1816,6 +1807,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1572800281}
   - component: {fileID: 1572800282}
+  - component: {fileID: 1572800283}
   m_Layer: 0
   m_Name: CameraTaerget
   m_TagString: Untagged
@@ -1854,8 +1846,38 @@ MonoBehaviour:
   clampAxis: {x: -30, y: 30}
   follow_smoothing: 8
   rotate_Smoothing: 8
-  senstivity: 80
+  sensitivity: 5
   lockedTarget: 0
+--- !u!114 &1572800283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572800280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 17c30d52e4e6698459f89574a6ea2ea9, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1978881294
 GameObject:
   m_ObjectHideFlags: 0
