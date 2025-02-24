@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 
@@ -12,16 +14,15 @@ public class Player_controller : MonoBehaviour
 {
     private CharacterController controller;
     private PlayerInput playerInput;
-    public InputAction moveAction;
-    private InputAction jumpAction;
-    private InputAction runAction;
     private Camera mainCamera;
-    private Vector3 _direction;
     private Vector3 velocity;
+    private Vector3 moveInput;
+    private Vector3 direction;
 
     [Header("Player Settings")]
     [SerializeField] private float speed = 2.5f;
     [SerializeField] private float gravity = 9.81f;
+    [SerializeField] private float rotateSpeed = 3f;
     [SerializeField] private float pushForce = 1f;
 
     [Header("Animation")]
@@ -29,8 +30,11 @@ public class Player_controller : MonoBehaviour
     private string currentAnimation = "Idle";
 
     [Header("Target Settings")]
-    [SerializeField] private string target_tag = "Enemy";
-    [SerializeField] private float target_distance = 10f;
+    public bool lockMovement;
+
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction runAction;
 
     private void Awake()
     {
@@ -39,7 +43,7 @@ public class Player_controller : MonoBehaviour
         jumpAction = playerInput.actions["Jump"];
         runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
-        mainCamera = Camera.main; // Get the main camera
+        mainCamera = Camera.main;
 
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
@@ -47,85 +51,62 @@ public class Player_controller : MonoBehaviour
 
     private void Update()
     {
-        MovePlayer();
-        if (jumpAction.triggered)
-        {
-            OnJump();
-        }
-        CheackAnimation();
+        GetInput();
+        PlayerMovement();
+        if (!lockMovement) PlayerRotation();
+        CheckAnimation();
+        if (jumpAction.triggered) OnJump();
     }
 
-    void MovePlayer()
+    private void GetInput()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
+        moveInput = new Vector3(input.x, 0, input.y);
 
-        // Get camera-relative movement directions
-        Vector3 cameraForward = mainCamera.transform.forward;
-        Vector3 cameraRight = mainCamera.transform.right;
+        Vector3 forward = mainCamera.transform.forward;
+        Vector3 right = mainCamera.transform.right;
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
 
-        // Flatten Y axis to prevent unwanted vertical movement
-        cameraForward.y = 0;
-        cameraRight.y = 0;
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-        // Movement direction relative to camera
-        _direction = cameraForward * input.y + cameraRight * input.x;
-
-        // set camera position behind player
-        if (playerInput.actions["LockOn"].triggered)
-        {
-            mainCamera.transform.position = transform.position - transform.forward * 2 + Vector3.up * 1.5f;
-            mainCamera.transform.rotation = Quaternion.LookRotation(transform.forward);
-        }
-        if (currentAnimation != "Roll")
-        {
-            if (_direction.magnitude > 0)
-            {
-
-                // Rotate player towards movement direction
-                Quaternion targetRotation = Quaternion.LookRotation(_direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.7f);
-            }
-
-            if (runAction.ReadValue<float>() > 0)
-            {
-                controller.Move(_direction * (speed + 5f) * Time.deltaTime);
-            }
-            else
-            {
-                controller.Move(_direction * speed * Time.deltaTime);
-            }
-        }
-        // Apply gravity
-        if (!controller.isGrounded)
-        {
-            velocity.y -= gravity * Time.deltaTime;
-        }
-        else
-        {
-            velocity.y = -0.1f;
-        }
-
-        controller.Move(velocity * Time.deltaTime);
+        direction = (forward * input.y + right * input.x).normalized;
     }
 
-    void OnJump()
+    private void PlayerMovement()
+    {
+        float currentSpeed = runAction.ReadValue<float>() > 0 ? speed + 5f : speed;
+
+        if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
+        Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
+        controller.Move(movement * Time.deltaTime);
+    }
+
+    private void PlayerRotation()
+    {
+        if (direction.magnitude == 0) return;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotateSpeed);
+    }
+
+    private void OnJump()
     {
         if (controller.isGrounded)
         {
-
             ChangeAnimation("Roll");
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void CheckAnimation()
     {
-        Rigidbody rb = hit.collider.attachedRigidbody;
-        if (rb != null && !rb.isKinematic)
+        if (currentAnimation == "Roll") return;
+
+        if (moveInput.magnitude == 0)
         {
-            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
+            ChangeAnimation("Idle");
+        }
+        else
+        {
+            ChangeAnimation(runAction.ReadValue<float>() > 0 ? "Running" : "Walking", 0.05f);
         }
     }
 
@@ -147,7 +128,7 @@ public class Player_controller : MonoBehaviour
 
                 if (currentAnimation == "")
                 {
-                    CheackAnimation();
+                    CheckAnimation();
                 }
                 else
                     animator.CrossFade(animation, CrossFade);
@@ -156,25 +137,13 @@ public class Player_controller : MonoBehaviour
 
     }
 
-    private void CheackAnimation()
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Vector2 input = moveAction.ReadValue<Vector2>();
-        if (currentAnimation == "Roll") return;
-
-        if (input.magnitude == 0)
+        Rigidbody rb = hit.collider.attachedRigidbody;
+        if (rb != null && !rb.isKinematic)
         {
-            ChangeAnimation("Idle");
+            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+            rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
         }
-        else if (input.magnitude > 0)
-        {
-            if (runAction.ReadValue<float>() > 0)
-            {
-                ChangeAnimation("Running", 0.05f);
-            }
-            else
-                ChangeAnimation("Walking", 0.05f);
-        }
-
-
     }
 }
