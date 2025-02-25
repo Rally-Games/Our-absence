@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -26,7 +27,7 @@ public class Player_controller : MonoBehaviour
     [SerializeField] private float pushForce = 1f;
 
     [Header("Animation")]
-    [SerializeField] private Animator animator;
+    public Animator animator;
     private string currentAnimation = "Idle";
 
     [Header("Target Settings")]
@@ -80,6 +81,9 @@ public class Player_controller : MonoBehaviour
         if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
         Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
         controller.Move(movement * Time.deltaTime);
+        animator.SetFloat("Horizontal", math.round(moveInput.x));
+        animator.SetFloat("Vertical", math.round(moveInput.z));
+        animator.SetFloat("movment", direction.magnitude, 0.1f, Time.deltaTime);
     }
 
     private void PlayerRotation()
