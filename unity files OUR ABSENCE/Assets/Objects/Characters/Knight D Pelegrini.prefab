@@ -2046,6 +2046,7 @@ GameObject:
   - component: {fileID: 7989022657881623921}
   - component: {fileID: 7989022657881623920}
   - component: {fileID: 7989022657881623922}
+  - component: {fileID: 2254917980998910689}
   m_Layer: 0
   m_Name: Knight D Pelegrini
   m_TagString: Untagged
@@ -2120,23 +2121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296f24d186fee9942a8ecc4c5f10dc9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveAction:
-    m_Name: Move
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 25ff4bb0-d620-461e-8086-3932f2113a30
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
   speed: 3
   gravity: 9.81
+  rotateSpeed: 5
   pushForce: 1
   animator: {fileID: 4590329578444007493}
-  target_tag: Enemy
-  target_distance: 10
-  isLockedOn: 0
-  freeLook_camera: {fileID: 0}
+  lockMovement: 0
 --- !u!114 &7989022657881623922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2167,6 +2157,30 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2254917980998910689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7070611928297646213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6dc76b3fc4af4c90a21b48e969f25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  enemyTarget_Locator: {fileID: 0}
+  cinemachineAnimator: {fileID: 4590329578444007493}
+  zeroVert_Look: 0
+  noticeZone: 10
+  lookAtSmoothing: 2
+  maxNoticeAngle: 180
+  crossHair_Scale: 0.1
+  camFollow: {fileID: 0}
+  lockOnCanvas: {fileID: 0}
 --- !u!1 &7354201157437518268
 GameObject:
   m_ObjectHideFlags: 0

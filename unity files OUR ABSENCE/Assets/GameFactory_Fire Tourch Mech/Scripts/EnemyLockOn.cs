@@ -53,12 +53,10 @@ public class EnemyLockOn : MonoBehaviour
                 return;
             }
             if (currentTarget = ScanNearBy()) FoundTarget(); else ResetTarget();
-            print(currentTarget + ", " + ScanNearBy());
         }
 
         if (enemyLocked)
         {
-            print(TargetOnRange());
             if (!TargetOnRange()) ResetTarget();
             LookAtTarget();
         }
@@ -68,7 +66,6 @@ public class EnemyLockOn : MonoBehaviour
 
     void FoundTarget()
     {
-        print("Target Found" + currentTarget.name);
         lockOnCanvas.gameObject.SetActive(true);
         //anim.SetLayerWeight(1, 1);
         //cinemachineAnimator.Play("TargetCamera");
@@ -105,7 +102,24 @@ public class EnemyLockOn : MonoBehaviour
         }
 
         if (!closestTarget) return null;
-        float h1 = closestTarget.GetComponent<CapsuleCollider>().height;
+        float h1 = 1.0f;
+        Collider collider = closestTarget.GetComponent<Collider>();
+        if (collider is CapsuleCollider capsuleCollider)
+        {
+            h1 = capsuleCollider.height;
+        }
+        else if (collider is BoxCollider boxCollider)
+        {
+            h1 = boxCollider.size.y;
+        }
+        else if (collider is SphereCollider sphereCollider)
+        {
+            h1 = sphereCollider.radius * 2;
+        }
+        else if (collider is MeshCollider meshCollider)
+        {
+            h1 = meshCollider.bounds.size.y;
+        }
         float h2 = closestTarget.localScale.y;
         float h = h1 * h2;
         float half_h = (h / 2) / 2;
@@ -130,7 +144,6 @@ public class EnemyLockOn : MonoBehaviour
     {
         pos = currentTarget.position + new Vector3(0, currentYOffset, 0);
         float dis = (transform.position - pos).magnitude;
-        print(transform.position + " " + dis);
         if (dis / 2 > noticeZone) return false; else return true;
     }
 
@@ -142,8 +155,8 @@ public class EnemyLockOn : MonoBehaviour
             ResetTarget();
             return;
         }
-        pos = currentTarget.position + new Vector3(0, currentYOffset, 0);
-
+        pos = currentTarget.position + new Vector3(0, currentYOffset / 2, 0);
+        print(pos + "   " + currentYOffset);
         lockOnCanvas.position = pos;
         lockOnCanvas.localScale = Vector3.one * ((cam.position - pos).magnitude * crossHair_Scale);
 
