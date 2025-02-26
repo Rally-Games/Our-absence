@@ -18,7 +18,7 @@ public class Player_controller : MonoBehaviour
     private Camera mainCamera;
     private Vector3 velocity;
     private Vector3 moveInput;
-    private Vector3 direction;
+    public Vector3 direction;
 
     [Header("Player Settings")]
     [SerializeField] private float speed = 2.5f;
@@ -76,7 +76,8 @@ public class Player_controller : MonoBehaviour
 
     private void PlayerMovement()
     {
-        float currentSpeed = runAction.ReadValue<float>() > 0 ? speed + 5f : speed;
+        float currentSpeed = runAction.ReadValue<float>() > 0
+        ? currentAnimation != "Roll" ? speed + 5f : speed : speed;
 
         if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
         Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
@@ -101,6 +102,7 @@ public class Player_controller : MonoBehaviour
             ChangeAnimation("Standing Dodge Backward");
             return;
         }
+
         ChangeAnimation("Roll");
     }
 

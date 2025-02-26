@@ -58,6 +58,11 @@ public class EnemyLockOn : MonoBehaviour
         }
         if (playerInput.actions["Roll"].triggered)
         {
+            if (player_script.direction.magnitude == 0)
+            {
+                anim.CrossFade("Dodge Backward", 0.2f);
+                return;
+            }
             anim.CrossFade("LockedRoll", 0.2f);
         }
 
