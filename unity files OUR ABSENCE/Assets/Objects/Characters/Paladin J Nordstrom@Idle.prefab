@@ -1985,7 +1985,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: c41b41c7d84706347aa7235ecba76393, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -2009,10 +2009,10 @@ MonoBehaviour:
   enemyTarget_Locator: {fileID: 0}
   cinemachineAnimator: {fileID: 8053291653770536430}
   zeroVert_Look: 0
-  noticeZone: 10
+  noticeZone: 20
   lookAtSmoothing: 2
   maxNoticeAngle: 100
-  crossHair_Scale: 0.5
+  crossHair_Scale: 0.15
   camFollow: {fileID: 0}
   lockOnCanvas: {fileID: 0}
 --- !u!114 &2193205681359190297

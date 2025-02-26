@@ -41,7 +41,7 @@ public class Player_controller : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
-        jumpAction = playerInput.actions["Jump"];
+        jumpAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
         mainCamera = Camera.main;

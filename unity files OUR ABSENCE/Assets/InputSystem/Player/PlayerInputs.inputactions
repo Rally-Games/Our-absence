@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Jump",
+                    "name": "Roll",
                     "type": "Button",
                     "id": "8a336a5f-8037-4236-903d-9ae0bc1436c2",
                     "expectedControlType": "Button",
@@ -288,7 +288,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Jump",
+                    "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
