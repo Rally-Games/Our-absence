@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -15,8 +16,8 @@ TagManager:
   - 
   - PostProcessing
   - Not in Reflection
-  - 
-  - 
+  - OverlayUI
+  - Enemy
   - 
   - 
   - 
@@ -40,4 +41,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: player
+    uniqueID: 2076601409
+    locked: 0
+  - name: UI
+    uniqueID: 4013110895
+    locked: 0
+  - name: objects
+    uniqueID: 3373401179
+    locked: 0
+  - name: env
+    uniqueID: 2259770607
+    locked: 0
+  - name: enemyTarget
+    uniqueID: 4232698871
     locked: 0

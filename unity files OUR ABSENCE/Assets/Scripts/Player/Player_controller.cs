@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Transactions;
-using UnityEditor.Experimental.GraphView;
+using System.ComponentModel;
+using Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -11,79 +15,143 @@ public class Player_controller : MonoBehaviour
 {
     private CharacterController controller;
     private PlayerInput playerInput;
+    private Camera mainCamera;
+    private Vector3 velocity;
+    private Vector3 moveInput;
+    public Vector3 direction;
+
+    [Header("Player Settings")]
+    [SerializeField] private float speed = 2.5f;
+    [SerializeField] private float gravity = 9.81f;
+    [SerializeField] private float rotateSpeed = 3f;
+    [SerializeField] private float pushForce = 1f;
+
+    [Header("Animation")]
+    public Animator animator;
+    private string currentAnimation = "Idle";
+
+    [Header("Target Settings")]
+    public bool lockMovement;
+
     private InputAction moveAction;
     private InputAction jumpAction;
-    private Camera mainCamera;
-    private Vector3 _direction;
-
-    [SerializeField] private float speed = 12f;
-    private float gravity = 9.81f;
-    [SerializeField] private float pushForce = 5f; // Force to apply to pushable objects
-    private Vector3 velocity;
+    private InputAction runAction;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
-        jumpAction = playerInput.actions["Jump"];
+        jumpAction = playerInput.actions["Roll"];
+        runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
-        mainCamera = GetComponentInChildren<Camera>();
+        mainCamera = Camera.main;
+
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
     }
 
     private void Update()
     {
-        MovePlayer();
-        if (jumpAction.triggered)
-        {
-            OnJump();
-        }
+        GetInput();
+        PlayerMovement();
+        if (!lockMovement) PlayerRotation();
+        CheckAnimation();
+        if (jumpAction.triggered) Roll();
     }
-    void MovePlayer()
+
+    private void GetInput()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
+        moveInput = new Vector3(input.x, 0, input.y);
+
         Vector3 forward = mainCamera.transform.forward;
         Vector3 right = mainCamera.transform.right;
-
-        forward.y = 0f;
-        right.y = 0f;
-
+        forward.y = 0;
+        right.y = 0;
         forward.Normalize();
         right.Normalize();
 
-        _direction = forward * input.y + right * input.x;
+        direction = (forward * input.y + right * input.x).normalized;
+    }
 
-        // Move the player using CharacterController
-        controller.Move(_direction * speed * Time.deltaTime);
+    private void PlayerMovement()
+    {
+        float currentSpeed = runAction.ReadValue<float>() > 0
+        ? currentAnimation != "Roll" ? speed + 5f : speed : speed;
 
-        // Apply gravity
-        if (!controller.isGrounded)
+        if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
+        Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
+        controller.Move(movement * Time.deltaTime);
+        animator.SetFloat("Horizontal", math.round(moveInput.x));
+        animator.SetFloat("Vertical", math.round(moveInput.z));
+        animator.SetFloat("movment", direction.magnitude, 0.1f, Time.deltaTime);
+    }
+
+    private void PlayerRotation()
+    {
+        if (direction.magnitude == 0) return;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotateSpeed);
+    }
+
+    private void Roll()
+    {
+        if (!controller.isGrounded) return;
+        if (direction.magnitude == 0)
         {
-            velocity.y -= gravity * Time.deltaTime;
+            print("Roll Backward");
+            ChangeAnimation("Standing Dodge Backward");
+            return;
+        }
+
+        ChangeAnimation("Roll");
+    }
+
+    private void CheckAnimation()
+    {
+        if (currentAnimation == "Roll" || currentAnimation == "Standing Dodge Backward") return;
+
+        if (moveInput.magnitude == 0)
+        {
+            ChangeAnimation("Idle");
         }
         else
         {
-            velocity.y = -0.1f; // Small downward force to keep grounded
+            ChangeAnimation(runAction.ReadValue<float>() > 0 ? "Running" : "Walking", 0.05f);
         }
-
-        controller.Move(velocity * Time.deltaTime);
     }
 
-    void OnJump()
+    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f)
     {
-        if (controller.isGrounded)
+        if (time > 0) StartCoroutine(Wait());
+        else Validate();
+
+        IEnumerator Wait()
         {
-            velocity.y = Mathf.Sqrt(2 * gravity * 1.5f);
+            yield return new WaitForSeconds(time - CrossFade);
+            Validate();
         }
+        void Validate()
+        {
+            if (currentAnimation != animation)
+            {
+                currentAnimation = animation;
+
+                if (currentAnimation == "")
+                {
+                    CheckAnimation();
+                }
+                else
+                    animator.CrossFade(animation, CrossFade);
+            }
+        }
+
     }
 
-    // here do things that happen when the player collides with something that has a rigidbody
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Check if the object has a Rigidbody and is not kinematic
         Rigidbody rb = hit.collider.attachedRigidbody;
         if (rb != null && !rb.isKinematic)
         {
-            // Calculate push direction (only horizontal)
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
         }
