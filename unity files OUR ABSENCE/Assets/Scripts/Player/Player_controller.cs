@@ -56,7 +56,7 @@ public class Player_controller : MonoBehaviour
         PlayerMovement();
         if (!lockMovement) PlayerRotation();
         CheckAnimation();
-        if (jumpAction.triggered) OnJump();
+        if (jumpAction.triggered) Roll();
     }
 
     private void GetInput()
@@ -92,17 +92,21 @@ public class Player_controller : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotateSpeed);
     }
 
-    private void OnJump()
+    private void Roll()
     {
-        if (controller.isGrounded)
+        if (!controller.isGrounded) return;
+        if (direction.magnitude == 0)
         {
-            ChangeAnimation("Roll");
+            print("Roll Backward");
+            ChangeAnimation("Standing Dodge Backward");
+            return;
         }
+        ChangeAnimation("Roll");
     }
 
     private void CheckAnimation()
     {
-        if (currentAnimation == "Roll") return;
+        if (currentAnimation == "Roll" || currentAnimation == "Standing Dodge Backward") return;
 
         if (moveInput.magnitude == 0)
         {
