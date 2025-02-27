@@ -1,13 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Cinemachine;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
+
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -28,7 +24,7 @@ public class Player_controller : MonoBehaviour
 
     [Header("Animation")]
     public Animator animator;
-    private string currentAnimation = "Idle";
+    public string currentAnimation = "Idle";
 
     [Header("Target Settings")]
     public bool lockMovement;
@@ -36,6 +32,7 @@ public class Player_controller : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction runAction;
+    private bool isAtacking = false;
 
     private void Awake()
     {
@@ -46,15 +43,15 @@ public class Player_controller : MonoBehaviour
         controller = GetComponent<CharacterController>();
         mainCamera = Camera.main;
 
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
     {
         GetInput();
-        PlayerMovement();
-        if (!lockMovement) PlayerRotation();
+        if (!isAtacking) PlayerMovement();
+        if (!lockMovement && !isAtacking) PlayerRotation();
         CheckAnimation();
         if (jumpAction.triggered) Roll();
     }
@@ -109,7 +106,8 @@ public class Player_controller : MonoBehaviour
     private void CheckAnimation()
     {
         if (currentAnimation == "Roll" || currentAnimation == "Standing Dodge Backward") return;
-
+        if (currentAnimation == "Boxing left" || currentAnimation == "Boxing right") { isAtacking = true; return; }
+        isAtacking = false;
         if (moveInput.magnitude == 0)
         {
             ChangeAnimation("Idle");
@@ -132,6 +130,7 @@ public class Player_controller : MonoBehaviour
         }
         void Validate()
         {
+            print(animation + "   " + currentAnimation);
             if (currentAnimation != animation)
             {
                 currentAnimation = animation;
@@ -143,6 +142,7 @@ public class Player_controller : MonoBehaviour
                 else
                     animator.CrossFade(animation, CrossFade);
             }
+            return;
         }
 
     }
