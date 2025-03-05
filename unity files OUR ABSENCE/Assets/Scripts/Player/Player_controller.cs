@@ -121,6 +121,7 @@ public class Player_controller : MonoBehaviour
     public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f)
     {
         if (currentAnimation.Equals(animation)) return;
+        if (animation == "Walking" && currentAnimation == "Running") CrossFade = 0.2f;
         if (time > 0) StartCoroutine(Wait());
         else Validate();
 

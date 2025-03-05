@@ -1930,6 +1930,7 @@ GameObject:
   - component: {fileID: 1266646516404743290}
   - component: {fileID: 2193205681359190297}
   - component: {fileID: 5764245016520509895}
+  - component: {fileID: 1008808308365210344}
   m_Layer: 0
   m_Name: Paladin J Nordstrom@Idle
   m_TagString: Untagged
@@ -1983,7 +1984,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 4ce252410ba01154b9367a89313183b5, type: 3}
   m_Controller: {fileID: 9100000, guid: c41b41c7d84706347aa7235ecba76393, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -2057,12 +2058,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296f24d186fee9942a8ecc4c5f10dc9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
   speed: 2.5
   gravity: 9.81
   rotateSpeed: 7
   pushForce: 1
   animator: {fileID: 8053291653770536430}
+  currentAnimation: Idle
   lockMovement: 0
+--- !u!114 &1008808308365210344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 503b8f33020d2e04db701ae96bdb1316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7514696978176212075
 GameObject:
   m_ObjectHideFlags: 0

@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animation: 
-  crossfade: 0.2
+  crossfade: 0.05
 --- !u!1102 &-1827860858418136323
 AnimatorState:
   serializedVersion: 6
