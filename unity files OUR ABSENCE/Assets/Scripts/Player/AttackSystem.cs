@@ -32,7 +32,6 @@ public class AttackSystem : MonoBehaviour
 
         if (playerLeftAttack.triggered)
         {
-            print("Left Attack");
             LeftAttack();
         }
         if (playerRightAttack.triggered)
@@ -43,12 +42,27 @@ public class AttackSystem : MonoBehaviour
 
     private void LeftAttack()
     {
-        player_controller.ChangeAnimation("Boxing left", 0.05f);
+        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        {
+            player_controller.ChangeAnimation("Boxing left lock on", 0.05f);
+        }
+        else
+        {
+            player_controller.ChangeAnimation("Boxing left", 0.05f);
+
+        }
     }
 
     private void RightAttack()
     {
-        player_controller.ChangeAnimation("Boxing right", 0.05f);
+        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        {
+            player_controller.ChangeAnimation("Boxing right lock on", 0.05f);
+        }
+        else
+        {
+            player_controller.ChangeAnimation("Boxing right", 0.05f);
+        }
     }
 
 

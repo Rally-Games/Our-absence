@@ -60,10 +60,10 @@ public class EnemyLockOn : MonoBehaviour
         {
             if (player_script.direction.magnitude == 0)
             {
-                anim.CrossFade("Dodge Backward", 0.2f);
+                anim.CrossFade("Dodge Backward", 0.05f);
                 return;
             }
-            anim.CrossFade("LockedRoll", 0.2f);
+            anim.CrossFade("LockedRoll", 0.05f);
         }
 
         if (enemyLocked)
@@ -79,7 +79,6 @@ public class EnemyLockOn : MonoBehaviour
     {
         lockOnCanvas.gameObject.SetActive(true);
         anim.SetLayerWeight(1, 1);
-        player_script.animator.SetLayerWeight(1, 1);
         enemyLocked = true;
         //cinemachineAnimator.Play("TargetCamera");
     }
@@ -90,7 +89,6 @@ public class EnemyLockOn : MonoBehaviour
         currentTarget = null;
         enemyLocked = false;
         anim.SetLayerWeight(1, 0);
-        player_script.animator.SetLayerWeight(1, 0);
         //cinemachineAnimator.Play("FollowCamera");
     }
 
