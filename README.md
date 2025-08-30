@@ -1,12 +1,12 @@
 # OUR ABSENCE - Unity Project
 
-## 📌 Project Overview
+## Project Overview
 
 This repository contains the Unity project **OUR ABSENCE**. Follow the instructions below to set up the project on a new local PC and manage it using GitHub Desktop.
 
 ---
 
-## 📝 Project Structure
+## Project Structure
 
 ```
 Assets/
@@ -30,7 +30,7 @@ Assets/
 
 ---
 
-## 💞 Clone the Project to a New PC
+## Clone the Project to a New PC
 
 To start working on this Unity project on another computer, follow these steps:
 
@@ -97,7 +97,7 @@ If GitHub Desktop shows a **merge conflict**, you will need to manually resolve 
 
 ## ⚠ Important Notes
 
-- **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They are automatically ignored in `.gitignore`.
+- **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They sould be automatically ignored in `.gitignore`.
 - Always **pull the latest changes** before making edits.
 - Use **GitHub Desktop** for managing commits and branches.
 
