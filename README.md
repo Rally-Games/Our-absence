@@ -4,6 +4,11 @@
 
 This repository contains the Unity project **OUR ABSENCE**. Follow the instructions below to set up the project on a new local PC and manage it using GitHub Desktop.
 
+ ## Game concept:
+A relentless one-way journey through an endless, lifeless, and shrouded world—a descent into darkness in search of a distant hope.
+This is the dawn of a new age, the birth of a world drowned in shadow. From the void emerges faint fragments of light—fragile sparks of creation. But with creation comes war, with war comes death, and with death, the light begins to wither.
+You are cast into this decaying land, where every step forward is a struggle against despair. The path cannot be turned back; the only way is through the darkness. To endure, you must uncover what little light remains before it is forever consumed.
+
 ---
 
 ## Project Structure
