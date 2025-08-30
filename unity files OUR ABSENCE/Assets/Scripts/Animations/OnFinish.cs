@@ -6,10 +6,11 @@ using UnityEngine.InputSystem.EnhancedTouch;
 public class OnFinish : StateMachineBehaviour
 {
     [SerializeField] private string animation = "";
+    [SerializeField] private float crossfade = 0.2f;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponent<Player_controller>().ChangeAnimation(animation, 0.2f, stateInfo.length);
+        animator.GetComponent<Player_controller>().ChangeAnimation(animation, crossfade, stateInfo.length);
     }
 
 }

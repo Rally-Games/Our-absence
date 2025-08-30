@@ -1,13 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Cinemachine;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
+
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -28,35 +24,36 @@ public class Player_controller : MonoBehaviour
 
     [Header("Animation")]
     public Animator animator;
-    private string currentAnimation = "Idle";
+    public string currentAnimation = "Idle";
 
     [Header("Target Settings")]
     public bool lockMovement;
 
     private InputAction moveAction;
-    private InputAction jumpAction;
+    private InputAction rollAction;
     private InputAction runAction;
+    private bool isAtacking = false;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
-        jumpAction = playerInput.actions["Roll"];
+        rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
         mainCamera = Camera.main;
 
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
     {
         GetInput();
-        PlayerMovement();
-        if (!lockMovement) PlayerRotation();
+        if (!isAtacking) PlayerMovement();
+        if (!lockMovement && !isAtacking) PlayerRotation();
         CheckAnimation();
-        if (jumpAction.triggered) Roll();
+        if (rollAction.triggered) Roll();
     }
 
     private void GetInput()
@@ -98,18 +95,19 @@ public class Player_controller : MonoBehaviour
         if (!controller.isGrounded) return;
         if (direction.magnitude == 0)
         {
-            print("Roll Backward");
-            ChangeAnimation("Standing Dodge Backward");
+            ChangeAnimation("Standing Dodge Backward", 0.05f);
             return;
         }
 
-        ChangeAnimation("Roll");
+        ChangeAnimation("Roll", 0.05f);
     }
 
     private void CheckAnimation()
     {
         if (currentAnimation == "Roll" || currentAnimation == "Standing Dodge Backward") return;
-
+        if (currentAnimation == "Boxing left" || currentAnimation == "Boxing right") { isAtacking = true; return; }
+        if (currentAnimation == "Boxing left lock on" || currentAnimation == "Boxing right lock on") { isAtacking = true; return; }
+        isAtacking = false;
         if (moveInput.magnitude == 0)
         {
             ChangeAnimation("Idle");
@@ -122,6 +120,8 @@ public class Player_controller : MonoBehaviour
 
     public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f)
     {
+        if (currentAnimation.Equals(animation)) return;
+        if (animation == "Walking" && currentAnimation == "Running") CrossFade = 0.2f;
         if (time > 0) StartCoroutine(Wait());
         else Validate();
 
@@ -132,17 +132,14 @@ public class Player_controller : MonoBehaviour
         }
         void Validate()
         {
-            if (currentAnimation != animation)
-            {
-                currentAnimation = animation;
+            currentAnimation = animation;
 
-                if (currentAnimation == "")
-                {
-                    CheckAnimation();
-                }
-                else
-                    animator.CrossFade(animation, CrossFade);
+            if (currentAnimation == "")
+            {
+                CheckAnimation();
             }
+            else
+                animator.CrossFade(animation, CrossFade);
         }
 
     }

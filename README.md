@@ -1,12 +1,17 @@
 # OUR ABSENCE - Unity Project
 
-## 📌 Project Overview
+## Project Overview
 
 This repository contains the Unity project **OUR ABSENCE**. Follow the instructions below to set up the project on a new local PC and manage it using GitHub Desktop.
 
+ ## Game concept:
+A relentless one-way journey through an endless, lifeless, and shrouded world—a descent into darkness in search of a distant hope.
+This is the dawn of a new age, the birth of a world drowned in shadow. From the void emerges faint fragments of light—fragile sparks of creation. But with creation comes war, with war comes death, and with death, the light begins to wither.
+You are cast into this decaying land, where every step forward is a struggle against despair. The path cannot be turned back; the only way is through the darkness. To endure, you must uncover what little light remains before it is forever consumed.
+
 ---
 
-## 📝 Project Briff Structure
+## Project Structure
 
 ```
 Assets/
@@ -29,7 +34,7 @@ Assets/
 
 ---
 
-## 💞 Clone the Project to a New PC
+## Clone the Project to a New PC
 
 To start working on this Unity project on another computer, follow these steps:
 
@@ -104,7 +109,7 @@ If GitHub Desktop shows a **merge conflict**, you will need to manually resolve 
 
 ## ⚠ Important Notes
 
-- **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They are automatically ignored in `.gitignore`.
+- **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They sould be automatically ignored in `.gitignore`.
 - Always **pull the latest changes** before making edits.
 - Use **GitHub Desktop** for managing commits and branches.
 
