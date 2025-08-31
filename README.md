@@ -43,8 +43,7 @@ To start working on this Unity project on another computer, follow these steps:
 Make sure you have the following installed:
 
 - [Unity Hub](https://unity.com/) and the correct **Unity version** used for this project.
-- [GitHub Desktop](https://desktop.github.com/) for version control.
-- [Git](https://git-scm.com/) (if not already installed with GitHub Desktop).
+- Optional [GitHub Desktop](https://desktop.github.com/) for version control.
 
 ### **2. Clone the Repository**
 
@@ -53,6 +52,7 @@ Make sure you have the following installed:
 3. Select **"GitHub.com"** and find the repository named **OUR ABSENCE**.
 4. Choose a local folder where you want to store the project (e.g., `C:/UnityProjects/OurAbsence/`).
 5. Click **"Clone"** and wait for the process to complete.
+   Alternatively just open terminal on the project dir and use git commands through it (make sure git is in your terminal pip line)
 
 ### **3. Open the Project in Unity**
 
@@ -72,7 +72,7 @@ Whenever you make changes, follow these steps to commit them:
 1. Open **GitHub Desktop**.
 2. You will see the list of modified files in the repository.
 3. Write a short commit message describing your changes (e.g., "Updated player movement script").
-4. Click **"Commit to main"**.
+4. Click **"Commit to"**.
 
 ### **2. Pushing Changes to GitHub**
 
@@ -111,6 +111,6 @@ If GitHub Desktop shows a **merge conflict**, you will need to manually resolve 
 
 - **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They sould be automatically ignored in `.gitignore`.
 - Always **pull the latest changes** before making edits.
-- Use **GitHub Desktop** for managing commits and branches.
+- Use **GitHub Desktop** for managing commits and branches, Or read the git commands documentation. 
 
 ---

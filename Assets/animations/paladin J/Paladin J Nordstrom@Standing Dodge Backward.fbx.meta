@@ -38,8 +38,8 @@ ModelImporter:
       name: Standing Dodge Backward
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
-      lastFrame: 97
+      firstFrame: 5
+      lastFrame: 67
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

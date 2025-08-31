@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 
 
@@ -33,6 +35,7 @@ public class Player_controller : MonoBehaviour
     private InputAction rollAction;
     private InputAction runAction;
     private bool isAtacking = false;
+    private ObjectsState GlobalVariables;
 
     private void Awake()
     {
@@ -42,9 +45,11 @@ public class Player_controller : MonoBehaviour
         runAction = playerInput.actions["Run"];
         controller = GetComponent<CharacterController>();
         mainCamera = Camera.main;
+    }
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+    void Start()
+    {
+        GlobalVariables = FindObjectOfType<ObjectsState>();
     }
 
     private void Update()
@@ -58,6 +63,8 @@ public class Player_controller : MonoBehaviour
 
     private void GetInput()
     {
+        HandleShortcuts();
+
         Vector2 input = moveAction.ReadValue<Vector2>();
         moveInput = new Vector3(input.x, 0, input.y);
 
@@ -152,6 +159,21 @@ public class Player_controller : MonoBehaviour
         {
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
+        }
+    }
+
+    private void HandleShortcuts()
+    {
+        if (Keyboard.current.iKey.wasPressedThisFrame
+        || Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            // Toggle menuOpen
+            GlobalVariables.menuOpen = !GlobalVariables.menuOpen;
+
+            // Update UI based on the new state
+            GlobalVariables.mainMenuUI.rootVisualElement.style.display = GlobalVariables.menuOpen
+                ? DisplayStyle.Flex
+                : DisplayStyle.None;
         }
     }
 }

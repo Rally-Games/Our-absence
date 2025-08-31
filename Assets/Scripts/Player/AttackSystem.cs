@@ -12,10 +12,13 @@ public class AttackSystem : MonoBehaviour
     private InputAction playerLeftAttack;
     private InputAction playerRightAttack;
     private Player_controller player_controller;
+    private ObjectsState GlobalVariables;
+    private bool menuOpen;
 
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
+        GlobalVariables = GameObject.Find("GlobalVars").GetComponent<ObjectsState>();
 
         playerLeftAttack = playerInput.actions["Fire"];
         playerRightAttack = playerInput.actions["SecFire"];
@@ -27,8 +30,11 @@ public class AttackSystem : MonoBehaviour
 
     void Update()
     {
+        menuOpen = (bool)GlobalVariables.GetType().GetField("menuOpen").GetValue(GlobalVariables);
         if (player_controller.currentAnimation == "Roll"
         || player_controller.currentAnimation == "Standing Dodge Backward") return;
+
+        if (menuOpen) return;
 
         if (playerLeftAttack.triggered)
         {

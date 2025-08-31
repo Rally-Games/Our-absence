@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Styles.uss?fileID=7433441132597879392&amp;guid=e06bffc0b7860284d984b8ddc793c0ff&amp;type=3#Styles" />
+    <ui:VisualElement name="Background" style="height: 239px; background-color: rgba(34, 34, 34, 0.38); flex-grow: 1; align-items: center; justify-content: center; display: flex; visibility: visible; opacity: 1;">
+        <ui:VisualElement name="MainManuBackground" style="background-color: rgba(34, 34, 34, 0.82); height: 493px; width: 1048px; border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;">
+            <ui:VisualElement name="Navbar" style="width: 100%; height: 15%;" />
+            <ui:VisualElement name="ViewBackground" style="flex-grow: 1; align-items: flex-start; justify-content: flex-start; flex-direction: row; flex-wrap: nowrap;">
+                <ui:VisualElement name="Options" style="height: 100%; width: 20%; background-color: rgba(255, 0, 166, 0); align-items: flex-start; flex-direction: column; flex-grow: 0;">
+                    <ui:Button text="Inventory" display-tooltip-when-elided="true" name="Inventory" class="ManuOptionsButtonStyle">
+                        <ui:VisualElement name="Image" style="width: 37px; height: 39px; background-color: rgba(255, 255, 255, 0);" />
+                    </ui:Button>
+                    <ui:Button text="Settings" display-tooltip-when-elided="true" name="Settings" class="ManuOptionsButtonStyle">
+                        <ui:VisualElement name="Image" style="width: 37px; height: 39px; background-color: rgba(255, 255, 255, 0);" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="MainView" focusable="false" style="background-color: rgba(0, 0, 0, 0); flex-grow: 1; width: 20%; height: 100%;">
+                    <ui:VisualElement name="InventoryView" style="flex-grow: 1; flex-direction: row; align-items: center; visibility: hidden; background-color: rgba(0, 0, 0, 0.67); -unity-background-scale-mode: stretch-to-fill; overflow: visible;">
+                        <ui:VisualElement name="Content" style="flex-grow: 1; width: 50%; height: 100%; background-color: rgba(0, 0, 0, 0);">
+                            <ui:VisualElement name="Categories" style="flex-grow: 0; width: 100%; height: 15%; background-color: rgba(0, 0, 0, 0);">
+                                <ui:ScrollView name="ItemsCategories" mode="Horizontal" style="flex-grow: 1; flex-direction: row; align-items: center; align-self: flex-start; -unity-text-align: middle-left;" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="Items" style="flex-grow: 1; flex-direction: row; align-items: center;">
+                                <ui:VisualElement name="ItemButtons" style="flex-grow: 1; width: 5%; height: 100%;">
+                                    <ui:ListView name="ItemsList" style="flex-grow: 1; color: rgb(255, 255, 255); -unity-font-style: bold;" />
+                                </ui:VisualElement>
+                                <ui:VisualElement name="ItemsDiscription" style="flex-grow: 1; width: 65%; height: 100%; background-color: rgba(255, 0, 0, 0);" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="Stats" style="flex-grow: 1; height: 100%; width: 20%; background-color: rgba(0, 0, 0, 0);" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
