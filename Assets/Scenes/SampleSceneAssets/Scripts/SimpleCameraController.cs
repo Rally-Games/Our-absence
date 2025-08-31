@@ -41,7 +41,7 @@ namespace UnityTemplateProjects
                 yaw = Mathf.Lerp(yaw, target.yaw, rotationLerpPct);
                 pitch = Mathf.Lerp(pitch, target.pitch, rotationLerpPct);
                 roll = Mathf.Lerp(roll, target.roll, rotationLerpPct);
-                
+
                 x = Mathf.Lerp(x, target.x, positionLerpPct);
                 y = Mathf.Lerp(y, target.y, positionLerpPct);
                 z = Mathf.Lerp(z, target.z, positionLerpPct);
@@ -84,7 +84,7 @@ namespace UnityTemplateProjects
         InputAction verticalMovementAction;
         InputAction lookAction;
         InputAction boostFactorAction;
-        bool        mouseRightButtonPressed;
+        bool mouseRightButtonPressed;
 
         void Start()
         {
@@ -163,15 +163,15 @@ namespace UnityTemplateProjects
 #endif
             return direction;
         }
-        
+
         void Update()
         {
             if (IsEscapePressed())
             {
                 Application.Quit();
-				#if UNITY_EDITOR
-				UnityEditor.EditorApplication.isPlaying = false; 
-				#endif
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
             }
 
             // Hide and lock cursor when right mouse button pressed
@@ -184,7 +184,7 @@ namespace UnityTemplateProjects
             if (IsRightMouseButtonUp())
             {
                 Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
+                Cursor.lockState = CursorLockMode.Confined;
             }
 
             // Rotation
@@ -193,13 +193,13 @@ namespace UnityTemplateProjects
                 var mouseMovement = GetInputLookRotation() * k_MouseSensitivityMultiplier * mouseSensitivity;
                 if (invertY)
                     mouseMovement.y = -mouseMovement.y;
-                
+
                 var mouseSensitivityFactor = mouseSensitivityCurve.Evaluate(mouseMovement.magnitude);
 
                 m_TargetCameraState.yaw += mouseMovement.x * mouseSensitivityFactor;
                 m_TargetCameraState.pitch += mouseMovement.y * mouseSensitivityFactor;
             }
-            
+
             // Translation
             var translation = GetInputTranslationDirection() * Time.deltaTime;
 
@@ -208,7 +208,7 @@ namespace UnityTemplateProjects
             {
                 translation *= 10.0f;
             }
-            
+
             // Modify movement by a boost factor (defined in Inspector and modified in play mode through the mouse scroll wheel)
             boost += GetBoostFactor();
             translation *= Mathf.Pow(2.0f, boost);
@@ -249,7 +249,7 @@ namespace UnityTemplateProjects
         bool IsBoostPressed()
         {
 #if ENABLE_INPUT_SYSTEM
-            bool boost = Keyboard.current != null ? Keyboard.current.leftShiftKey.isPressed : false; 
+            bool boost = Keyboard.current != null ? Keyboard.current.leftShiftKey.isPressed : false;
             boost |= Gamepad.current != null ? Gamepad.current.xButton.isPressed : false;
             return boost;
 #else
@@ -261,7 +261,7 @@ namespace UnityTemplateProjects
         bool IsEscapePressed()
         {
 #if ENABLE_INPUT_SYSTEM
-            return Keyboard.current != null ? Keyboard.current.escapeKey.isPressed : false; 
+            return Keyboard.current != null ? Keyboard.current.escapeKey.isPressed : false;
 #else
             return Input.GetKey(KeyCode.Escape);
 #endif
