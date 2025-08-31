@@ -111,6 +111,6 @@ If GitHub Desktop shows a **merge conflict**, you will need to manually resolve 
 
 - **DO NOT** commit the `Library/`, `Logs/`, or `Temp/` folders. They sould be automatically ignored in `.gitignore`.
 - Always **pull the latest changes** before making edits.
-- Use **GitHub Desktop** for managing commits and branches.
+- Use **GitHub Desktop** for managing commits and branches, Or read the git commands documentation. 
 
 ---
