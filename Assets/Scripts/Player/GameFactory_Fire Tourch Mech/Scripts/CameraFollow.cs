@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem; // New Input System
 
@@ -13,7 +14,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] float sensitivity = 60;
 
     private float rotX, rotY;
-    private bool cursorLocked = false;
+    private bool cursorFree = false;
     private Transform cam;
     public bool lockedTarget = false;
     private Transform lockOnTarget;
@@ -21,7 +22,8 @@ public class CameraFollow : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction lookAction;
     private InputAction lockOnAction;
-
+    [SerializeField] private ObjectsState GlobalVariables;
+    private bool menuOpen = false;
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -35,9 +37,9 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        cam = Camera.main.transform;
+        GlobalVariables = GameObject.Find("GlobalVars").GetComponent<ObjectsState>();
+
+        HandleCursorLock();
     }
 
     void Update()
@@ -45,7 +47,7 @@ public class CameraFollow : MonoBehaviour
         Vector3 targetPosition = target.position + offset;
         transform.position = Vector3.Lerp(transform.position, targetPosition, follow_smoothing * Time.deltaTime);
 
-        if (!lockedTarget)
+        if (!lockedTarget && !menuOpen)
         {
             CameraTargetRotation();
         }
@@ -53,8 +55,12 @@ public class CameraFollow : MonoBehaviour
         {
             LookAtTarget();
         }
+    }
 
-        //HandleCursorLock();
+    void LateUpdate()
+    {
+        menuOpen = (bool)GlobalVariables.GetType().GetField("menuOpen").GetValue(GlobalVariables);
+        HandleCursorLock();
     }
 
     void CameraTargetRotation()
@@ -97,11 +103,17 @@ public class CameraFollow : MonoBehaviour
 
     void HandleCursorLock()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (!menuOpen && cursorFree)
         {
-            cursorLocked = !cursorLocked;
-            Cursor.visible = cursorLocked;
-            Cursor.lockState = cursorLocked ? CursorLockMode.None : CursorLockMode.Locked;
+            cursorFree = !cursorFree;
+            Cursor.visible = cursorFree;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else if (menuOpen)
+        {
+            cursorFree = true;
+            Cursor.visible = cursorFree;
+            Cursor.lockState = CursorLockMode.Confined;
         }
     }
 }

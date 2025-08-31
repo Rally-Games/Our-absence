@@ -2,11 +2,11 @@
     flex-grow: 0;
     flex-shrink: 1;
     align-items: center;
-    width: 199px;
+    width: 90%;
     flex-direction: row;
     justify-content: flex-start;
     -unity-text-align: middle-right;
-    height: 10%;
+    height: 15%;
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
@@ -18,7 +18,7 @@
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     -unity-text-outline-width: 1px;
-    color: rgba(0, 0, 0, 255);
+    color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
 }
@@ -27,11 +27,11 @@
     flex-grow: 0;
     flex-shrink: 1;
     align-items: center;
-    width: 199px;
+    width: 90%;
     flex-direction: row;
     justify-content: flex-start;
     -unity-text-align: middle-right;
-    height: 10%;
+    height: 15%;
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
@@ -46,18 +46,18 @@
     color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
-    background-color: rgba(180, 180, 180, 255);
+    background-color: rgb(180, 180, 180);
 }
 
 .ManuOptionsButtonStyle:active {
     flex-grow: 0;
     flex-shrink: 1;
     align-items: center;
-    width: 199px;
+    width: 90%;
     flex-direction: row;
     justify-content: flex-start;
     -unity-text-align: middle-right;
-    height: 10%;
+    height: 15%;
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
@@ -72,5 +72,5 @@
     color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
-    background-color: rgba(217, 217, 217, 255);
+    background-color: rgb(217, 217, 217);
 }
