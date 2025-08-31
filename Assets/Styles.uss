@@ -1,0 +1,76 @@
+.ManuOptionsButtonStyle {
+    flex-grow: 0;
+    flex-shrink: 1;
+    align-items: center;
+    width: 199px;
+    flex-direction: row;
+    justify-content: flex-start;
+    -unity-text-align: middle-right;
+    height: 10%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 1px;
+    color: rgba(0, 0, 0, 255);
+    -unity-font-style: bold;
+    font-size: 18px;
+}
+
+.ManuOptionsButtonStyle:hover {
+    flex-grow: 0;
+    flex-shrink: 1;
+    align-items: center;
+    width: 199px;
+    flex-direction: row;
+    justify-content: flex-start;
+    -unity-text-align: middle-right;
+    height: 10%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 1px;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 18px;
+    background-color: rgba(180, 180, 180, 255);
+}
+
+.ManuOptionsButtonStyle:active {
+    flex-grow: 0;
+    flex-shrink: 1;
+    align-items: center;
+    width: 199px;
+    flex-direction: row;
+    justify-content: flex-start;
+    -unity-text-align: middle-right;
+    height: 10%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 1px;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 18px;
+    background-color: rgba(217, 217, 217, 255);
+}

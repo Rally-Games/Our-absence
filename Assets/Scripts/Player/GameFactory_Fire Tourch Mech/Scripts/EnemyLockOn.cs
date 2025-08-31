@@ -47,10 +47,8 @@ public class EnemyLockOn : MonoBehaviour
         player_script.lockMovement = enemyLocked;
         if (playerInput.actions["LockOn"].triggered)
         {
-
             if (currentTarget)
             {
-                //If there is already a target, Reset.
                 ResetTarget();
                 return;
             }
