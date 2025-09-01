@@ -80,8 +80,9 @@ public class Player_controller : MonoBehaviour
 
     private void PlayerMovement()
     {
+        //TODO: on roll make speed times a player weight number to decrease speed same for runing
         float currentSpeed = runAction.ReadValue<float>() > 0
-        ? currentAnimation != "Roll" ? speed + 5f : speed : speed;
+        ? currentAnimation != "Roll" ? speed * 1.7f : speed * 0.7f : speed;
 
         if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
         Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
