@@ -26,7 +26,7 @@ public class SimpleLockOn : MonoBehaviour
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
 
-            yield return null; // Wait for the next frame
+            yield return null;
         }
     }
 }

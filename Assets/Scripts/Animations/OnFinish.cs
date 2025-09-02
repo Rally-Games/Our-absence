@@ -10,7 +10,8 @@ public class OnFinish : StateMachineBehaviour
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponent<Player_controller>().ChangeAnimation(animation, crossfade, stateInfo.length);
+        var controller = animator.GetComponentInParent<IAnimationController>();
+        controller?.ChangeAnimation(animation, crossfade, stateInfo.length);
     }
 
 }

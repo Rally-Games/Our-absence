@@ -111,30 +111,12 @@ public class EnemyLockOn : MonoBehaviour
         }
 
         if (!closestTarget) return null;
-        float h1 = 1.0f;
-        Collider collider = closestTarget.GetComponent<Collider>();
-        if (collider is CapsuleCollider capsuleCollider)
-        {
-            h1 = capsuleCollider.height;
-        }
-        else if (collider is BoxCollider boxCollider)
-        {
-            h1 = boxCollider.size.y;
-        }
-        else if (collider is SphereCollider sphereCollider)
-        {
-            h1 = sphereCollider.radius * 2;
-        }
-        else if (collider is MeshCollider meshCollider)
-        {
-            h1 = meshCollider.bounds.size.y;
-        }
-        float h2 = closestTarget.localScale.y;
-        float h = h1 * h2;
-        float half_h = (h / 2) / 2;
-        currentYOffset = h - half_h;
+        Transform enemyTransform = closestTarget.GetComponent<Transform>();
+        float h1 = enemyTransform.localScale.y;
+
+        currentYOffset = h1;
         if (zeroVert_Look && currentYOffset > 1.6f && currentYOffset < 1.6f * 3) currentYOffset = 1.6f;
-        Vector3 tarPos = closestTarget.position + new Vector3(0, currentYOffset, 0);
+        Vector3 tarPos = closestTarget.position + new Vector3(0, 1.8f, 0);
         if (Blocked(tarPos)) return null;
         return closestTarget;
     }

@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(CharacterController))]
-public class Player_controller : MonoBehaviour
+public class Player_controller : MonoBehaviour, IAnimationController
 {
     private CharacterController controller;
     private PlayerInput playerInput;
@@ -126,9 +126,9 @@ public class Player_controller : MonoBehaviour
         }
     }
 
-    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f)
+    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f, bool force = false)
     {
-        if (currentAnimation.Equals(animation)) return;
+        if (currentAnimation.Equals(animation) && !force) return;
         if (animation == "Walking" && currentAnimation == "Running") CrossFade = 0.2f;
         if (time > 0) StartCoroutine(Wait());
         else Validate();
