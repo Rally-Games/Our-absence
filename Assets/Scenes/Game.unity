@@ -435,6 +435,21 @@ MonoBehaviour:
   sensitivity: 5
   lockedTarget: 0
   GlobalVariables: {fileID: 0}
+--- !u!95 &765402941 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6084471995622745966, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+  m_PrefabInstance: {fileID: 7169282159429460681}
+  m_PrefabAsset: {fileID: 0}
+--- !u!143 &765402942 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 4508166217511250249, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+  m_PrefabInstance: {fileID: 7169282159429460681}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &765402943 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5701723127887832382, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+  m_PrefabInstance: {fileID: 7169282159429460681}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &872609680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,6 +1462,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3999993964229710857, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+      propertyPath: enemy
+      value: 
+      objectReference: {fileID: 765402943}
+    - target: {fileID: 3999993964229710857, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 765402941}
+    - target: {fileID: 3999993964229710857, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 765402942}
     - target: {fileID: 5701723127887832382, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.32
@@ -1761,8 +1788,8 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7392617814582920060, guid: fabd054acc829da4ebb9d70004360190, type: 3}
-      propertyPath: m_TagString
-      value: Player
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7514696978176212075, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_Layer

@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class BasicEnemyAI : MonoBehaviour, IAnimationController
 {
-
-    [Header("References")]
-    [SerializeField] private Animator animator;
-    [SerializeField] private Transform enemy;
-    [SerializeField] private CharacterController controller;
+    private Animator animator;
+    private Transform enemy;
+    private CharacterController controller;
 
     [Header("Movement")]
     public float speed = 5f;
@@ -18,12 +16,11 @@ public class BasicEnemyAI : MonoBehaviour, IAnimationController
 
     [Header("Combat")]
     [SerializeField] private float meleeAttackRange = 2f;
-    [SerializeField] private float rangedAttackRange = 7f;
+    //[SerializeField] private float rangedAttackRange = 7f;
     [SerializeField] private float stopChasingRange = 10f;
-    [SerializeField] private float attackDamage = 10f;
 
     [Header("Detection")]
-    [SerializeField] private Transform player;
+    private Transform player;
     public float detectionRadius = 10f;
     public float detectionAngle = 45f;
     public enum State

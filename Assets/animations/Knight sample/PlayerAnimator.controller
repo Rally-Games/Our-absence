@@ -221,7 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b45d79153cff14cb89e58743d2b836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: 
+  animation: combat_movment
   crossfade: 0.05
 --- !u!1102 &-4998988518416036027
 AnimatorState:
