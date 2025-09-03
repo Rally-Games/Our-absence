@@ -1992,7 +1992,7 @@ GameObject:
   - component: {fileID: 1008808308365210344}
   m_Layer: 0
   m_Name: Paladin J Nordstrom@Idle
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
