@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
+using System.Security.Cryptography;
 
 public class MainMenuController : MonoBehaviour
 {
     [Header("Debug")]
-    private DebugMenu debugMenu = new DebugMenu(false);
+    private DebugMenu debugMenu = new DebugMenu(true);
 
     [Header("Dependencies")]
     private ObjectsState globalVars;
@@ -103,10 +104,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.Weapon,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Iron Sword", ItemType.LightWeapon, 1),
-                new InventoryItem("Steel Axe", ItemType.HeavyWeapon, 2),
-                new InventoryItem("Long Bow", ItemType.Bow, 3),
-                new InventoryItem("Crossbow", ItemType.Crossbow, 4)
             }
         });
 
@@ -116,10 +113,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.Armor,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Iron Helmet", ItemType.Helmet, 5),
-                new InventoryItem("Steel Chestplate", ItemType.Chestplate, 6),
-                new InventoryItem("Chain Leggings", ItemType.Leggings, 7),
-                new InventoryItem("Iron Gauntlets", ItemType.Gauntlets, 8)
             }
         });
 
@@ -129,8 +122,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.Ammo,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Steel Arrows", ItemType.Arrows, 9),
-                new InventoryItem("Iron Bolts", ItemType.Bolts, 10)
             }
         });
 
@@ -140,8 +131,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.MagicItems,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Ring of Power", ItemType.MagicItem, 11),
-                new InventoryItem("Amulet of Protection", ItemType.MagicItem, 12)
             }
         });
 
@@ -151,9 +140,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.EquipmentItems,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Health Potion", ItemType.QuickItem, 13),
-                new InventoryItem("Mana Potion", ItemType.QuickItem, 14),
-                new InventoryItem("Lockpicks", ItemType.QuickItem, 15)
             }
         });
 
@@ -163,8 +149,6 @@ public class MainMenuController : MonoBehaviour
             categoryType = CategoryType.Misc,
             items = new List<InventoryItem>
             {
-                new InventoryItem("Gold Coin", ItemType.None, 16),
-                new InventoryItem("Ancient Key", ItemType.None, 17)
             }
         });
     }
@@ -459,6 +443,25 @@ public class MainMenuController : MonoBehaviour
 
         var removeButton = new Button(() =>
         {
+            var player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+
+                if (item.objectRef != null)
+                {
+                    var spawnPosition = player.transform.position + player.transform.forward * 2f + Vector3.up * 0.5f;
+                    var droppedItem = Instantiate(item.objectRef, spawnPosition, Quaternion.identity);
+                    debugMenu.DebugLog($"Dropped {item.itemName} on the ground at {spawnPosition}");
+                }
+                else
+                {
+                    debugMenu.DebugLog($"Prefab not found for item: {item.itemName}");
+                }
+            }
+            else
+            {
+                debugMenu.DebugLog("Player not found in scene.");
+            }
             RemoveItemFromInventory(item);
             ClearOptionMenu();
         })
@@ -546,36 +549,6 @@ public class MainMenuController : MonoBehaviour
         public string categoryName;
         public CategoryType categoryType;
         public List<InventoryItem> items = new List<InventoryItem>();
-    }
-
-    [System.Serializable]
-    public class InventoryItem
-    {
-        public string itemName;
-        public ItemType itemType;
-        public int itemID;
-
-        public InventoryItem(string name, ItemType type, int id)
-        {
-            itemName = name;
-            itemType = type;
-            itemID = id;
-        }
-
-        public override string ToString()
-        {
-            return $"{itemName} ({itemType})";
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is InventoryItem other && itemID == other.itemID;
-        }
-
-        public override int GetHashCode()
-        {
-            return itemID.GetHashCode();
-        }
     }
 
     [System.Serializable]
