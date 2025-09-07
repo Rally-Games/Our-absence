@@ -7,7 +7,8 @@ using UnityEngine.UIElements;
 
 public class ObjectsState : MonoBehaviour
 /// <summary>
-/// Manages the state of the MainMenu GameObject and tracks whether the menu is open.
+/// <para>Manages the state of the MainMenu GameObject and tracks whether the menu is open.</para>
+/// <para>Provides access to the MainMenu's UI elements and their states.</para>
 /// </summary>
 /// <remarks>
 /// - Finds the MainMenu GameObject by name at startup.
