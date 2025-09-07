@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Security;
 using UnityEditor.Rendering.Universal;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class ObjectsState : MonoBehaviour
@@ -18,6 +19,7 @@ public class ObjectsState : MonoBehaviour
     public GameObject MainMenu;
     public UIDocument mainMenuUI;
     public bool menuOpen = false;
+    public PlayerInput playerInput;
 
     void OnEnable()
     {

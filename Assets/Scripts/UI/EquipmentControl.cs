@@ -152,7 +152,7 @@ public class EquipmentControl : MonoBehaviour
     #endregion
 
     #region Equipment Actions
-    public void EquipItem(MainMenuController.InventoryItem item)
+    public void EquipItem(InventoryItem item)
     {
         if (selectedSlot == null)
         {
@@ -214,7 +214,7 @@ public class EquipmentControl : MonoBehaviour
         ClearOptionMenu();
     }
 
-    private bool CanEquipToSlot(MainMenuController.InventoryItem item, EquipmentSlot slot)
+    private bool CanEquipToSlot(InventoryItem item, EquipmentSlot slot)
     {
         // Check if item category matches slot category
         var itemCategory = GetItemCategory(item.itemType);
@@ -277,7 +277,7 @@ public class EquipmentControl : MonoBehaviour
         };
     }
 
-    private void ShowItemInfo(MainMenuController.InventoryItem item)
+    private void ShowItemInfo(InventoryItem item)
     {
         if (item != null)
         {
@@ -362,9 +362,9 @@ public class EquipmentControl : MonoBehaviour
         return equipmentSlots.TryGetValue(slotName, out var slot) ? slot : null;
     }
 
-    public List<MainMenuController.InventoryItem> GetAllEquippedItems()
+    public List<InventoryItem> GetAllEquippedItems()
     {
-        var equippedItems = new List<MainMenuController.InventoryItem>();
+        var equippedItems = new List<InventoryItem>();
         foreach (var slot in equipmentSlots.Values)
         {
             if (slot.HasItem())
@@ -423,31 +423,31 @@ public class EquipmentControl : MonoBehaviour
         }
     }
 
-    internal void EquipToQuickItem(MainMenuController.InventoryItem item)
+    internal void EquipToQuickItem(InventoryItem item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.EquipmentItems);
         EquipItem(item);
     }
 
-    internal void EquipToWeapon(MainMenuController.InventoryItem item)
+    internal void EquipToWeapon(InventoryItem item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Weapon);
         EquipItem(item);
     }
 
-    internal void EquipToArmor(MainMenuController.InventoryItem item)
+    internal void EquipToArmor(InventoryItem item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Armor, item.itemType);
         EquipItem(item);
     }
 
-    internal void EquipToAmmo(MainMenuController.InventoryItem item)
+    internal void EquipToAmmo(InventoryItem item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Ammo, item.itemType);
         EquipItem(item);
     }
 
-    internal void EquipToMagicItem(MainMenuController.InventoryItem item)
+    internal void EquipToMagicItem(InventoryItem item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.MagicItems);
         EquipItem(item);
@@ -499,16 +499,16 @@ public class EquipmentControl : MonoBehaviour
     {
         public Button button;
         public MainMenuController.CategoryType category;
-        public MainMenuController.InventoryItem item;
+        public InventoryItem item;
 
-        public EquipmentSlot(Button button, MainMenuController.CategoryType category, MainMenuController.InventoryItem item)
+        public EquipmentSlot(Button button, MainMenuController.CategoryType category, InventoryItem item)
         {
             this.button = button;
             this.category = category;
             this.item = item;
         }
 
-        public void SetItem(MainMenuController.InventoryItem newItem)
+        public void SetItem(InventoryItem newItem)
         {
             item = newItem;
         }
