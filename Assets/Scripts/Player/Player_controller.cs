@@ -71,6 +71,9 @@ public class Player_controller : MonoBehaviour
         GetInput();
 
         bool isAttacking = animationManager.IsAttacking();
+        animationManager.OnDodgeAnimationEnded();
+        string animation = animationManager.CheckAttackAnimation(playerLeftAttack, playerRightAttack);
+        animationManager.OnAttackAnimationEnd(animation);
 
         if (!isAttacking)
         {
@@ -80,12 +83,9 @@ public class Player_controller : MonoBehaviour
             PlayerRotation();
 
         animationManager.CheckMovementAnimation(moveInput, IsRunning(), isAttacking);
-        string animation = animationManager.CheckAttackAnimation(playerLeftAttack, playerRightAttack);
-        animationManager.OnAttackAnimationEnd(animation);
 
         if (rollAction.triggered)
             animationManager.HandleRollAnimation(direction, controller.isGrounded);
-        animationManager.OnDodgeAnimationEnded();
     }
 
     private void GetInput()

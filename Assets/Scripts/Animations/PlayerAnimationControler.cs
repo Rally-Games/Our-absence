@@ -33,14 +33,15 @@ public class AnimationManager : MonoBehaviour, IAnimationController
         ActiveLayerIndex = animator.GetLayerWeight(1) == 1.0f ? 1 : 0;
     }
 
-    public void OnAttackAnimationEnd(string animationName)
+    public void OnAttackAnimationEnd(string animationName, float crossFadeOutTime = 0.9f)
     {
+
         bool animationEnded = false;
         for (int i = 0; i < animator.layerCount; i++)
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(i);
             if (stateInfo.IsName(animationName) &&
-                stateInfo.normalizedTime >= 1f &&
+                stateInfo.normalizedTime >= crossFadeOutTime &&
                 isInAttackAnimation)
             {
                 animationEnded = true;
@@ -52,7 +53,7 @@ public class AnimationManager : MonoBehaviour, IAnimationController
         {
             isAttackFinished = true;
             isInAttackAnimation = false;
-            ChangeAnimation("Idle", 0.1f);
+            ChangeAnimation(ActiveLayerIndex == 1 ? "combat_movment" : "Idle", 0.1f);
         }
     }
 
@@ -62,7 +63,7 @@ public class AnimationManager : MonoBehaviour, IAnimationController
         isInAttackAnimation = true;
     }
 
-    public void OnDodgeAnimationEnded()
+    public void OnDodgeAnimationEnded(float crossFadeOutTime = 0.9f)
     {
         for (int i = 0; i < animator.layerCount; i++)
         {
@@ -71,9 +72,12 @@ public class AnimationManager : MonoBehaviour, IAnimationController
             stateInfo.IsName("Standing Dodge Backward") ||
             stateInfo.IsName("Locked Roll") ||
             stateInfo.IsName("Locked Standing Dodge Backward")) &&
-            stateInfo.normalizedTime >= 1.0f)
+            stateInfo.normalizedTime >= crossFadeOutTime)
             {
-                //ChangeAnimation("Idle", 0.1f);
+                if (i == 0)
+                    ChangeAnimation("Idle", 0.1f);
+                else if (i == 1)
+                    ChangeAnimation("combat_movment", 0.1f);
             }
         }
     }

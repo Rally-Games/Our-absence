@@ -54,16 +54,6 @@ public class EnemyLockOn : MonoBehaviour
             }
             if (currentTarget = ScanNearBy()) FoundTarget(); else ResetTarget();
         }
-        if (playerInput.actions["Roll"].triggered)
-        {
-            if (player_script.direction.magnitude == 0)
-            {
-                anim.CrossFade("Dodge Backward", 0.05f);
-                return;
-            }
-            anim.CrossFade("LockedRoll", 0.05f);
-        }
-
         if (enemyLocked)
         {
             if (!TargetOnRange()) ResetTarget();
