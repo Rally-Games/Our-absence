@@ -11,7 +11,7 @@ public class AttackSystem : MonoBehaviour
     private Animator animator;
     private InputAction playerLeftAttack;
     private InputAction playerRightAttack;
-    private Player_controller player_controller;
+    private AnimationManager animationManager;
     private ObjectsState GlobalVariables;
     private bool menuOpen;
 
@@ -25,14 +25,14 @@ public class AttackSystem : MonoBehaviour
 
         animator = GetComponent<Animator>();
 
-        player_controller = GetComponent<Player_controller>();
+        animationManager = GetComponent<AnimationManager>();
     }
 
     void Update()
     {
         menuOpen = (bool)GlobalVariables.GetType().GetField("menuOpen").GetValue(GlobalVariables);
-        if (player_controller.currentAnimation == "Roll"
-        || player_controller.currentAnimation == "Standing Dodge Backward") return;
+        if (animationManager.currentAnimation == "Roll"
+        || animationManager.currentAnimation == "Standing Dodge Backward") return;
 
         if (menuOpen) return;
 
@@ -48,26 +48,26 @@ public class AttackSystem : MonoBehaviour
 
     private void LeftAttack()
     {
-        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            player_controller.ChangeAnimation("Boxing left lock on", 0.05f);
+            animationManager.ChangeAnimation("Boxing left lock on", 0.05f);
         }
         else
         {
-            player_controller.ChangeAnimation("Boxing left", 0.05f);
+            animationManager.ChangeAnimation("Boxing left", 0.05f);
 
         }
     }
 
     private void RightAttack()
     {
-        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            player_controller.ChangeAnimation("Boxing right lock on", 0.05f);
+            animationManager.ChangeAnimation("Boxing right lock on", 0.05f);
         }
         else
         {
-            player_controller.ChangeAnimation("Boxing right", 0.05f);
+            animationManager.ChangeAnimation("Boxing right", 0.05f);
         }
     }
 

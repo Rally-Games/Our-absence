@@ -1,19 +1,19 @@
 using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-
-
 [RequireComponent(typeof(CharacterController))]
-public class Player_controller : MonoBehaviour, IAnimationController
+[RequireComponent(typeof(AnimationManager))]
+public class Player_controller : MonoBehaviour
 {
     private CharacterController controller;
     private PlayerInput playerInput;
     private Camera mainCamera;
+    private AnimationManager animationManager;
+    private MovementAnimationController movementAnimations;
+
     private Vector3 velocity;
     private Vector3 moveInput;
     public Vector3 direction;
@@ -24,27 +24,41 @@ public class Player_controller : MonoBehaviour, IAnimationController
     [SerializeField] private float rotateSpeed = 3f;
     [SerializeField] private float pushForce = 1f;
 
-    [Header("Animation")]
-    public Animator animator;
-    public string currentAnimation = "Idle";
-
     [Header("Target Settings")]
     public bool lockMovement;
 
     private InputAction moveAction;
     private InputAction rollAction;
     private InputAction runAction;
-    private bool isAtacking = false;
+    private InputAction playerLeftAttack;
+    private InputAction playerRightAttack;
+
     private ObjectsState GlobalVariables;
 
     private void Awake()
     {
+        InitializeComponents();
+        InitializeInput();
+    }
+
+    private void InitializeComponents()
+    {
+        controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
+        animationManager = GetComponent<AnimationManager>();
+        mainCamera = Camera.main;
+
+        // Initialize movement animation controller
+        movementAnimations = new MovementAnimationController(animationManager);
+    }
+
+    private void InitializeInput()
+    {
         moveAction = playerInput.actions["Move"];
         rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
-        controller = GetComponent<CharacterController>();
-        mainCamera = Camera.main;
+        playerLeftAttack = playerInput.actions["Fire"];
+        playerRightAttack = playerInput.actions["SecFire"];
     }
 
     void Start()
@@ -55,16 +69,33 @@ public class Player_controller : MonoBehaviour, IAnimationController
     private void Update()
     {
         GetInput();
-        if (!isAtacking) PlayerMovement();
-        if (!lockMovement && !isAtacking) PlayerRotation();
-        CheckAnimation();
-        if (rollAction.triggered) Roll();
+
+        bool isAttacking = animationManager.IsAttacking();
+
+        if (!isAttacking)
+        {
+            PlayerMovement();
+        }
+        if (!lockMovement && !isAttacking)
+            PlayerRotation();
+
+        animationManager.CheckMovementAnimation(moveInput, IsRunning(), isAttacking);
+        string animation = animationManager.CheckAttackAnimation(playerLeftAttack, playerRightAttack);
+        animationManager.OnAttackAnimationEnd(animation);
+
+        if (rollAction.triggered)
+            animationManager.HandleRollAnimation(direction, controller.isGrounded);
+        animationManager.OnDodgeAnimationEnded();
     }
 
     private void GetInput()
     {
         HandleShortcuts();
+        ProcessMovementInput();
+    }
 
+    private void ProcessMovementInput()
+    {
         Vector2 input = moveAction.ReadValue<Vector2>();
         moveInput = new Vector3(input.x, 0, input.y);
 
@@ -80,76 +111,46 @@ public class Player_controller : MonoBehaviour, IAnimationController
 
     private void PlayerMovement()
     {
-        //TODO: on roll make speed times a player weight number to decrease speed same for runing
-        float currentSpeed = runAction.ReadValue<float>() > 0
-        ? currentAnimation != "Roll" ? speed * 1.7f : speed * 0.7f : speed;
+        float currentSpeed = CalculateCurrentSpeed();
+        ApplyGravity();
 
-        if (velocity.y > -10) velocity.y -= Time.deltaTime * gravity;
         Vector3 movement = (direction * currentSpeed) + Vector3.up * velocity.y;
         controller.Move(movement * Time.deltaTime);
-        animator.SetFloat("Horizontal", math.round(moveInput.x));
-        animator.SetFloat("Vertical", math.round(moveInput.z));
-        animator.SetFloat("movment", direction.magnitude, 0.1f, Time.deltaTime);
+
+        // Update movement parameters for animation
+        movementAnimations.UpdateMovementParameters(animationManager.animator, moveInput, direction);
+    }
+
+    private float CalculateCurrentSpeed()
+    {
+        bool isRunning = IsRunning();
+        bool isRolling = animationManager.currentAnimation == "Roll";
+
+        if (isRolling)
+            return speed * 0.7f;
+        else if (isRunning)
+            return speed * 1.7f;
+        else
+            return speed;
+    }
+
+    private bool IsRunning()
+    {
+        return runAction.ReadValue<float>() > 0;
+    }
+
+    private void ApplyGravity()
+    {
+        if (velocity.y > -10)
+            velocity.y -= Time.deltaTime * gravity;
     }
 
     private void PlayerRotation()
     {
         if (direction.magnitude == 0) return;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotateSpeed);
-    }
 
-    private void Roll()
-    {
-        if (!controller.isGrounded) return;
-        if (direction.magnitude == 0)
-        {
-            ChangeAnimation("Standing Dodge Backward", 0.05f);
-            return;
-        }
-
-        ChangeAnimation("Roll", 0.05f);
-    }
-
-    private void CheckAnimation()
-    {
-        if (currentAnimation == "Roll" || currentAnimation == "Standing Dodge Backward") return;
-        if (currentAnimation == "Boxing left" || currentAnimation == "Boxing right") { isAtacking = true; return; }
-        if (currentAnimation == "Boxing left lock on" || currentAnimation == "Boxing right lock on") { isAtacking = true; return; }
-        isAtacking = false;
-        if (moveInput.magnitude == 0)
-        {
-            ChangeAnimation("Idle");
-        }
-        else
-        {
-            ChangeAnimation(runAction.ReadValue<float>() > 0 ? "Running" : "Walking", 0.05f);
-        }
-    }
-
-    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f, bool force = false)
-    {
-        if (currentAnimation.Equals(animation) && !force) return;
-        if (animation == "Walking" && currentAnimation == "Running") CrossFade = 0.2f;
-        if (time > 0) StartCoroutine(Wait());
-        else Validate();
-
-        IEnumerator Wait()
-        {
-            yield return new WaitForSeconds(time - CrossFade);
-            Validate();
-        }
-        void Validate()
-        {
-            currentAnimation = animation;
-
-            if (currentAnimation == "")
-            {
-                CheckAnimation();
-            }
-            else
-                animator.CrossFade(animation, CrossFade);
-        }
-
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -164,16 +165,12 @@ public class Player_controller : MonoBehaviour, IAnimationController
 
     private void HandleShortcuts()
     {
-        if (Keyboard.current.iKey.wasPressedThisFrame
-        || Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.iKey.wasPressedThisFrame ||
+            Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            // Toggle menuOpen
             GlobalVariables.menuOpen = !GlobalVariables.menuOpen;
-
-            // Update UI based on the new state
-            GlobalVariables.mainMenuUI.rootVisualElement.style.display = GlobalVariables.menuOpen
-                ? DisplayStyle.Flex
-                : DisplayStyle.None;
+            GlobalVariables.mainMenuUI.rootVisualElement.style.display =
+                GlobalVariables.menuOpen ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }
