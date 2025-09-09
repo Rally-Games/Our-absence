@@ -1,6 +1,7 @@
 using System;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -13,6 +14,7 @@ public class Player_controller : MonoBehaviour
     private Camera mainCamera;
     private AnimationManager animationManager;
     private MovementAnimationController movementAnimations;
+    private Rig playerRig;
 
     private Vector3 velocity;
     private Vector3 moveInput;
@@ -23,6 +25,7 @@ public class Player_controller : MonoBehaviour
     [SerializeField] private float gravity = 9.81f;
     [SerializeField] private float rotateSpeed = 3f;
     [SerializeField] private float pushForce = 1f;
+    public bool isPickingUp = false;
 
     [Header("Target Settings")]
     public bool lockMovement;
@@ -46,6 +49,7 @@ public class Player_controller : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         animationManager = GetComponent<AnimationManager>();
+        playerRig = GetComponentInChildren<Rig>();
         mainCamera = Camera.main;
 
         // Initialize movement animation controller
@@ -86,6 +90,9 @@ public class Player_controller : MonoBehaviour
 
         if (rollAction.triggered)
             animationManager.HandleRollAnimation(direction, controller.isGrounded);
+
+        if (isPickingUp || playerRig.weight > 0.0f)
+            PickUpItemAnimation();
     }
 
     private void GetInput()
@@ -119,6 +126,20 @@ public class Player_controller : MonoBehaviour
 
         // Update movement parameters for animation
         movementAnimations.UpdateMovementParameters(animationManager.animator, moveInput, direction);
+    }
+
+    public void PickUpItemAnimation(float interval = 3.0f)
+    {
+        if (playerRig.weight < 1.0f && isPickingUp)
+        {
+            playerRig.weight += Time.deltaTime * interval;
+        }
+        else
+        {
+            playerRig.weight -= Time.deltaTime * interval;
+            isPickingUp = false;
+        }
+
     }
 
     private float CalculateCurrentSpeed()

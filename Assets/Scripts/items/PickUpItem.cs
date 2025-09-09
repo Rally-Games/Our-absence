@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
 public class PickUpItem : MonoBehaviour
 {
     public InventoryItem Item;
+    private Player_controller playerScript;
     public float detectionRadius = 3.0f;
     private MainMenuController mainMenu;
     private PlayerInput playerInput;
@@ -14,6 +16,7 @@ public class PickUpItem : MonoBehaviour
     {
         mainMenu = FindAnyObjectByType<MainMenuController>();
         playerInput = FindAnyObjectByType<PlayerInput>();
+        playerScript = FindAnyObjectByType<Player_controller>();
     }
 
     void Update()
@@ -23,6 +26,7 @@ public class PickUpItem : MonoBehaviour
         {
             if (hitCollider.CompareTag("Player") && playerInput.actions["Interact"].triggered)
             {
+                playerScript.isPickingUp = true;
                 mainMenu.AddItemToInventory(Item);
                 Destroy(gameObject);
             }
