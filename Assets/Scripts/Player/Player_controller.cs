@@ -14,6 +14,7 @@ public class Player_controller : MonoBehaviour
     private Camera mainCamera;
     private AnimationManager animationManager;
     private MovementAnimationController movementAnimations;
+    private AttackAnimationController attackAnimations;
     private Rig playerRig;
 
     private Vector3 velocity;
@@ -28,13 +29,16 @@ public class Player_controller : MonoBehaviour
     public bool isPickingUp = false;
 
     [Header("Target Settings")]
-    public bool lockMovement;
 
     private InputAction moveAction;
     private InputAction rollAction;
     private InputAction runAction;
+    private InputAction lockOnAction;
     private InputAction playerLeftAttack;
     private InputAction playerRightAttack;
+
+    public bool isLockOn = false;
+    bool isAttacking = false;
 
     private ObjectsState GlobalVariables;
 
@@ -54,6 +58,7 @@ public class Player_controller : MonoBehaviour
 
         // Initialize movement animation controller
         movementAnimations = new MovementAnimationController(animationManager);
+        attackAnimations = new AttackAnimationController(animationManager);
     }
 
     private void InitializeInput()
@@ -61,6 +66,7 @@ public class Player_controller : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
+        lockOnAction = playerInput.actions["LockOn"];
         playerLeftAttack = playerInput.actions["Fire"];
         playerRightAttack = playerInput.actions["SecFire"];
     }
@@ -73,20 +79,27 @@ public class Player_controller : MonoBehaviour
     private void Update()
     {
         GetInput();
+        if (playerLeftAttack.triggered)
+            attackAnimations.TriggerLeftWeaponAttack();
 
-        bool isAttacking = animationManager.IsAttacking();
-        animationManager.OnDodgeAnimationEnded();
-        string animation = animationManager.CheckAttackAnimation(playerLeftAttack, playerRightAttack);
-        animationManager.OnAttackAnimationEnd(animation);
+        if (playerRightAttack.triggered)
+            attackAnimations.TriggerRightWeaponAttack();
 
-        if (!isAttacking)
+        if (lockOnAction.triggered)
+        {
+            if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 0)
+                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 1.0f);
+            else if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 1)
+                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 0.0f);
+        }
+
+        if (!attackAnimations.IsAttacking())
         {
             PlayerMovement();
         }
-        if (!lockMovement && !isAttacking)
-            PlayerRotation();
 
-        animationManager.CheckMovementAnimation(moveInput, IsRunning(), isAttacking);
+        if (!isLockOn && !attackAnimations.IsAttacking())
+            PlayerRotation();
 
         if (rollAction.triggered)
             animationManager.HandleRollAnimation(direction, controller.isGrounded);
@@ -125,7 +138,7 @@ public class Player_controller : MonoBehaviour
         controller.Move(movement * Time.deltaTime);
 
         // Update movement parameters for animation
-        movementAnimations.UpdateMovementParameters(animationManager.animator, moveInput, direction);
+        movementAnimations.UpdateMovementParameters(animationManager.animator, moveInput, direction, IsRunning());
     }
 
     public void PickUpItemAnimation(float interval = 3.0f)
@@ -157,7 +170,7 @@ public class Player_controller : MonoBehaviour
 
     private bool IsRunning()
     {
-        return runAction.ReadValue<float>() > 0;
+        return runAction.ReadValue<float>() == 1;
     }
 
     private void ApplyGravity()

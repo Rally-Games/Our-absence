@@ -1,16 +1,17 @@
 using System;
 using System.Collections;
+using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 // AnimationManager.cs - Main animation management class
 
-public class AnimationManager : MonoBehaviour, IAnimationController
+public class AnimationManager : MonoBehaviour
 {
     [Header("Animation")]
     public Animator animator;
-    public string currentAnimation = "Idle";
+    public string currentAnimation = "Movement";
 
     private MovementAnimationController movementAnimations;
     private AttackAnimationController attackAnimations;
@@ -19,7 +20,7 @@ public class AnimationManager : MonoBehaviour, IAnimationController
     private bool isAttackFinished = false;
     private bool isInAttackAnimation = false;
 
-    public int ActiveLayerIndex { get; private set; } = 0;
+    public int[] ActiveLayersIndex { get; private set; } = new int[3];
 
     private void Awake()
     {
@@ -30,100 +31,18 @@ public class AnimationManager : MonoBehaviour, IAnimationController
 
     private void Update()
     {
-        ActiveLayerIndex = animator.GetLayerWeight(1) == 1.0f ? 1 : 0;
-    }
-
-    public void OnAttackAnimationEnd(string animationName, float crossFadeOutTime = 0.9f)
-    {
-
-        bool animationEnded = false;
         for (int i = 0; i < animator.layerCount; i++)
         {
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(i);
-            if (stateInfo.IsName(animationName) &&
-                stateInfo.normalizedTime >= crossFadeOutTime &&
-                isInAttackAnimation)
+            if (animator.GetLayerWeight(i) == 1.0f)
             {
-                animationEnded = true;
-                break;
+                ActiveLayersIndex[i] = 1;
+            }
+            else
+            {
+                ActiveLayersIndex[i] = 0;
             }
         }
-
-        if (animationEnded)
-        {
-            isAttackFinished = true;
-            isInAttackAnimation = false;
-            ChangeAnimation(ActiveLayerIndex == 1 ? "combat_movment" : "Idle", 0.1f);
-        }
-    }
-
-    public void OnAttackAnimationStart()
-    {
-        isAttackFinished = false;
-        isInAttackAnimation = true;
-    }
-
-    public void OnDodgeAnimationEnded(float crossFadeOutTime = 0.9f)
-    {
-        for (int i = 0; i < animator.layerCount; i++)
-        {
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(i);
-            if ((stateInfo.IsName("Roll") ||
-            stateInfo.IsName("Standing Dodge Backward") ||
-            stateInfo.IsName("Locked Roll") ||
-            stateInfo.IsName("Locked Standing Dodge Backward")) &&
-            stateInfo.normalizedTime >= crossFadeOutTime)
-            {
-                if (i == 0)
-                    ChangeAnimation("Idle", 0.1f);
-                else if (i == 1)
-                    ChangeAnimation("combat_movment", 0.1f);
-            }
-        }
-    }
-
-    public void CheckMovementAnimation(Vector3 moveInput, bool isRunning, bool isAttacking)
-    {
-        if (IsInSpecialAnimation()) return;
-        if (IsAttacking() && !isAttackFinished) return;
-
-        movementAnimations.HandleMovementAnimation(moveInput, isRunning);
-    }
-
-    public string CheckAttackAnimation(InputAction primaryAttackAction, InputAction secondaryAttackAction)
-    {
-        if (IsInSpecialAnimation()) return null;
-
-        // Allow new attacks even during attack animations for combos
-        if (IsAttacking() && !CanChainAttack()) return currentAnimation;
-
-        if (primaryAttackAction.triggered)
-        {
-            OnAttackAnimationStart();
-            attackAnimations.ExecuteLeftWeaponAttack(ActiveLayerIndex == 1);
-        }
-        else if (secondaryAttackAction.triggered)
-        {
-            OnAttackAnimationStart();
-            attackAnimations.ExecuteRightWeaponAttack(ActiveLayerIndex == 1);
-        }
-        return currentAnimation;
-    }
-
-    // Executes the given action only if the specified animation has ended/completed
-    public void ExecuteIfAnimationEnded(string animationName, Action action)
-    {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName(animationName) && stateInfo.normalizedTime >= 0.99f)
-        {
-            action?.Invoke();
-        }
-
-    }
-    private bool CanChainAttack()
-    {
-        // Add logic here if you want to allow attack chaining/combos
-        return false;
+        // Will output ActiveLayersIndex [layer: 0 active 1/ not active 0, layer: 1 active 1/ not active 0, ...]
     }
 
     public void HandleRollAnimation(Vector3 direction, bool isGrounded)
@@ -132,52 +51,41 @@ public class AnimationManager : MonoBehaviour, IAnimationController
         dodgeAnimations.HandleRoll(direction);
     }
 
-    public bool IsAttacking()
-    {
-        return attackAnimations.IsAttacking() || isInAttackAnimation;
-    }
-
     public bool IsInSpecialAnimation()
     {
         return dodgeAnimations.IsInDodgeAnimation();
     }
 
-    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f, bool force = false)
+    public void TriggerAnimation(string triggerName, bool param = false)
     {
-        if (currentAnimation.Equals(animation) && !force) return;
-
-        // Special crossfade handling for smooth transitions
-        if (animation == "Walking" && currentAnimation == "Running")
-            CrossFade = 0.2f;
-
-        // Faster transition from attacks to idle
-        if (attackAnimations.IsAttackAnimation(currentAnimation) && animation == "Idle")
-            CrossFade = 0.05f;
-
-        if (time > 0)
-            StartCoroutine(DelayedAnimation(animation, CrossFade, time));
-        else
-            ExecuteAnimation(animation, CrossFade);
+        if (param)
+        {
+            animator.SetBool(triggerName, true);
+            return;
+        }
+        animator.SetTrigger(triggerName);
     }
 
-    private IEnumerator DelayedAnimation(string animation, float CrossFade, float time)
+    public bool IsTriggered(string triggerName)
     {
-        yield return new WaitForSeconds(time - CrossFade);
-        ExecuteAnimation(animation, CrossFade);
+        return animator.parameters.Any(p => p.name == triggerName && p.type == AnimatorControllerParameterType.Bool && animator.GetBool(triggerName));
     }
 
-    private void ExecuteAnimation(string animation, float CrossFade)
+    public void SetLayerWeight(int layerIndex, float weight)
     {
-        currentAnimation = animation;
+        animator.SetLayerWeight(layerIndex, weight);
+    }
 
-        if (string.IsNullOrEmpty(currentAnimation))
+    public int GetLayerIndexByName(string layerName)
+    {
+        for (int i = 0; i < animator.layerCount; i++)
         {
-            CheckMovementAnimation(Vector3.zero, false, false);
+            if (animator.GetLayerName(i) == layerName)
+            {
+                return i;
+            }
         }
-        else
-        {
-            animator.CrossFade(animation, CrossFade);
-        }
+        return 0; // Layer not found return default
     }
 }
 
@@ -189,50 +97,29 @@ public class AttackAnimationController
     // Animation names
     private const string BOXING_LEFT = "Boxing left";
     private const string BOXING_RIGHT = "Boxing right";
-    private const string BOXING_LEFT_LOCK_ON = "Boxing left lock on";
-    private const string BOXING_RIGHT_LOCK_ON = "Boxing right lock on";
+
+    // Triggers names
+    private const string ATTACK_TRIGGER_LEFT = "isAttackingLeft";
+    private const string ATTACK_TRIGGER_RIGHT = "isAttackingRight";
 
     public AttackAnimationController(AnimationManager manager)
     {
         animationManager = manager;
     }
 
+    public void TriggerLeftWeaponAttack()
+    {
+        animationManager.TriggerAnimation(ATTACK_TRIGGER_LEFT, true);
+    }
+
     public bool IsAttacking()
     {
-        return IsAttackAnimation(animationManager.currentAnimation);
+        return animationManager.IsTriggered(ATTACK_TRIGGER_LEFT) || animationManager.IsTriggered(ATTACK_TRIGGER_RIGHT);
     }
 
-    public bool IsAttackAnimation(string animationName)
+    public void TriggerRightWeaponAttack()
     {
-        if (animationName == BOXING_LEFT ||
-            animationName == BOXING_RIGHT ||
-            animationName == BOXING_LEFT_LOCK_ON ||
-            animationName == BOXING_RIGHT_LOCK_ON)
-        {
-            // Check if the animation is at the end (normalizedTime >= 1.0)
-            Animator animator = animationManager.animator;
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName(animationName) && stateInfo.normalizedTime < 1.0f)
-            {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    public string ExecuteLeftWeaponAttack(bool isLockedOn = false)
-    {
-        string animation = isLockedOn ? BOXING_LEFT_LOCK_ON : BOXING_LEFT;
-        animationManager.ChangeAnimation(animation, 0.05f); // Faster transition into attack
-        return animation;
-    }
-
-    public string ExecuteRightWeaponAttack(bool isLockedOn = false)
-    {
-        string animation = isLockedOn ? BOXING_RIGHT_LOCK_ON : BOXING_RIGHT;
-        animationManager.ChangeAnimation(animation, 0.05f); // Faster transition into attack
-        return animation;
+        animationManager.TriggerAnimation(ATTACK_TRIGGER_RIGHT, true);
     }
 
     public bool IsLockedOn()
@@ -247,33 +134,18 @@ public class MovementAnimationController
     private AnimationManager animationManager;
 
     // Animation names
-    private const string IDLE = "Idle";
-    private const string WALKING = "Walking";
-    private const string RUNNING = "Running";
+    private const string MOVEMENT = "Movement";
 
     public MovementAnimationController(AnimationManager manager)
     {
         animationManager = manager;
     }
 
-    public void HandleMovementAnimation(Vector3 moveInput, bool isRunning)
-    {
-        if (moveInput.magnitude == 0)
-        {
-            animationManager.ChangeAnimation(IDLE);
-        }
-        else if (moveInput.magnitude > 0)
-        {
-            string targetAnimation = isRunning ? RUNNING : WALKING;
-            animationManager.ChangeAnimation(targetAnimation, 0.05f);
-        }
-    }
-
-    public void UpdateMovementParameters(Animator animator, Vector3 moveInput, Vector3 direction)
+    public void UpdateMovementParameters(Animator animator, Vector3 moveInput, Vector3 direction, bool isRunning)
     {
         animator.SetFloat("Horizontal", Mathf.Round(moveInput.x));
         animator.SetFloat("Vertical", Mathf.Round(moveInput.z));
-        animator.SetFloat("movment", direction.magnitude, 0.1f, Time.deltaTime);
+        animator.SetFloat("speed", isRunning ? direction.magnitude * 2 : direction.magnitude, 0.1f, Time.deltaTime);
     }
 }
 
@@ -288,6 +160,10 @@ public class DodgeAnimationController
     private const string LOCKED_ROLL = "Locked Roll";
     private const string LOCKED_STANDING_DODGE_BACKWARD = "Locked Standing Dodge Backward";
 
+    // Triggers names
+    private const string ROLL_TRIGGER = "roll";
+    private const string STANDING_DODGE_BACKWARD_TRIGGER = "dodgeBackwards";
+
     public DodgeAnimationController(AnimationManager manager)
     {
         animationManager = manager;
@@ -295,21 +171,11 @@ public class DodgeAnimationController
 
     public void HandleRoll(Vector3 direction)
     {
-        switch (animationManager.ActiveLayerIndex)
-        {
-            case 0: // Free movement layer
-                if (direction.magnitude > 0.1f)
-                    animationManager.ChangeAnimation(ROLL, 0.05f);
-                else
-                    animationManager.ChangeAnimation(STANDING_DODGE_BACKWARD, 0.05f);
-                break;
-            case 1: // Targeting layer
-                if (direction.magnitude > 0.1f)
-                    animationManager.ChangeAnimation(LOCKED_ROLL, 0.05f);
-                else
-                    animationManager.ChangeAnimation(LOCKED_STANDING_DODGE_BACKWARD, 0.05f);
-                break;
-        }
+
+        if (direction.magnitude > 0.1f)
+            animationManager.TriggerAnimation(ROLL_TRIGGER);
+        else
+            animationManager.TriggerAnimation(STANDING_DODGE_BACKWARD_TRIGGER);
     }
 
     public bool IsInDodgeAnimation()

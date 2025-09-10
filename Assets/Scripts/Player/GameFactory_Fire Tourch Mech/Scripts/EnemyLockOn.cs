@@ -44,7 +44,7 @@ public class EnemyLockOn : MonoBehaviour
     void Update()
     {
         camFollow.lockedTarget = enemyLocked;
-        player_script.lockMovement = enemyLocked;
+        player_script.isLockOn = enemyLocked;
         if (playerInput.actions["LockOn"].triggered)
         {
             if (currentTarget)
@@ -66,7 +66,6 @@ public class EnemyLockOn : MonoBehaviour
     void FoundTarget()
     {
         lockOnCanvas.gameObject.SetActive(true);
-        anim.SetLayerWeight(1, 1);
         enemyLocked = true;
         //cinemachineAnimator.Play("TargetCamera");
     }
@@ -76,7 +75,6 @@ public class EnemyLockOn : MonoBehaviour
         lockOnCanvas.gameObject.SetActive(false);
         currentTarget = null;
         enemyLocked = false;
-        anim.SetLayerWeight(1, 0);
         //cinemachineAnimator.Play("FollowCamera");
     }
 

@@ -50,11 +50,11 @@ public class AttackSystem : MonoBehaviour
     {
         if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            animationManager.ChangeAnimation("Boxing left lock on", 0.05f);
+            animationManager.TriggerAnimation("Boxing left lock on");
         }
         else
         {
-            animationManager.ChangeAnimation("Boxing left", 0.05f);
+            animationManager.TriggerAnimation("Boxing left");
 
         }
     }
@@ -63,11 +63,11 @@ public class AttackSystem : MonoBehaviour
     {
         if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            animationManager.ChangeAnimation("Boxing right lock on", 0.05f);
+            animationManager.TriggerAnimation("Boxing right lock on");
         }
         else
         {
-            animationManager.ChangeAnimation("Boxing right", 0.05f);
+            animationManager.TriggerAnimation("Boxing right");
         }
     }
 

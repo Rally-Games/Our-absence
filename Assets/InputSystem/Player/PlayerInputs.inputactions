@@ -54,7 +54,7 @@
                     "name": "LockOn",
                     "type": "Button",
                     "id": "3e274956-c69d-4894-b080-c74f5a7bd76d",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -303,7 +303,7 @@
                     "name": "",
                     "id": "571822b2-e348-4ad7-89d8-797e3de1e425",
                     "path": "<Keyboard>/space",
-                    "interactions": "",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Roll",
@@ -313,8 +313,8 @@
                 {
                     "name": "",
                     "id": "6a3a4816-8eb2-4916-aeb4-85b1be6b04a8",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Run",
