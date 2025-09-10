@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -37,6 +38,9 @@ public class Player_controller : MonoBehaviour
     private InputAction playerLeftAttack;
     private InputAction playerRightAttack;
 
+    [Header("Equipment")]
+    private EquipmentControl equipmentManager;
+
     public bool isLockOn = false;
     bool isAttacking = false;
 
@@ -53,6 +57,7 @@ public class Player_controller : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         animationManager = GetComponent<AnimationManager>();
+        equipmentManager = FindObjectOfType<EquipmentControl>();
         playerRig = GetComponentInChildren<Rig>();
         mainCamera = Camera.main;
 
@@ -80,10 +85,18 @@ public class Player_controller : MonoBehaviour
     {
         GetInput();
         if (playerLeftAttack.triggered)
-            attackAnimations.TriggerLeftWeaponAttack();
+        {
+            Debug.Log(equipmentManager.equipmentSlots["LW1"]?.item?.itemID);
+            attackAnimations.TriggerLeftWeaponAttack(0);
+            animationManager.SetFloatParam("attackType", equipmentManager.equipmentSlots["LW1"]?.item?.itemID ?? 0.0f);
+        }
 
         if (playerRightAttack.triggered)
-            attackAnimations.TriggerRightWeaponAttack();
+        {
+            Debug.Log(equipmentManager.equipmentSlots["RW1"]?.item?.itemID);
+            attackAnimations.TriggerRightWeaponAttack(0);
+            animationManager.SetFloatParam("attackType", equipmentManager.equipmentSlots["RW1"]?.item?.itemID ?? 0.0f);
+        }
 
         if (lockOnAction.triggered)
         {

@@ -56,6 +56,11 @@ public class AnimationManager : MonoBehaviour
         return dodgeAnimations.IsInDodgeAnimation();
     }
 
+    public void SetFloatParam(string paramName, float value)
+    {
+        animator.SetFloat(paramName, value);
+    }
+
     public void TriggerAnimation(string triggerName, bool param = false)
     {
         if (param)
@@ -107,9 +112,10 @@ public class AttackAnimationController
         animationManager = manager;
     }
 
-    public void TriggerLeftWeaponAttack()
+    public void TriggerLeftWeaponAttack(int type)
     {
         animationManager.TriggerAnimation(ATTACK_TRIGGER_LEFT, true);
+        animationManager.SetFloatParam("attackType", (float)type);
     }
 
     public bool IsAttacking()
@@ -117,9 +123,10 @@ public class AttackAnimationController
         return animationManager.IsTriggered(ATTACK_TRIGGER_LEFT) || animationManager.IsTriggered(ATTACK_TRIGGER_RIGHT);
     }
 
-    public void TriggerRightWeaponAttack()
+    public void TriggerRightWeaponAttack(int type = 0)
     {
         animationManager.TriggerAnimation(ATTACK_TRIGGER_RIGHT, true);
+        animationManager.SetFloatParam("attackType", (float)type);
     }
 
     public bool IsLockedOn()

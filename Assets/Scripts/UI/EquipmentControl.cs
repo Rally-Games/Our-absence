@@ -15,7 +15,7 @@ public class EquipmentControl : MonoBehaviour
 
     [Header("Equipment State")]
     public EquipmentSlot selectedSlot;
-    private Dictionary<string, EquipmentSlot> equipmentSlots;
+    public Dictionary<string, EquipmentSlot> equipmentSlots;
 
     #region Unity Lifecycle
     void Start()
