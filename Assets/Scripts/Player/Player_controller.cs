@@ -96,7 +96,8 @@ public class Player_controller : MonoBehaviour
             // Remove the weapon from the left hand
             foreach (Transform child in leftWeaponPrefab.transform)
             {
-                if (child.name.Contains(item1?.name) || child.name.Contains(item2?.name)) // item.name is prefab name
+                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
+                item2?.name != null ? child.name.Contains(item2.name) : false)
                 {
                     Destroy(child.gameObject);
                     Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
@@ -106,7 +107,8 @@ public class Player_controller : MonoBehaviour
 
             foreach (Transform child in rightWeaponPrefab.transform)
             {
-                if (child.name.Contains(item1?.name) || child.name.Contains(item2?.name)) // item.name is prefab name
+                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
+                item2?.name != null ? child.name.Contains(item2.name) : false)
                 {
                     Destroy(child.gameObject);
                     Debug.Log($"Destroyed weapon: {child.name} (matched by name)");

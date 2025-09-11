@@ -209,7 +209,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isWeaponDrawn
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2248935303312182367}
   m_Solo: 0
@@ -346,6 +349,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-4776982556258454732
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b45d79153cff14cb89e58743d2b836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerName: isAttackingLeft
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1102 &-4450192646210763102
 AnimatorState:
   serializedVersion: 6
@@ -360,8 +378,7 @@ AnimatorState:
   - {fileID: 2073582943018188115}
   - {fileID: 3626825438758106166}
   - {fileID: 6506160072051299928}
-  m_StateMachineBehaviours:
-  - {fileID: 6519225970767419265}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -434,7 +451,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isWeaponDrawn
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2248935303312182367}
   m_Solo: 0
@@ -877,7 +897,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: isWeaponDrawn
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4450192646210763102}
   m_Solo: 0
@@ -1358,7 +1381,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: isWeaponDrawn
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4450192646210763102}
   m_Solo: 0
@@ -1387,6 +1413,7 @@ AnimatorState:
   - {fileID: -2403022032432249845}
   m_StateMachineBehaviours:
   - {fileID: 960370839750704602}
+  - {fileID: -4776982556258454732}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1518,7 +1545,7 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!114 &6519225970767419265
+--- !u!114 &6768062904388807502
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1530,9 +1557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b45d79153cff14cb89e58743d2b836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerName: IsWeaponDrawn
+  triggerName: isAttackingLeft
   isTriggerBoolField: 1
-  setBoolTrue: 0
+  setBoolTrue: 1
 --- !u!1101 &7208950398440451750
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1619,7 +1646,8 @@ AnimatorState:
   - {fileID: 2261286145761769780}
   - {fileID: 7208950398440451750}
   - {fileID: 5268862302376226492}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 6768062904388807502}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
