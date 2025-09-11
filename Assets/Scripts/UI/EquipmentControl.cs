@@ -193,6 +193,11 @@ public class EquipmentControl : MonoBehaviour
         var item = slot.item;
         slot.SetItem(null);
         UpdateSlotDisplay(slot);
+        Player_controller player = FindObjectOfType<Player_controller>();
+        if (player != null)
+        {
+            player.UndrawWeapon(item, item); // Pass the item to undraw
+        }
 
         // Return item to inventory
         mainMenuController.ReturnItemToInventory(item);
@@ -433,8 +438,6 @@ public class EquipmentControl : MonoBehaviour
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Weapon);
         EquipItem(item);
-        // Spawn the item and set its transform to leftWeaponPrefab
-        // TODO: check for active equipped weapon and separate from left to right
     }
 
     internal void EquipToArmor(InventoryItem item)

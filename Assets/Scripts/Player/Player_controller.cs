@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.WebSockets;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -86,47 +87,50 @@ public class Player_controller : MonoBehaviour
         GlobalVariables = FindObjectOfType<ObjectsState>();
     }
 
+    public void UndrawWeapon(InventoryItem item1, InventoryItem item2)
+    {
+        if (animationManager.animator.GetBool("isWeaponDrawn"))
+        {
+            animationManager.SetBoolParam("isWeaponDrawn", false);
+
+            // Remove the weapon from the left hand
+            foreach (Transform child in leftWeaponPrefab.transform)
+            {
+                if (child.name.Contains(item1?.name) || child.name.Contains(item2?.name)) // item.name is prefab name
+                {
+                    Destroy(child.gameObject);
+                    Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
+                    break;
+                }
+            }
+
+            foreach (Transform child in rightWeaponPrefab.transform)
+            {
+                if (child.name.Contains(item1?.name) || child.name.Contains(item2?.name)) // item.name is prefab name
+                {
+                    Destroy(child.gameObject);
+                    Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
+                    break;
+                }
+            }
+        }
+    }
+
     private void Update()
     {
         GetInput();
-        var item = equipmentManager.equipmentSlots["LW1"]?.item;
 
         if (undrawWeaponAction.triggered && GlobalVariables.menuOpen == false)
         {
-            if (animationManager.animator.GetBool("isWeaponDrawn"))
-            {
-                animationManager.SetBoolParam("isWeaponDrawn", false);
-
-                // Remove the weapon from the left hand
-                Debug.Log("Undrawing weapon from left hand");
-                Debug.Log(leftWeaponPrefab.transform.childCount);
-                Debug.Log(item.itemName);
-                foreach (Transform child in leftWeaponPrefab.transform)
-                {
-                    // Option 1: Match by name
-                    if (child.name.Contains(item.name)) // item.name is prefab name
-                    {
-                        Destroy(child.gameObject);
-                        Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
-                        break;
-                    }
-
-                    // Option 2: Match by mesh (if it's a visual model)
-                    MeshFilter childMesh = child.GetComponentInChildren<MeshFilter>();
-                    MeshFilter itemMesh = item.objectRef.GetComponentInChildren<MeshFilter>();
-
-                    if (childMesh != null && itemMesh != null && childMesh.sharedMesh == itemMesh.sharedMesh)
-                    {
-                        Destroy(child.gameObject);
-                        Debug.Log($"Destroyed weapon: {child.name} (matched by mesh)");
-                        break;
-                    }
-                }
-            }
+            var item1 = equipmentManager.equipmentSlots["LW1"]?.item;
+            var item2 = equipmentManager.equipmentSlots["RW1"]?.item;
+            UndrawWeapon(item1, item2);
         }
 
         if (playerLeftAttack.triggered && GlobalVariables.menuOpen == false)
         {
+            var item = equipmentManager.equipmentSlots["LW1"]?.item;
+
             if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
                 attackAnimations.TriggerLeftWeaponAttack(item?.itemID ?? 0.0f);
             else
@@ -139,7 +143,7 @@ public class Player_controller : MonoBehaviour
                     leftWeaponPrefab.transform.rotation,
                     leftWeaponPrefab.transform
                 );
-                spawnedItem.transform.SetParent(leftWeaponPrefab.transform, true);
+                spawnedItem.transform.SetParent(leftWeaponPrefab.transform, false);
                 spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
                 spawnedItem.GetComponentInChildren<Collider>().enabled = false;
                 spawnedItem.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
@@ -152,10 +156,28 @@ public class Player_controller : MonoBehaviour
 
         if (playerRightAttack.triggered && GlobalVariables.menuOpen == false)
         {
+            var item = equipmentManager.equipmentSlots["RW1"]?.item;
+
             if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
                 attackAnimations.TriggerRightWeaponAttack(item?.itemID ?? 0.0f);
             else
+            {
                 animationManager.TriggerAnimation("drawWeapon");
+
+                var spawnedItem = Instantiate(
+                                    item.objectRef,
+                                    rightWeaponPrefab.transform.position,
+                                    rightWeaponPrefab.transform.rotation,
+                                    rightWeaponPrefab.transform
+                                );
+                spawnedItem.transform.SetParent(rightWeaponPrefab.transform, false);
+                spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
+                spawnedItem.GetComponentInChildren<Collider>().enabled = false;
+                spawnedItem.transform.localRotation = Quaternion.Euler(90f, 0, 90f);
+                spawnedItem.transform.localPosition = new Vector3(0f, 0.05f, 0f);
+                spawnedItem.tag = rightWeaponPrefab.tag;
+                spawnedItem.layer = rightWeaponPrefab.layer;
+            }
         }
 
         if (lockOnAction.triggered)
