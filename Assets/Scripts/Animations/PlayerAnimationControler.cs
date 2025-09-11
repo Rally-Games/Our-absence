@@ -61,6 +61,11 @@ public class AnimationManager : MonoBehaviour
         animator.SetFloat(paramName, value);
     }
 
+    public void SetBoolParam(string paramName, bool value)
+    {
+        animator.SetBool(paramName, value);
+    }
+
     public void TriggerAnimation(string triggerName, bool param = false)
     {
         if (param)
@@ -112,10 +117,10 @@ public class AttackAnimationController
         animationManager = manager;
     }
 
-    public void TriggerLeftWeaponAttack(int type)
+    public void TriggerLeftWeaponAttack(float type = 0)
     {
         animationManager.TriggerAnimation(ATTACK_TRIGGER_LEFT, true);
-        animationManager.SetFloatParam("attackType", (float)type);
+        animationManager.SetFloatParam("attackType", type);
     }
 
     public bool IsAttacking()
@@ -123,10 +128,10 @@ public class AttackAnimationController
         return animationManager.IsTriggered(ATTACK_TRIGGER_LEFT) || animationManager.IsTriggered(ATTACK_TRIGGER_RIGHT);
     }
 
-    public void TriggerRightWeaponAttack(int type = 0)
+    public void TriggerRightWeaponAttack(float type = 0)
     {
         animationManager.TriggerAnimation(ATTACK_TRIGGER_RIGHT, true);
-        animationManager.SetFloatParam("attackType", (float)type);
+        animationManager.SetFloatParam("attackType", type);
     }
 
     public bool IsLockedOn()

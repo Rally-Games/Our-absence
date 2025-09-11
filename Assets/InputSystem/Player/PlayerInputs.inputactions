@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UndrawWeapon",
+                    "type": "Button",
+                    "id": "f3ea914e-19bf-4f87-8722-ca954ccd77c4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -351,6 +360,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a84c51e5-1eb1-484d-81e5-1be9e06c6bfc",
+                    "path": "<Keyboard>/u",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "UndrawWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

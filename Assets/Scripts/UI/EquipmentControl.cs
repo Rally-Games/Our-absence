@@ -433,6 +433,8 @@ public class EquipmentControl : MonoBehaviour
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Weapon);
         EquipItem(item);
+        // Spawn the item and set its transform to leftWeaponPrefab
+        // TODO: check for active equipped weapon and separate from left to right
     }
 
     internal void EquipToArmor(InventoryItem item)
