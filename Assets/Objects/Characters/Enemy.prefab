@@ -1812,7 +1812,7 @@ Animator:
   m_GameObject: {fileID: 7539980551190463051}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 818e66d6b760ead489dbf68fbdc38c71, type: 3}
-  m_Controller: {fileID: 9100000, guid: c41b41c7d84706347aa7235ecba76393, type: 2}
+  m_Controller: {fileID: 9100000, guid: 16a5390ca3cc3134687e8946e06784bc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1835,17 +1835,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2507a3d6d5ca1d4c93a9d8a143c2a1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  enemy: {fileID: 0}
-  controller: {fileID: 0}
   speed: 2.5
-  currentAnimation: Idle
   currentState: 0
   meleeAttackRange: 2
-  rangedAttackRange: 7
   stopChasingRange: 10
-  attackDamage: 10
-  player: {fileID: 0}
   detectionRadius: 10
   detectionAngle: 45
 --- !u!1 &7653164757048617511

@@ -15,7 +15,7 @@ public class EquipmentControl : MonoBehaviour
 
     [Header("Equipment State")]
     public EquipmentSlot selectedSlot;
-    private Dictionary<string, EquipmentSlot> equipmentSlots;
+    public Dictionary<string, EquipmentSlot> equipmentSlots;
 
     #region Unity Lifecycle
     void Start()
@@ -193,6 +193,11 @@ public class EquipmentControl : MonoBehaviour
         var item = slot.item;
         slot.SetItem(null);
         UpdateSlotDisplay(slot);
+        Player_controller player = FindObjectOfType<Player_controller>();
+        if (player != null)
+        {
+            player.UndrawWeapon(item, item); // Pass the item to undraw
+        }
 
         // Return item to inventory
         mainMenuController.ReturnItemToInventory(item);

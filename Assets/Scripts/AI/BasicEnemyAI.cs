@@ -3,26 +3,24 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 
-public class BasicEnemyAI : MonoBehaviour, IAnimationController
+public class BasicEnemyAI : MonoBehaviour
 {
     private Animator animator;
-    private Transform enemy;
     private CharacterController controller;
+    private Transform player;
 
     [Header("Movement")]
-    public float speed = 5f;
-    public string currentAnimation = "Idle";
+    public float speed = 2f; // how fast enemy moves
     public State currentState;
 
     [Header("Combat")]
     [SerializeField] private float meleeAttackRange = 2f;
-    //[SerializeField] private float rangedAttackRange = 7f;
     [SerializeField] private float stopChasingRange = 10f;
 
     [Header("Detection")]
-    private Transform player;
     public float detectionRadius = 10f;
     public float detectionAngle = 45f;
+
     public enum State
     {
         Idle,
@@ -36,148 +34,135 @@ public class BasicEnemyAI : MonoBehaviour, IAnimationController
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-        enemy = GetComponent<Transform>();
         currentState = State.Idle;
-    }
-    void OnEnable()
-    {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
 
     void Update()
     {
+        if (!player) return;
+
         CheckState();
-        SetAnimationByState();
-        if (currentState == State.Attack_Melee)
-        {
-            ChangeAnimation(currentAnimation, 0.05f, 1f, true);
-        }
-        else
-            ChangeAnimation(currentAnimation);
+        HandleState();
     }
 
-    // State machine
-    private void SetAnimationByState()
+    private void HandleState()
     {
         switch (currentState)
         {
             case State.Idle:
-                currentAnimation = "Idle";
+                SetSpeed(0f); // idle
                 break;
+
             case State.Patrol:
-                currentAnimation = "Walk";
+                SetSpeed(0.5f); // slow walk
                 break;
+
             case State.Chase:
-                enemy.LookAt(player);
-                currentAnimation = "Running";
-                controller.Move(enemy.forward * speed * Time.deltaTime);
+                // Look at player
+                Vector3 dir = (player.position - transform.position).normalized;
+                dir.y = 0;
+                if (dir != Vector3.zero)
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
+
+                // Move
+                controller.Move(transform.forward * speed * Time.deltaTime);
+
+                SetSpeed(2f); // running in blend tree
                 break;
+
             case State.Attack_Melee:
-                int attackType = Random.Range(0, 3);
-                if (attackType == 0) currentAnimation = "Boxing left";
+                SetSpeed(0f); // stop movement
+                TriggerRandomAttack();
                 break;
+
             case State.Attack_Ranged:
-                currentAnimation = "Attack_Ranged";
-                break;
-            default:
-                currentAnimation = "Idle";
+                SetSpeed(0f);
+                animator.SetTrigger("Shoot"); // if you add a ranged anim
                 break;
         }
-        animator.Play(currentAnimation);
     }
 
     private void CheckState()
     {
+        float distance = Vector3.Distance(player.position, transform.position);
+
         switch (currentState)
         {
             case State.Idle:
-                if (CheckPlayerInVisionCone()) //TODO: ditection by sound
-                {
+                if (CheckPlayerInVisionCone())
                     currentState = State.Chase;
-                }
                 break;
+
             case State.Patrol:
-                // Check for player detection
+                // TODO: patrol logic
+                if (CheckPlayerInVisionCone())
+                    currentState = State.Chase;
                 break;
+
             case State.Chase:
-                if (Vector3.Distance(player.position, transform.position) > stopChasingRange)
+                if (distance > stopChasingRange)
                 {
                     currentState = State.Idle;
                 }
-                else if (Vector3.Distance(player.position, transform.position) < meleeAttackRange && CheckPlayerInVisionCone())
+                else if (distance < meleeAttackRange && CheckPlayerInVisionCone())
                 {
                     currentState = State.Attack_Melee;
                 }
                 break;
+
             case State.Attack_Melee:
-                if (Vector3.Distance(player.position, transform.position) > meleeAttackRange || !CheckPlayerInVisionCone())
+                if (distance > meleeAttackRange || !CheckPlayerInVisionCone())
                 {
-                    currentState = State.Chase;
+                    if (!IsAttacking())
+                    {
+                        currentState = State.Chase;
+                    }
                 }
                 break;
+
             case State.Attack_Ranged:
-                // Check for player detection
                 break;
         }
     }
 
-    public void ChangeAnimation(string animation, float CrossFade = 0.2f, float time = 0f, bool force = false)
+    private bool IsAttacking()
     {
-        if (currentAnimation.Equals(animation) && !force || animation == "") return;
-        if (animation == "Walking" && currentAnimation == "Running") CrossFade = 0.2f;
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f && force)
-            return;
-        else
-            animator.Play(animation, 0, 0f); // Reset the animation to the start
-        if (time > 0) StartCoroutine(Wait());
-        else Validate();
+        return animator.GetBool("isAttacking");
+    }
 
-        IEnumerator Wait()
-        {
-            yield return new WaitForSeconds(time - CrossFade);
-            Validate();
-        }
-        void Validate()
-        {
-            if (animation == "")
-            {
-                animator.CrossFade(currentAnimation, CrossFade);
-            }
-            else
-            {
-                currentAnimation = animation;
-                animator.CrossFade(animation, CrossFade);
-            }
-        }
+    private void SetSpeed(float value)
+    {
+        animator.SetFloat("speed", value); // drives the blend tree
+    }
 
+    private void TriggerRandomAttack()
+    {
+        int attackType = Random.Range(0, 2); // 0 or 1 (two boxing animations)
+        animator.SetInteger("attackType", attackType);
+        animator.SetTrigger("isAttacking");
     }
 
     private bool CheckPlayerInVisionCone()
     {
-        // Direction from enemy to player
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
-
-        // Distance check
         float distance = Vector3.Distance(transform.position, player.position);
+
         if (distance < detectionRadius)
         {
-            // Angle check
             float angle = Vector3.Angle(transform.forward, dirToPlayer);
             if (angle < detectionAngle)
             {
-                // Optional: line of sight check with raycast
-                Vector3 rayOrigin = transform.position + Vector3.up * 1.5f; // adjust height
+                Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
                 if (Physics.Raycast(rayOrigin, dirToPlayer, out RaycastHit hit, detectionRadius))
                 {
                     Debug.DrawLine(rayOrigin, hit.point, Color.red);
                     if (hit.collider.CompareTag("Player"))
-                    {
                         return true;
-                    }
                 }
             }
         }
         return false;
     }
-
 }

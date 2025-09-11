@@ -5,13 +5,16 @@ using UnityEngine.InputSystem.EnhancedTouch;
 
 public class OnFinish : StateMachineBehaviour
 {
-    [SerializeField] private string animation = "";
-    [SerializeField] private float crossfade = 0.2f;
+    [SerializeField] private string triggerName = "";
+    [SerializeField] private bool isTriggerBoolField = true;
+    [SerializeField] private bool setBoolTrue = false;
 
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var controller = animator.GetComponentInParent<IAnimationController>();
-        controller?.ChangeAnimation(animation, crossfade, stateInfo.length);
+        if (isTriggerBoolField)
+            animator.SetBool(triggerName, setBoolTrue);
+        else
+            animator.ResetTrigger(triggerName);
     }
 
 }
