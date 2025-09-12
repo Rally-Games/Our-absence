@@ -44,28 +44,16 @@ public class EnemyLockOn : MonoBehaviour
     void Update()
     {
         camFollow.lockedTarget = enemyLocked;
-        player_script.lockMovement = enemyLocked;
+        player_script.isLockOn = enemyLocked;
         if (playerInput.actions["LockOn"].triggered)
         {
-
             if (currentTarget)
             {
-                //If there is already a target, Reset.
                 ResetTarget();
                 return;
             }
             if (currentTarget = ScanNearBy()) FoundTarget(); else ResetTarget();
         }
-        if (playerInput.actions["Roll"].triggered)
-        {
-            if (player_script.direction.magnitude == 0)
-            {
-                anim.CrossFade("Dodge Backward", 0.05f);
-                return;
-            }
-            anim.CrossFade("LockedRoll", 0.05f);
-        }
-
         if (enemyLocked)
         {
             if (!TargetOnRange()) ResetTarget();
@@ -78,7 +66,6 @@ public class EnemyLockOn : MonoBehaviour
     void FoundTarget()
     {
         lockOnCanvas.gameObject.SetActive(true);
-        anim.SetLayerWeight(1, 1);
         enemyLocked = true;
         //cinemachineAnimator.Play("TargetCamera");
     }
@@ -88,7 +75,6 @@ public class EnemyLockOn : MonoBehaviour
         lockOnCanvas.gameObject.SetActive(false);
         currentTarget = null;
         enemyLocked = false;
-        anim.SetLayerWeight(1, 0);
         //cinemachineAnimator.Play("FollowCamera");
     }
 
@@ -113,30 +99,12 @@ public class EnemyLockOn : MonoBehaviour
         }
 
         if (!closestTarget) return null;
-        float h1 = 1.0f;
-        Collider collider = closestTarget.GetComponent<Collider>();
-        if (collider is CapsuleCollider capsuleCollider)
-        {
-            h1 = capsuleCollider.height;
-        }
-        else if (collider is BoxCollider boxCollider)
-        {
-            h1 = boxCollider.size.y;
-        }
-        else if (collider is SphereCollider sphereCollider)
-        {
-            h1 = sphereCollider.radius * 2;
-        }
-        else if (collider is MeshCollider meshCollider)
-        {
-            h1 = meshCollider.bounds.size.y;
-        }
-        float h2 = closestTarget.localScale.y;
-        float h = h1 * h2;
-        float half_h = (h / 2) / 2;
-        currentYOffset = h - half_h;
+        Transform enemyTransform = closestTarget.GetComponent<Transform>();
+        float h1 = enemyTransform.localScale.y;
+
+        currentYOffset = h1;
         if (zeroVert_Look && currentYOffset > 1.6f && currentYOffset < 1.6f * 3) currentYOffset = 1.6f;
-        Vector3 tarPos = closestTarget.position + new Vector3(0, currentYOffset, 0);
+        Vector3 tarPos = closestTarget.position + new Vector3(0, 1.8f, 0);
         if (Blocked(tarPos)) return null;
         return closestTarget;
     }

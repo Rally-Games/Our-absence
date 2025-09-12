@@ -11,24 +11,30 @@ public class AttackSystem : MonoBehaviour
     private Animator animator;
     private InputAction playerLeftAttack;
     private InputAction playerRightAttack;
-    private Player_controller player_controller;
+    private AnimationManager animationManager;
+    private ObjectsState GlobalVariables;
+    private bool menuOpen;
 
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
+        GlobalVariables = GameObject.Find("GlobalVars").GetComponent<ObjectsState>();
 
         playerLeftAttack = playerInput.actions["Fire"];
         playerRightAttack = playerInput.actions["SecFire"];
 
         animator = GetComponent<Animator>();
 
-        player_controller = GetComponent<Player_controller>();
+        animationManager = GetComponent<AnimationManager>();
     }
 
     void Update()
     {
-        if (player_controller.currentAnimation == "Roll"
-        || player_controller.currentAnimation == "Standing Dodge Backward") return;
+        menuOpen = (bool)GlobalVariables.GetType().GetField("menuOpen").GetValue(GlobalVariables);
+        if (animationManager.currentAnimation == "Roll"
+        || animationManager.currentAnimation == "Standing Dodge Backward") return;
+
+        if (menuOpen) return;
 
         if (playerLeftAttack.triggered)
         {
@@ -42,26 +48,26 @@ public class AttackSystem : MonoBehaviour
 
     private void LeftAttack()
     {
-        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            player_controller.ChangeAnimation("Boxing left lock on", 0.05f);
+            animationManager.TriggerAnimation("Boxing left lock on");
         }
         else
         {
-            player_controller.ChangeAnimation("Boxing left", 0.05f);
+            animationManager.TriggerAnimation("Boxing left");
 
         }
     }
 
     private void RightAttack()
     {
-        if (player_controller.GetComponent<Animator>().GetLayerWeight(1) == 1)
+        if (animationManager.GetComponent<Animator>().GetLayerWeight(1) == 1)
         {
-            player_controller.ChangeAnimation("Boxing right lock on", 0.05f);
+            animationManager.TriggerAnimation("Boxing right lock on");
         }
         else
         {
-            player_controller.ChangeAnimation("Boxing right", 0.05f);
+            animationManager.TriggerAnimation("Boxing right");
         }
     }
 

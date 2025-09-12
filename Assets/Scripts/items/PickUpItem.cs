@@ -1,17 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.InputSystem;
 
 public class PickUpItem : MonoBehaviour
 {
-    public item item;
+    public InventoryItem Item;
+    private Player_controller playerScript;
+    public float detectionRadius = 3.0f;
+    private MainMenuController mainMenu;
+    private PlayerInput playerInput;
 
-    void OnTriggerEnter(Collider other)
+    void Start()
     {
-        if (other.CompareTag("Player"))
+        mainMenu = FindAnyObjectByType<MainMenuController>();
+        playerInput = FindAnyObjectByType<PlayerInput>();
+        playerScript = FindAnyObjectByType<Player_controller>();
+    }
+
+    void Update()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
+        foreach (var hitCollider in hitColliders)
         {
-            InventoryManager.instance.Add(item);
-            Destroy(gameObject);
+            if (hitCollider.CompareTag("Player") && playerInput.actions["Interact"].triggered)
+            {
+                playerScript.isPickingUp = true;
+                mainMenu.AddItemToInventory(Item);
+                Destroy(gameObject);
+            }
         }
     }
+
 }
