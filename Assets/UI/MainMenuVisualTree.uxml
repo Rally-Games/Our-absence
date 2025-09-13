@@ -5,13 +5,13 @@
             <ui:VisualElement name="Navbar" style="width: 100%; height: 15%;" />
             <ui:VisualElement name="ViewBackground" style="flex-grow: 1; align-items: flex-start; justify-content: flex-start; flex-direction: row; flex-wrap: nowrap;">
                 <ui:VisualElement name="Options" style="height: 100%; width: 20%; background-color: rgba(255, 0, 166, 0); align-items: flex-start; flex-direction: column; flex-grow: 0;">
-                    <ui:Button text="Inventory" display-tooltip-when-elided="true" name="Inventory" class="ManuOptionsButtonStyle">
+                    <ui:Button text="Inventory" display-tooltip-when-elided="true" name="Inventory" class="ManuOptionsButtonStyle" style="-unity-text-align: middle-center;">
                         <ui:VisualElement name="Image" style="width: 37px; height: 39px; background-color: rgba(255, 255, 255, 0);" />
                     </ui:Button>
-                    <ui:Button text="Equipment" display-tooltip-when-elided="true" name="Equipment" class="ManuOptionsButtonStyle">
+                    <ui:Button text="Equipment" display-tooltip-when-elided="true" name="Equipment" class="ManuOptionsButtonStyle" style="-unity-text-align: middle-center;">
                         <ui:VisualElement name="Image" style="width: 37px; height: 39px; background-color: rgba(255, 255, 255, 0);" />
                     </ui:Button>
-                    <ui:Button text="Settings" display-tooltip-when-elided="true" name="Settings" class="ManuOptionsButtonStyle">
+                    <ui:Button text="Settings" display-tooltip-when-elided="true" name="Settings" class="ManuOptionsButtonStyle" style="-unity-text-align: middle-center;">
                         <ui:VisualElement name="Image" style="width: 37px; height: 39px; background-color: rgba(255, 255, 255, 0);" />
                     </ui:Button>
                 </ui:VisualElement>
