@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 3f173269238ee3640971fcd60d6c66b6
+  m_SerializeEntries:
+  - m_GUID: 09b3098f34ccd114b92b6141b78aece2
+    m_Address: Assets/Scripts/items/ScriptableObjects/apple.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InventoryItems
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f8e897fba62c8a4dafd710856086fe3
+    m_Address: Assets/Scripts/items/ScriptableObjects/ShortSword1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InventoryItems
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8a706c1ac0fc83449b7009a6a05d8022, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1998ef4ac1fa7454281b20e54398fe86, type: 2}
+    - {fileID: 11400000, guid: a036d894bc73b8c409ed3d921b80dbeb, type: 2}

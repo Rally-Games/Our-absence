@@ -222,7 +222,7 @@ public class EquipmentControl : MonoBehaviour
     private bool CanEquipToSlot(InventoryItem item, EquipmentSlot slot)
     {
         // Check if item category matches slot category
-        var itemCategory = GetItemCategory(item.itemType);
+        var itemCategory = GetItemCategory(item.itemSubType);
         return itemCategory == slot.category;
     }
 
@@ -286,7 +286,7 @@ public class EquipmentControl : MonoBehaviour
     {
         if (item != null)
         {
-            Debug.Log($"Item Info: {item.itemName} (Type: {item.itemType}, ID: {item.itemID})");
+            Debug.Log($"Item Info: {item.itemName} (Type: {item.itemSubType}, ID: {item.itemID})");
             // Could open a detailed info panel here
         }
         ClearOptionMenu();
@@ -380,16 +380,17 @@ public class EquipmentControl : MonoBehaviour
         return equippedItems;
     }
 
-    public bool HasItemEquipped(int itemID)
+    public string HasItemEquipped(int itemID)
     {
-        foreach (var slot in equipmentSlots.Values)
+        foreach (var (slotKey, slotValue) in equipmentSlots)
         {
-            if (slot.HasItem() && slot.item.itemID == itemID)
+            Debug.Log($"Checking slot {slotKey} for item ID {itemID}");
+            if (slotValue.HasItem() && slotValue.item.itemID == itemID)
             {
-                return true;
+                return (string)slotKey;
             }
         }
-        return false;
+        return null;
     }
 
     internal object GetAllowedItemTypes()
@@ -442,13 +443,13 @@ public class EquipmentControl : MonoBehaviour
 
     internal void EquipToArmor(InventoryItem item)
     {
-        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Armor, item.itemType);
+        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Armor, item.itemSubType);
         EquipItem(item);
     }
 
     internal void EquipToAmmo(InventoryItem item)
     {
-        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Ammo, item.itemType);
+        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Ammo, item.itemSubType);
         EquipItem(item);
     }
 

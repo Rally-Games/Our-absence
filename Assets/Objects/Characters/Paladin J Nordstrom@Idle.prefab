@@ -2230,7 +2230,8 @@ GameObject:
   - component: {fileID: 7046477095831893512}
   - component: {fileID: 1896107697997741483}
   - component: {fileID: 4269988516533924249}
-  m_Layer: 0
+  - component: {fileID: 1682337272458416123}
+  m_Layer: 7
   m_Name: Paladin J Nordstrom@Idle
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -2375,8 +2376,8 @@ MonoBehaviour:
   rotateSpeed: 7
   pushForce: 1
   isPickingUp: 0
-  leftWeaponPrefab: {fileID: 0}
-  rightWeaponPrefab: {fileID: 0}
+  leftWeaponPrefab: {fileID: 6068585483481855969}
+  rightWeaponPrefab: {fileID: 5762657179023414060}
   isLockOn: 0
 --- !u!114 &7046477095831893512
 MonoBehaviour:
@@ -2494,6 +2495,21 @@ MonoBehaviour:
   - m_Rig: {fileID: 8184293741545355621}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &1682337272458416123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 882d94e0ea0c0d342ac878b3d178f6f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 5764245016520509895}
+  mainMenuController: {fileID: 0}
+  autoSaveInterval: 300
 --- !u!1 &7514696978176212075
 GameObject:
   m_ObjectHideFlags: 0

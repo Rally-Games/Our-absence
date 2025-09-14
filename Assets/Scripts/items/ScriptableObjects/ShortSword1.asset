@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ShortSword1
   m_EditorClassIdentifier: 
   itemName: Simple short sword
-  itemType: 1
+  itemSubType: 1
+  itemCategory: 0
   itemID: 1
   icon: {fileID: 0}
   value: 10
