@@ -903,6 +903,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 17c30d52e4e6698459f89574a6ea2ea9, type: 3}
   m_ActionId: 5d73217b-4710-4432-b1e6-febae71d6456
+--- !u!114 &2036196395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5741732321467261197, guid: bedd636a361631145bd78fad41380c27, type: 3}
+  m_PrefabInstance: {fileID: 3745276935730176503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a217370c369fae4a894bf3169ca4ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &543450651672532660 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7916213311341910470, guid: fabd054acc829da4ebb9d70004360190, type: 3}
@@ -1650,6 +1661,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1682337272458416123, guid: fabd054acc829da4ebb9d70004360190, type: 3}
+      propertyPath: mainMenuController
+      value: 
+      objectReference: {fileID: 2036196395}
     - target: {fileID: 1692634410287583786, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -1758,14 +1773,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 5764245016520509895, guid: fabd054acc829da4ebb9d70004360190, type: 3}
-      propertyPath: leftWeaponPrefab
-      value: 
-      objectReference: {fileID: 303893714}
-    - target: {fileID: 5764245016520509895, guid: fabd054acc829da4ebb9d70004360190, type: 3}
-      propertyPath: rightWeaponPrefab
-      value: 
-      objectReference: {fileID: 659326406}
     - target: {fileID: 5808343650012200068, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -1905,10 +1912,6 @@ PrefabInstance:
     - target: {fileID: 7916213311341910470, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8053291653770536430, guid: fabd054acc829da4ebb9d70004360190, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8064133624136865293, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_Layer

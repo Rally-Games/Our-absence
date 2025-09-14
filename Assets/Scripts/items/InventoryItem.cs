@@ -5,7 +5,8 @@ using UnityEngine;
 public class InventoryItem : ScriptableObject
 {
     public string itemName;
-    public MainMenuController.ItemType itemType;
+    public MainMenuController.ItemType itemSubType;
+    public MainMenuController.CategoryType itemCategory;
     public int itemID;
     public Sprite icon;  // For now not in use
     public int value;
@@ -13,7 +14,7 @@ public class InventoryItem : ScriptableObject
 
     public override string ToString()
     {
-        return $"{itemName} ({itemType})";
+        return $"{itemName} ({itemSubType})";
     }
 
     public override bool Equals(object obj)

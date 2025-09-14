@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1efebd01bf27b3409f54e1323308383, type: 3}
-  m_Name: apple
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: Default Local Group_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  itemName: Apple
-  itemSubType: 12
-  itemCategory: 4
-  itemID: 0
-  icon: {fileID: 21300000, guid: f09eae8c0ea04254b90c5386a034a225, type: 3}
-  value: 1
-  objectRef: {fileID: 0}
+  m_Group: {fileID: 11400000, guid: bf53a3ff3b092af4e9031c34f8fc3410, type: 2}
+  m_StaticContent: 0
