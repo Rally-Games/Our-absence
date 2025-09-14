@@ -77,7 +77,7 @@ public static class ItemsManager
             {
                 if (myItem.Value.itemID == item.itemID)
                 {
-                    filteredItems.Append(item);
+                    filteredItems.Add(item);
                 }
             }
         }

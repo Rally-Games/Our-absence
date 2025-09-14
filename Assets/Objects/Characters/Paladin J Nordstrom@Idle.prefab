@@ -2509,6 +2509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 5764245016520509895}
   mainMenuController: {fileID: 0}
+  autoSaveInterval: 300
 --- !u!1 &7514696978176212075
 GameObject:
   m_ObjectHideFlags: 0

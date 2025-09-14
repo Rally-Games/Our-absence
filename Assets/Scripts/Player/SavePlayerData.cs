@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine;
 using System.Data.Common;
+using Newtonsoft.Json;
 
 public class SavePlayerData : MonoBehaviour
 {
@@ -15,9 +16,12 @@ public class SavePlayerData : MonoBehaviour
     {
         // Start automatic saving
         InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
+        PlayerSaveData.Data data = SaveSystem.Load();
         ItemsManager.Initialize(() =>
-            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(SaveSystem.Load().items))
+            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items))
         );
+        if (data?.position != null && data.position.Length == 3)
+            playerController.transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
     }
 
     private void Update()
@@ -61,24 +65,25 @@ public class SavePlayerData : MonoBehaviour
         //public int health;
         //public int stamina;
         private MainMenuController mainMenuController;
-        public int[] position; // x, y, z
+        public float[] position; // x, y, z
         public Dictionary<int, ItemData> items; // IDs of items in inventory
 
         public PlayerSaveData(Vector3 position, List<MainMenuController.ItemsCategory> inventory, MainMenuController mainMenuController = null)
         {
-            this.position = new int[] { (int)position.x, (int)position.y, (int)position.z };
+            this.position = new float[] { (float)position.x, (float)position.y, (float)position.z };
             this.items = new Dictionary<int, ItemData>();
             this.mainMenuController = mainMenuController;
 
             foreach (var category in inventory)
             {
+                int i = 0;
                 foreach (var item in category.items)
                 {
                     string equipSlot = "";
                     if (mainMenuController?.GetEquipmentControl() != null)
                         equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item.itemID) ?? "";
 
-                    items[item.itemID] = new ItemData(item.itemName,
+                    items[i++] = new ItemData(item.itemName,
                     item.itemID,
                     equipSlot);
                 }
@@ -88,10 +93,10 @@ public class SavePlayerData : MonoBehaviour
         [System.Serializable]
         public class Data
         {
-            public int[] position; // x, y, z
+            public float[] position; // x, y, z
             public Dictionary<int, ItemData> items; // IDs of items in inventory
 
-            public Data(int[] position, Dictionary<int, ItemData> items)
+            public Data(float[] position, Dictionary<int, ItemData> items)
             {
                 this.position = position;
                 this.items = items;
@@ -102,17 +107,25 @@ public class SavePlayerData : MonoBehaviour
     [System.Serializable]
     public static class SaveSystem
     {
-        private static string savePath = Application.persistentDataPath + "/player_state.bin";
+        private static string savePath = Application.persistentDataPath + "/player_state.babczyk";
 
         internal static void Save(PlayerSaveData.Data data)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream stream = new FileStream(savePath, FileMode.Create))
+            try
             {
-                formatter.Serialize(stream, data);
+                // Convert to JSON string
+                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                // Write to file
+                File.WriteAllText(savePath, json);
+
+                Debug.Log($"Save created at {savePath}");
             }
-            Debug.Log($"Save created at {savePath}");
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Failed to save: {ex}");
+            }
         }
+
 
         internal static PlayerSaveData.Data Load()
         {
@@ -124,14 +137,13 @@ public class SavePlayerData : MonoBehaviour
 
             try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                using (FileStream stream = new FileStream(savePath, FileMode.Open))
-                {
-                    var data = (PlayerSaveData.Data)formatter.Deserialize(stream);
-                    Debug.Log($"Save loaded from {savePath}");
-                    Debug.Log($"Loaded {data.items.Count} items"); // Check items count
-                    return data;
-                }
+                // Read the JSON file
+                string json = File.ReadAllText(savePath);
+
+                // Deserialize with Newtonsoft.Json (supports Dictionary)
+                var data = JsonConvert.DeserializeObject<PlayerSaveData.Data>(json);
+
+                return data;
             }
             catch (System.Exception ex)
             {
