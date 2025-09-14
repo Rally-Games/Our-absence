@@ -2231,7 +2231,7 @@ GameObject:
   - component: {fileID: 1896107697997741483}
   - component: {fileID: 4269988516533924249}
   - component: {fileID: 1682337272458416123}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Paladin J Nordstrom@Idle
   m_TagString: Player
   m_Icon: {fileID: 0}

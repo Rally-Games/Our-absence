@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using UnityEngine;
-using System.Data.Common;
-using Newtonsoft.Json;
+
 
 public class SavePlayerData : MonoBehaviour
 {
@@ -16,7 +13,7 @@ public class SavePlayerData : MonoBehaviour
     {
         // Start automatic saving
         InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
-        PlayerSaveData.Data data = SaveSystem.Load();
+        PlayerSaveData.Data data = SaveAndLoad.LoadPlayerState();
         ItemsManager.Initialize(() =>
             mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items))
         );
@@ -53,7 +50,7 @@ public class SavePlayerData : MonoBehaviour
             mainMenuController
         );
 
-        SaveSystem.Save(new PlayerSaveData.Data(
+        SaveAndLoad.SavePlayerState(new PlayerSaveData.Data(
             playerData.position,
             playerData.items
         ));
@@ -104,54 +101,7 @@ public class SavePlayerData : MonoBehaviour
         }
     }
 
-    [System.Serializable]
-    public static class SaveSystem
-    {
-        private static string savePath = Application.persistentDataPath + "/player_state.babczyk";
 
-        internal static void Save(PlayerSaveData.Data data)
-        {
-            try
-            {
-                // Convert to JSON string
-                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                // Write to file
-                File.WriteAllText(savePath, json);
-
-                Debug.Log($"Save created at {savePath}");
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Failed to save: {ex}");
-            }
-        }
-
-
-        internal static PlayerSaveData.Data Load()
-        {
-            if (!File.Exists(savePath))
-            {
-                Debug.LogWarning("Save file not found!");
-                return null;
-            }
-
-            try
-            {
-                // Read the JSON file
-                string json = File.ReadAllText(savePath);
-
-                // Deserialize with Newtonsoft.Json (supports Dictionary)
-                var data = JsonConvert.DeserializeObject<PlayerSaveData.Data>(json);
-
-                return data;
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Failed to load save: {ex}");
-                return null;
-            }
-        }
-    }
 
     [System.Serializable]
     public class ItemData

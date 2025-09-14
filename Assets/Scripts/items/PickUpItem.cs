@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PickUpItem : MonoBehaviour
 {
     public InventoryItem Item;
+    public GameObject obj;
     private Player_controller playerScript;
     public float detectionRadius = 3.0f;
     private MainMenuController mainMenu;
@@ -28,7 +29,7 @@ public class PickUpItem : MonoBehaviour
             {
                 playerScript.isPickingUp = true;
                 mainMenu.AddItemToInventory(Item);
-                Destroy(gameObject);
+                obj.SetActive(false);
             }
         }
     }

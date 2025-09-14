@@ -13,7 +13,7 @@ public static class ItemsManager
 
     public static List<InventoryItem> allItems = new List<InventoryItem>();
     public static Dictionary<int, InventoryItem> itemsById = new Dictionary<int, InventoryItem>();
-    private static bool isLoaded = false;
+    public static bool isLoaded = false;
 
     public static void Initialize(System.Action onComplete = null)
     {

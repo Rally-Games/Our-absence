@@ -510,7 +510,6 @@ public class MainMenuController : MonoBehaviour
         {
             category.items.Add(item);
             RefreshCurrentView();
-            debugMenu.DebugLog($"Added {item.itemName} to inventory");
         }
     }
 
