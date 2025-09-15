@@ -69,7 +69,7 @@ public class SceneManager : MonoBehaviour
 
         if (pickableItemsInScene == null)
         {
-            Debug.LogError("pickableItemsInScene is NULL after LoadScenePickableItems!");
+            Debug.LogWarning("pickableItemsInScene is NULL after LoadScenePickableItems!");
             return;
         }
         int i = pickableItemsInScene.Last().Key + 1;
@@ -83,7 +83,7 @@ public class SceneManager : MonoBehaviour
         {
             if (obj.itemID == -1)
             {
-                Debug.LogError("Found invalid PickableItem (itemID == -1) in pickableItemsInScene!");
+                Debug.LogWarning("Found invalid PickableItem (itemID == -1) in pickableItemsInScene!");
                 continue;
             }
 
@@ -123,7 +123,7 @@ public class SceneManager : MonoBehaviour
         {
             isExistInScene = obj.activeSelf;
             position = new float[] { obj.transform.position.x, obj.transform.position.y, obj.transform.position.z };
-            var itemComponent = obj.GetComponentInChildren<PickUpItem>();
+            var itemComponent = obj.GetComponent<PickUpItem>();
             itemID = itemComponent != null ? itemComponent.Item.itemID : -1;
         }
     }

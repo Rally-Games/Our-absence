@@ -4,38 +4,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// EnemyLockOn is a Unity MonoBehaviour script that enables a player character to lock onto nearby enemies.
+/// It scans for enemies within a specified radius and angle, checks for line-of-sight, and manages lock-on state.
+/// When locked on, it updates the camera, crosshair UI, and player orientation to face the target.
+/// The script also handles unlocking when the target is out of range or blocked, and provides visual debugging with gizmos.
+/// </summary>
 public class EnemyLockOn : MonoBehaviour
 {
-    Transform currentTarget;
-    Animator anim;
 
+    [Header("References")]
+    [Tooltip("Layer Mask for Target Detection")]
     [SerializeField] LayerMask targetLayers;
+    [Tooltip("Transform for Enemy Target Locator, empty object to not depend on other objects")]
     [SerializeField] Transform enemyTarget_Locator;
+    [Tooltip("Camera Follow Script Reference")]
+    [SerializeField] CameraFollow camFollow;
+    [Tooltip("UI Canvas for Lock-On Target Display")]
+    [SerializeField] Transform lockOnCanvas;
+    Player_controller player_script;
+    PlayerInput playerInput;
+    Transform currentTarget;
+    Transform cam;
 
     [Tooltip("StateDrivenMethod for Switching Cameras")]
-    [SerializeField] Animator cinemachineAnimator;
 
     [Header("Settings")]
     [SerializeField] bool zeroVert_Look;
     [SerializeField] float noticeZone = 10;
     [SerializeField] float lookAtSmoothing = 2;
-    [Tooltip("Angle_Degree")][SerializeField] float maxNoticeAngle = 60;
+    [Tooltip("Angle Degree")][SerializeField] float maxNoticeAngle = 60;
     [SerializeField] float crossHair_Scale = 0.1f;
 
-    PlayerInput playerInput;
-    Transform cam;
     bool enemyLocked;
     float currentYOffset;
     Vector3 pos;
 
-    [SerializeField] CameraFollow camFollow;
-    [SerializeField] Transform lockOnCanvas;
-    Player_controller player_script;
 
     void Start()
     {
         player_script = GetComponent<Player_controller>();
-        anim = GetComponent<Animator>();
         cam = Camera.main.transform;
         lockOnCanvas.gameObject.SetActive(false);
         playerInput = GetComponent<PlayerInput>();
@@ -62,23 +70,29 @@ public class EnemyLockOn : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Handles the logic when a target is found and locked onto.
+    /// </summary>
     void FoundTarget()
     {
         lockOnCanvas.gameObject.SetActive(true);
         enemyLocked = true;
-        //cinemachineAnimator.Play("TargetCamera");
     }
 
+    /// <summary>
+    /// Resets the current target and lock-on state.
+    /// </summary>
     void ResetTarget()
     {
         lockOnCanvas.gameObject.SetActive(false);
         currentTarget = null;
         enemyLocked = false;
-        //cinemachineAnimator.Play("FollowCamera");
     }
 
-
+    /// <summary>
+    /// Scans for nearby targets within the notice zone and angle.
+    /// </summary>
+    /// <returns>Returns the closest valid target Transform if found, otherwise null.</returns>
     private Transform ScanNearBy()
     {
         Collider[] nearbyTargets = Physics.OverlapSphere(transform.position, noticeZone, targetLayers);
@@ -109,6 +123,11 @@ public class EnemyLockOn : MonoBehaviour
         return closestTarget;
     }
 
+    /// <summary>
+    /// Checks if there is an obstacle blocking the line of sight to the target position.
+    /// </summary>
+    /// <param name="t">The target position to check against.</param>
+    /// <returns>True if blocked, false otherwise.</returns>
     bool Blocked(Vector3 t)
     {
         RaycastHit hit;
@@ -126,7 +145,11 @@ public class EnemyLockOn : MonoBehaviour
         if (dis / 2 > noticeZone) return false; else return true;
     }
 
-
+    /// <summary>
+    /// Handles the logic for looking at the current target when locked on.
+    /// Updates the position and scale of the lock-on canvas, rotates the player to face the target,
+    /// and informs the camera follow script of the locked target.
+    /// </summary>
     private void LookAtTarget()
     {
         if (currentTarget == null)

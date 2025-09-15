@@ -8,7 +8,7 @@ using System;
 public class MainMenuController : MonoBehaviour
 {
     [Header("Debug")]
-    private DebugMenu debugMenu = new DebugMenu(true);
+    private DebugMenu debugMenu = new DebugMenu(false);
 
     [Header("Dependencies")]
     private ObjectsState globalVars;
@@ -431,13 +431,13 @@ public class MainMenuController : MonoBehaviour
 
         var removeButton = new Button(() =>
         {
-            var player = GameObject.FindWithTag("Player");
+            var player = FindObjectOfType<Player_controller>();
             if (player != null)
             {
 
                 if (item.objectRef != null)
                 {
-                    var spawnPosition = player.transform.position + player.transform.forward * 2f + Vector3.up * 0.5f;
+                    var spawnPosition = player.transform.position + player.transform.forward + Vector3.up * 0.5f;
                     var droppedItem = Instantiate(item.objectRef, spawnPosition, Quaternion.identity);
                     debugMenu.DebugLog($"Dropped {item.itemName} on the ground at {spawnPosition}");
                 }

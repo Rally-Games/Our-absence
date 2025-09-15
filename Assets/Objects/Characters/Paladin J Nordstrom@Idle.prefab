@@ -2224,13 +2224,14 @@ GameObject:
   - component: {fileID: 7916213311341910470}
   - component: {fileID: 5615596662528882593}
   - component: {fileID: 8053291653770536430}
-  - component: {fileID: 1266646516404743290}
-  - component: {fileID: 2193205681359190297}
-  - component: {fileID: 5764245016520509895}
-  - component: {fileID: 7046477095831893512}
   - component: {fileID: 1896107697997741483}
   - component: {fileID: 4269988516533924249}
+  - component: {fileID: 2193205681359190297}
+  - component: {fileID: 1266646516404743290}
+  - component: {fileID: 5764245016520509895}
+  - component: {fileID: 7046477095831893512}
   - component: {fileID: 1682337272458416123}
+  - component: {fileID: 2186055105918183177}
   m_Layer: 7
   m_Name: Paladin J Nordstrom@Idle
   m_TagString: Player
@@ -2304,95 +2305,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1266646516404743290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7392617814582920060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3f6dc76b3fc4af4c90a21b48e969f25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetLayers:
-    serializedVersion: 2
-    m_Bits: 2048
-  enemyTarget_Locator: {fileID: 0}
-  cinemachineAnimator: {fileID: 8053291653770536430}
-  zeroVert_Look: 0
-  noticeZone: 20
-  lookAtSmoothing: 8
-  maxNoticeAngle: 100
-  crossHair_Scale: 0.25
-  camFollow: {fileID: 0}
-  lockOnCanvas: {fileID: 0}
---- !u!114 &2193205681359190297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7392617814582920060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 17c30d52e4e6698459f89574a6ea2ea9, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &5764245016520509895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7392617814582920060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 296f24d186fee9942a8ecc4c5f10dc9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  direction: {x: 0, y: 0, z: 0}
-  speed: 2.5
-  gravity: 9.81
-  rotateSpeed: 7
-  pushForce: 1
-  isPickingUp: 0
-  leftWeaponPrefab: {fileID: 6068585483481855969}
-  rightWeaponPrefab: {fileID: 5762657179023414060}
-  isLockOn: 0
---- !u!114 &7046477095831893512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7392617814582920060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ef71aa939c1f2a4481905442ae4348b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 8053291653770536430}
-  currentAnimation: Movement
 --- !u!114 &1896107697997741483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2495,6 +2407,92 @@ MonoBehaviour:
   - m_Rig: {fileID: 8184293741545355621}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &2193205681359190297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 17c30d52e4e6698459f89574a6ea2ea9, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &1266646516404743290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6dc76b3fc4af4c90a21b48e969f25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  enemyTarget_Locator: {fileID: 0}
+  camFollow: {fileID: 0}
+  lockOnCanvas: {fileID: 0}
+  zeroVert_Look: 0
+  noticeZone: 20
+  lookAtSmoothing: 8
+  maxNoticeAngle: 100
+  crossHair_Scale: 0.25
+--- !u!114 &5764245016520509895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296f24d186fee9942a8ecc4c5f10dc9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
+  speed: 2.5
+  gravity: 9.81
+  rotateSpeed: 7
+  pushForce: 1
+  isPickingUp: 0
+  isLockOn: 0
+--- !u!114 &7046477095831893512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef71aa939c1f2a4481905442ae4348b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 8053291653770536430}
+  currentAnimation: Movement
 --- !u!114 &1682337272458416123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2510,6 +2508,24 @@ MonoBehaviour:
   playerController: {fileID: 5764245016520509895}
   mainMenuController: {fileID: 0}
   autoSaveInterval: 300
+--- !u!114 &2186055105918183177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392617814582920060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78f9ac74768fd6468633bdb3b997559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputSystem: {fileID: 2193205681359190297}
+  animationManager: {fileID: 7046477095831893512}
+  equipmentManager: {fileID: 0}
+  globalVariables: {fileID: 0}
+  leftWeaponPrefab: {fileID: 6068585483481855969}
+  rightWeaponPrefab: {fileID: 5762657179023414060}
 --- !u!1 &7514696978176212075
 GameObject:
   m_ObjectHideFlags: 0

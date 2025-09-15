@@ -193,7 +193,7 @@ public class EquipmentControl : MonoBehaviour
         var item = slot.item;
         slot.SetItem(null);
         UpdateSlotDisplay(slot);
-        Player_controller player = FindObjectOfType<Player_controller>();
+        DrawAndUndrawWeapons player = FindObjectOfType<DrawAndUndrawWeapons>();
         if (player != null)
         {
             player.UndrawWeapon(item, item); // Pass the item to undraw
@@ -391,6 +391,26 @@ public class EquipmentControl : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void PickUpItem(GameObject origin, float range)
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(origin.transform.position, range);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.GetComponent<PickUpItem>()?.IsPickUpItemInRange() != null)
+            {
+                var item = hitCollider.GetComponent<PickUpItem>().Item;
+                if (item != null)
+                {
+                    if (origin.GetComponent<Player_controller>()?.isPickingUp != null) origin.GetComponent<Player_controller>().isPickingUp = true;
+                    mainMenuController.AddItemToInventory(item);
+                    hitCollider.gameObject.SetActive(false);
+                    Debug.Log($"Picked up item: {item.itemName}");
+                    break;
+                }
+            }
+        }
     }
 
     internal object GetAllowedItemTypes()
