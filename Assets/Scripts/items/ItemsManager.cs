@@ -75,7 +75,7 @@ public static class ItemsManager
         }
         return filteredItems;
     }
-    public static List<ItemDataInstance> ConvertDataDicToInventoryItemsArrayOptimized(Dictionary<int, ItemDataInstance> items = null)
+    public static List<ItemDataInstance> ConvertDataDicToInventoryItemsArrayOptimized(Dictionary<int, SavePlayerData.PlayerSaveData.ItemData> items = null)
     {
         List<ItemDataInstance> filteredItems = new List<ItemDataInstance>();
 

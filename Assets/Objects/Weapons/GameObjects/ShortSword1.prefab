@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79bd7a0c06f9b594e9222669e5da5b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Item: {fileID: 11400000, guid: 3f8e897fba62c8a4dafd710856086fe3, type: 2}
+  Item: {fileID: 7589631908593669873}
   detectionRadius: 2
 --- !u!114 &7589631908593669873
 MonoBehaviour:
@@ -113,10 +113,11 @@ MonoBehaviour:
   itemID: 0
   quantity: 1
   currentDurability: 0
-  isEquipped: 0
+  equippedSlotName: 
   isFavorite: 0
   enchantmentLevel: 0
   damageModifier: 1
+  _definition: {fileID: 11400000, guid: 3f8e897fba62c8a4dafd710856086fe3, type: 2}
 --- !u!1 &1251532462622634610
 GameObject:
   m_ObjectHideFlags: 0

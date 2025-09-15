@@ -10,46 +10,20 @@ public static class SaveAndLoad
     public static string savePathPlayerState { get; private set; } = Application.persistentDataPath + "/player_state.babczyk";
     public static string savePathSceneState { get; private set; } = Application.persistentDataPath + "/scene_state.babczyk";
 
-    internal static void SavePlayerState(SavePlayerData.PlayerSaveData.Data data)
+
+
+    public static T Load<T>(string path) where T : class, new()
     {
-        try
+        if (!File.Exists(path))
         {
-            var settings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-            // Convert to JSON string
-            string json = JsonConvert.SerializeObject(data, Formatting.Indented, settings);
-            // Write to file
-            File.WriteAllText(savePathPlayerState, json);
-
-            Debug.Log($"Save created at {savePathPlayerState}");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Failed to save: {ex}");
-        }
-    }
-
-
-    internal static SavePlayerData.PlayerSaveData.Data LoadPlayerState()
-    {
-        if (!File.Exists(savePathPlayerState))
-        {
-            Debug.LogWarning("Save file not found!");
+            Debug.LogWarning($"Save file not found at {path}");
             return null;
         }
 
         try
         {
-
-            // Read the JSON file
-            string json = File.ReadAllText(savePathPlayerState);
-
-            // Deserialize with Newtonsoft.Json (supports Dictionary)
-            var data = JsonConvert.DeserializeObject<SavePlayerData.PlayerSaveData.Data>(json);
-
-            return data;
+            string json = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<T>(json);
         }
         catch (System.Exception ex)
         {
@@ -58,45 +32,18 @@ public static class SaveAndLoad
         }
     }
 
-    internal static void SaveScenePickableItems(Dictionary<int, SceneManager.PickableItem> pickableItems)
+    public static void Save<T>(string path, T data)
     {
         try
         {
-            // Convert to JSON string
-            string json = JsonConvert.SerializeObject(pickableItems, Formatting.Indented);
-            // Write to file
-            File.WriteAllText(savePathSceneState, json);
-
-            Debug.Log($"Save created at {savePathSceneState}");
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+            File.WriteAllText(path, json);
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Failed to save: {ex}");
+            Debug.LogError($"Failed to save data: {ex}");
         }
     }
 
-    internal static void LoadScenePickableItems(ref Dictionary<int, SceneManager.PickableItem> pickableItems)
-    {
-        if (!File.Exists(savePathSceneState))
-        {
-            Debug.LogWarning("Save file not found!");
-            pickableItems = new Dictionary<int, SceneManager.PickableItem>();
-        }
-
-        try
-        {
-            // Read the JSON file
-            string json = File.ReadAllText(savePathSceneState);
-
-            // Deserialize with Newtonsoft.Json (supports Dictionary)
-            var data = JsonConvert.DeserializeObject<Dictionary<int, SceneManager.PickableItem>>(json);
-            pickableItems = data;
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Failed to load save: {ex}");
-            pickableItems = new Dictionary<int, SceneManager.PickableItem>();
-        }
-    }
 
 }
