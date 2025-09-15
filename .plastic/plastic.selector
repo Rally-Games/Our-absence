@@ -1,4 +1,0 @@
-repository "Our-absence/Our-absence@18967294449094@cloud"
-  path "/"
-    br "/main"
-    co "/main"
