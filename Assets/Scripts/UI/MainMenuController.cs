@@ -29,7 +29,7 @@ public class MainMenuController : MonoBehaviour
     [Header("Data")]
     private List<ItemsCategory> categories = new List<ItemsCategory>();
     private ItemsCategory selectedCategory;
-    private InventoryItem selectedItem;
+    private ItemDataInstance selectedItem;
 
     [Header("Equipment Integration")]
     private EquipmentControl currentEquipmentControl;
@@ -102,42 +102,42 @@ public class MainMenuController : MonoBehaviour
         {
             categoryName = "Weapons",
             categoryType = CategoryType.Weapon,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Armor",
             categoryType = CategoryType.Armor,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Ammunition",
             categoryType = CategoryType.Ammo,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Magic Items",
             categoryType = CategoryType.MagicItems,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Quick Items",
             categoryType = CategoryType.EquipmentItems,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Miscellaneous",
             categoryType = CategoryType.Misc,
-            items = new List<InventoryItem>()
+            items = new List<ItemDataInstance>()
         });
     }
     #endregion
@@ -223,16 +223,16 @@ public class MainMenuController : MonoBehaviour
     #endregion
 
     #region Item List Management
-    private void PopulateItems(List<InventoryItem> items, bool isEquipmentMode = false)
+    private void PopulateItems(List<ItemDataInstance> items, bool isEquipmentMode = false)
     {
         if (itemsList == null) return;
 
         selectedItem = null;
-        itemsList.itemsSource = new List<InventoryItem>(items);
+        itemsList.itemsSource = new List<ItemDataInstance>(items);
         if (isEquipmentMode && currentEquipmentControl != null)
         {
             var allowedTypes = currentEquipmentControl.GetAllowedItemTypes();
-            itemsList.itemsSource = items.Where(item => ((IEnumerable<ItemType>)allowedTypes).Contains(item.ItemSubType)).ToList();
+            itemsList.itemsSource = items.Where(item => ((IEnumerable<ItemType>)allowedTypes).Contains(item._definition.ItemSubType)).ToList();
         }
 
         itemsList.makeItem = () => new Button();
@@ -241,10 +241,10 @@ public class MainMenuController : MonoBehaviour
         {
             if (index >= itemsList.itemsSource.Count) return;
 
-            var item = (InventoryItem)itemsList.itemsSource[index];
+            var item = (ItemDataInstance)itemsList.itemsSource[index];
             var button = element as Button;
 
-            button.text = item.ItemName;
+            button.text = item._definition.ItemName;
 
             // Clear previous event handlers
             button.clicked -= null;
@@ -262,10 +262,10 @@ public class MainMenuController : MonoBehaviour
         itemsList.Rebuild();
     }
 
-    private void HandleNormalItemClick(InventoryItem item, Button button)
+    private void HandleNormalItemClick(ItemDataInstance item, Button button)
     {
         selectedItem = item;
-        debugMenu.DebugLog($"Selected item: {item.ItemName}");
+        debugMenu.DebugLog($"Selected item: {item._definition.ItemName}");
 
         var worldPos = button.worldBound.position;
         var menuPos = worldPos + new Vector2(0, button.resolvedStyle.height);
@@ -273,7 +273,7 @@ public class MainMenuController : MonoBehaviour
         ShowItemOptionMenu(menuPos, item, button);
     }
 
-    private void HandleEquipmentModeItemClick(InventoryItem item)
+    private void HandleEquipmentModeItemClick(ItemDataInstance item)
     {
         if (currentEquipmentControl != null)
         {
@@ -284,9 +284,9 @@ public class MainMenuController : MonoBehaviour
     #endregion
 
     #region Equipment Integration
-    public void QuickEquipment(InventoryItem item)
+    public void QuickEquipment(ItemDataInstance item)
     {
-        switch (item.ItemSubType)
+        switch (item._definition.ItemSubType)
         {
             case ItemType.QuickItem:
                 currentEquipmentControl?.EquipToQuickItem(item);
@@ -311,7 +311,7 @@ public class MainMenuController : MonoBehaviour
                 currentEquipmentControl?.EquipToMagicItem(item);
                 break;
             default:
-                debugMenu.DebugLog($"No quick equip slot for item type: {item.ItemSubType}");
+                debugMenu.DebugLog($"No quick equip slot for item type: {item._definition.ItemSubType}");
                 break;
         }
         OnEquipmentButtonClicked();
@@ -331,28 +331,28 @@ public class MainMenuController : MonoBehaviour
         debugMenu.DebugLog($"Opened inventory for equipment: {categoryType}");
     }
 
-    public void RemoveItemFromInventory(InventoryItem item)
+    public void RemoveItemFromInventory(ItemDataInstance item)
     {
         foreach (var category in categories)
         {
             if (category.items.Remove(item))
             {
-                debugMenu.DebugLog($"Removed {item.ItemName} from inventory");
+                debugMenu.DebugLog($"Removed {item._definition.ItemName} from inventory");
                 RefreshCurrentView();
                 return;
             }
         }
     }
 
-    public void ReturnItemToInventory(InventoryItem item)
+    public void ReturnItemToInventory(ItemDataInstance item)
     {
-        var itemCategory = GetItemCategory(item.ItemSubType);
+        var itemCategory = GetItemCategory(item._definition.ItemSubType);
         var category = GetCategoryByType(itemCategory);
 
         if (category != null)
         {
             category.items.Add(item);
-            debugMenu.DebugLog($"Returned {item.ItemName} to inventory");
+            debugMenu.DebugLog($"Returned {item._definition.ItemName} to inventory");
             RefreshCurrentView();
         }
     }
@@ -381,7 +381,7 @@ public class MainMenuController : MonoBehaviour
     #endregion
 
     #region Item Option Menu
-    private void ShowItemOptionMenu(Vector2 position, InventoryItem item, VisualElement ownerButton)
+    private void ShowItemOptionMenu(Vector2 position, ItemDataInstance item, VisualElement ownerButton)
     {
         ClearOptionMenu();
 
@@ -422,7 +422,7 @@ public class MainMenuController : MonoBehaviour
         // Add menu options
         var equipButton = new Button(() =>
         {
-            debugMenu.DebugLog($"Quick equip {item.ItemName}");
+            debugMenu.DebugLog($"Quick equip {item._definition.ItemName}");
             currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
             QuickEquipment(item);
             ClearOptionMenu();
@@ -435,15 +435,15 @@ public class MainMenuController : MonoBehaviour
             if (player != null)
             {
 
-                if (item.ObjectRef != null)
+                if (item._definition.ObjectRef != null)
                 {
                     var spawnPosition = player.transform.position + player.transform.forward + Vector3.up * 0.5f;
-                    var droppedItem = Instantiate(item.ObjectRef, spawnPosition, Quaternion.identity);
-                    debugMenu.DebugLog($"Dropped {item.ItemName} on the ground at {spawnPosition}");
+                    var droppedItem = Instantiate(item._definition.ObjectRef, spawnPosition, Quaternion.identity);
+                    debugMenu.DebugLog($"Dropped {item._definition.ItemName} on the ground at {spawnPosition}");
                 }
                 else
                 {
-                    debugMenu.DebugLog($"Prefab not found for item: {item.ItemName}");
+                    debugMenu.DebugLog($"Prefab not found for item: {item._definition.ItemName}");
                 }
             }
             else
@@ -488,22 +488,22 @@ public class MainMenuController : MonoBehaviour
         clickCatcher = null;
     }
 
-    private void ShowItemInfo(InventoryItem item)
+    private void ShowItemInfo(ItemDataInstance item)
     {
-        debugMenu.DebugLog($"Item Info - Name: {item.ItemName}, Type: {item.ItemSubType}, ID: {item.ItemID}");
+        debugMenu.DebugLog($"Item Info - Name: {item._definition.ItemName}, Type: {item._definition.ItemSubType}, ID: {item._definition.ItemID}");
         // Could open a detailed info panel here
     }
     #endregion
 
     #region Public API
-    public InventoryItem GetSelectedItem()
+    public ItemDataInstance GetSelectedItem()
     {
         return selectedItem;
     }
 
-    public void AddItemToInventory(InventoryItem item)
+    public void AddItemToInventory(ItemDataInstance item)
     {
-        var itemCategory = GetItemCategory(item.ItemSubType);
+        var itemCategory = GetItemCategory(item._definition.ItemSubType);
         var category = GetCategoryByType(itemCategory);
 
         if (category != null)
@@ -513,7 +513,7 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    public void InitializeSavedItemsInInventory(List<InventoryItem> items)
+    public void InitializeSavedItemsInInventory(List<ItemDataInstance> items)
     {
         debugMenu.DebugLog($"Initializing inventory with {items.Count} saved items");
         foreach (var item in items)
@@ -533,14 +533,14 @@ public class MainMenuController : MonoBehaviour
     }
     public bool HasItem(int itemID)
     {
-        return categories.Any(category => category.items.Any(item => item.ItemID == itemID));
+        return categories.Any(category => category.items.Any(item => item._definition.ItemID == itemID));
     }
 
-    public InventoryItem GetItemByID(int itemID)
+    public ItemDataInstance GetItemByID(int itemID)
     {
         foreach (var category in categories)
         {
-            var item = category.items.FirstOrDefault(i => i.ItemID == itemID);
+            var item = category.items.FirstOrDefault(i => i._definition.ItemID == itemID);
             if (item != null) return item;
         }
         return null;
@@ -553,7 +553,7 @@ public class MainMenuController : MonoBehaviour
     {
         public string categoryName;
         public CategoryType categoryType;
-        public List<InventoryItem> items = new List<InventoryItem>();
+        public List<ItemDataInstance> items = new List<ItemDataInstance>();
     }
 
     [System.Serializable]

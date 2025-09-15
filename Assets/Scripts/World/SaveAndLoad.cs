@@ -14,8 +14,12 @@ public static class SaveAndLoad
     {
         try
         {
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
             // Convert to JSON string
-            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented, settings);
             // Write to file
             File.WriteAllText(savePathPlayerState, json);
 
@@ -38,6 +42,7 @@ public static class SaveAndLoad
 
         try
         {
+
             // Read the JSON file
             string json = File.ReadAllText(savePathPlayerState);
 

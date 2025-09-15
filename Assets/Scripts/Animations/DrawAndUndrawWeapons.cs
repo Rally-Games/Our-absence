@@ -65,13 +65,13 @@ public class DrawAndUndrawWeapons : MonoBehaviour
         var item = equipmentManager.equipmentSlots["RW1"]?.item;
 
         if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-            attackAnimations.TriggerRightWeaponAttack(item?.ItemID ?? 0.0f);
+            attackAnimations.TriggerRightWeaponAttack(item?._definition.ItemID ?? 0.0f);
         else
         {
             animationManager.TriggerAnimation("drawWeapon");
 
             var spawnedItem = Instantiate(
-                                item.ObjectRef,
+                                item._definition.ObjectRef,
                                 rightWeaponPrefab.transform.position,
                                 rightWeaponPrefab.transform.rotation,
                                 rightWeaponPrefab.transform
@@ -96,13 +96,13 @@ public class DrawAndUndrawWeapons : MonoBehaviour
         var item = equipmentManager.equipmentSlots["LW1"]?.item;
 
         if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-            attackAnimations.TriggerLeftWeaponAttack(item?.ItemID ?? 0.0f);
+            attackAnimations.TriggerLeftWeaponAttack(item?._definition.ItemID ?? 0.0f);
         else
         {
             animationManager.TriggerAnimation("drawWeapon");
 
             var spawnedItem = Instantiate(
-                item.ObjectRef,
+                item._definition.ObjectRef,
                 leftWeaponPrefab.transform.position,
                 leftWeaponPrefab.transform.rotation,
                 leftWeaponPrefab.transform
@@ -118,7 +118,7 @@ public class DrawAndUndrawWeapons : MonoBehaviour
         }
     }
 
-    public void UndrawWeapon(InventoryItem item1, InventoryItem item2)
+    public void UndrawWeapon(ItemDataInstance item1, ItemDataInstance item2)
     {
         if (animationManager.animator.GetBool("isWeaponDrawn"))
         {

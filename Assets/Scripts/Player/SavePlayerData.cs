@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using Newtonsoft.Json;
 
 
 public class SavePlayerData : MonoBehaviour
@@ -17,19 +18,15 @@ public class SavePlayerData : MonoBehaviour
         PlayerSaveData.Data data = SaveAndLoad.LoadPlayerState();
         ItemsManager.Initialize(() =>
         {
-            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items));
+            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataDicToInventoryItemsArrayOptimized(data.items));
             EquipmentControl equipmentControl = mainMenuController?.GetEquipmentControl();
             if (equipmentControl != null)
             {
                 foreach (var item in data.items)
                 {
-                    if (!string.IsNullOrEmpty(item.Value.equipSlot))
+                    if (!string.IsNullOrEmpty(item.Value.equippedSlotName))
                     {
-                        InventoryItem inventoryItem = ItemsManager.GetItemByID(item.Value.itemID);
-                        if (inventoryItem != null)
-                        {
-                            equipmentControl.EquipItem(inventoryItem, equipmentControl.GetSlot(item.Value.equipSlot));
-                        }
+                        equipmentControl.EquipItem(item.Value, equipmentControl.GetSlot(item.Value.equippedSlotName));
                     }
                 }
             }
@@ -81,12 +78,12 @@ public class SavePlayerData : MonoBehaviour
         //public int stamina;
         private MainMenuController mainMenuController;
         public float[] position; // x, y, z
-        public Dictionary<int, ItemData> items; // IDs of items in inventory
+        public Dictionary<int, ItemDataInstance> items; // IDs of items in inventory
 
         public PlayerSaveData(Vector3 position, List<MainMenuController.ItemsCategory> inventory, MainMenuController mainMenuController = null)
         {
             this.position = new float[] { (float)position.x, (float)position.y, (float)position.z };
-            this.items = new Dictionary<int, ItemData>();
+            this.items = new Dictionary<int, ItemDataInstance>();
             this.mainMenuController = mainMenuController;
 
             foreach (var category in inventory)
@@ -96,11 +93,11 @@ public class SavePlayerData : MonoBehaviour
                 {
                     string equipSlot = "";
                     if (mainMenuController?.GetEquipmentControl() != null)
-                        equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item.ItemID) ?? "";
+                        equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item._definition.ItemID) ?? "";
 
-                    items[i++] = new ItemData(item.ItemName,
-                    item.ItemID,
-                    equipSlot);
+                    items[i++] = new ItemDataInstance(
+                        item._definition
+                    );
                 }
             }
         }
@@ -109,30 +106,41 @@ public class SavePlayerData : MonoBehaviour
         public class Data
         {
             public float[] position; // x, y, z
-            public Dictionary<int, ItemData> items; // IDs of items in inventory
+            [JsonIgnore] public Dictionary<int, ItemDataInstance> items;
+            public Dictionary<int, ItemData> ItemsDataToSave;
 
-            public Data(float[] position, Dictionary<int, ItemData> items)
+            public Data(float[] position, Dictionary<int, ItemDataInstance> items)
             {
                 this.position = position;
                 this.items = items;
+                foreach (var item in items)
+                {
+                    this.ItemsDataToSave[item.Key] = new ItemData(item.Value);
+                }
             }
         }
-    }
 
-
-
-    [System.Serializable]
-    public class ItemData
-    {
-        public string itemName;
-        public int itemID;
-        public string equipSlot;
-
-        public ItemData(string itemName, int itemID, string equipSlot = null)
+        [System.Serializable]
+        public class ItemData
         {
-            this.itemName = itemName;
-            this.itemID = itemID;
-            this.equipSlot = equipSlot;
+            public int itemID;
+            public int quantity;
+            public float currentDurability;
+            public string equippedSlotName; // Name of the slot where the item is equipped, if any
+            public bool isFavorite;
+            public int enchantmentLevel;
+            public float damageModifier;
+
+            public ItemData(ItemDataInstance item)
+            {
+                this.itemID = item.itemID;
+                this.quantity = item.quantity;
+                this.currentDurability = item.currentDurability;
+                this.equippedSlotName = item.equippedSlotName;
+                this.isFavorite = item.isFavorite;
+                this.enchantmentLevel = item.enchantmentLevel;
+                this.damageModifier = item.damageModifier;
+            }
         }
     }
 }

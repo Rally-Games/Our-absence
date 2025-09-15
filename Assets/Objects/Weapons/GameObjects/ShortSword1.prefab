@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7659087121301831559}
   - component: {fileID: 7478237322947710923}
   - component: {fileID: 4171423179264068735}
+  - component: {fileID: 7589631908593669873}
   m_Layer: 0
   m_Name: ShortSword1
   m_TagString: PickableItem
@@ -97,6 +98,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Item: {fileID: 11400000, guid: 3f8e897fba62c8a4dafd710856086fe3, type: 2}
   detectionRadius: 2
+--- !u!114 &7589631908593669873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352565146651498298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a4f9c72cdcc2540a7c26bc55dbc87b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemID: 0
+  quantity: 1
+  currentDurability: 0
+  isEquipped: 0
+  isFavorite: 0
+  enchantmentLevel: 0
+  damageModifier: 1
 --- !u!1 &1251532462622634610
 GameObject:
   m_ObjectHideFlags: 0

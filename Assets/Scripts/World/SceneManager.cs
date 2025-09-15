@@ -124,7 +124,7 @@ public class SceneManager : MonoBehaviour
             isExistInScene = obj.activeSelf;
             position = new float[] { obj.transform.position.x, obj.transform.position.y, obj.transform.position.z };
             var itemComponent = obj.GetComponent<PickUpItem>();
-            itemID = itemComponent != null ? itemComponent.Item.ItemID : -1;
+            itemID = itemComponent != null ? itemComponent.Item._definition.ItemID : -1;
         }
     }
 

@@ -6,16 +6,17 @@ using UnityEngine.InputSystem;
 
 public class PickUpItem : MonoBehaviour
 {
-    public InventoryItem Item;
+    public ItemDataInstance Item;
     public float detectionRadius = 3.0f;
     private PlayerInput playerInput;
 
     void Awake()
     {
         playerInput = FindAnyObjectByType<PlayerInput>();
+        Item = GetComponent<ItemDataInstance>();
     }
 
-    public InventoryItem IsPickUpItemInRange()
+    public ItemDataInstance IsPickUpItemInRange()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
         foreach (var hitCollider in hitColliders)

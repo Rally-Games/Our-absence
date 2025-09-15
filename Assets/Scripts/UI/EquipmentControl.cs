@@ -152,7 +152,7 @@ public class EquipmentControl : MonoBehaviour
     #endregion
 
     #region Equipment Actions
-    public void EquipItem(InventoryItem item, EquipmentSlot slot)
+    public void EquipItem(ItemDataInstance item, EquipmentSlot slot)
     {
         if (slot == null)
         {
@@ -162,7 +162,7 @@ public class EquipmentControl : MonoBehaviour
 
         if (!CanEquipToSlot(item, slot))
         {
-            Debug.LogWarning($"EquipmentControl: Cannot equip {item.ItemName} to {slot.button.name}!");
+            Debug.LogWarning($"EquipmentControl: Cannot equip {item._definition.ItemName} to {slot.button.name}!");
             return;
         }
 
@@ -182,7 +182,7 @@ public class EquipmentControl : MonoBehaviour
         // Change new item slot name
         //item.SetEquipmentSlot(true);
 
-        Debug.Log($"Equipped {item.ItemName} to {selectedSlot.button.name}");
+        Debug.Log($"Equipped {item._definition.ItemName} to {selectedSlot.button.name}");
         selectedSlot = null;
     }
 
@@ -202,7 +202,7 @@ public class EquipmentControl : MonoBehaviour
         // Return item to inventory
         //item.SetEquipmentSlot(false);
 
-        Debug.Log($"Unequipped {item.ItemName} from {slot.button.name}");
+        Debug.Log($"Unequipped {item._definition.ItemName} from {slot.button.name}");
         ClearOptionMenu();
     }
 
@@ -219,10 +219,10 @@ public class EquipmentControl : MonoBehaviour
         ClearOptionMenu();
     }
 
-    private bool CanEquipToSlot(InventoryItem item, EquipmentSlot slot)
+    private bool CanEquipToSlot(ItemDataInstance item, EquipmentSlot slot)
     {
         // Check if item category matches slot category
-        var itemCategory = GetItemCategory(item.ItemSubType);
+        var itemCategory = GetItemCategory(item._definition.ItemSubType);
         return itemCategory == slot.category;
     }
 
@@ -250,7 +250,7 @@ public class EquipmentControl : MonoBehaviour
     {
         if (slot.HasItem())
         {
-            slot.button.text = slot.item.ItemName;
+            slot.button.text = slot.item._definition.ItemName;
             slot.button.style.color = new StyleColor(Color.white);
 
             // Could add item icon here
@@ -282,11 +282,11 @@ public class EquipmentControl : MonoBehaviour
         };
     }
 
-    private void ShowItemInfo(InventoryItem item)
+    private void ShowItemInfo(ItemDataInstance item)
     {
         if (item != null)
         {
-            Debug.Log($"Item Info: {item.ItemName} (Type: {item.ItemSubType}, ID: {item.ItemID})");
+            Debug.Log($"Item Info: {item._definition.ItemName} (Type: {item._definition.ItemSubType}, ID: {item._definition.ItemID})");
             // Could open a detailed info panel here
         }
         ClearOptionMenu();
@@ -367,9 +367,9 @@ public class EquipmentControl : MonoBehaviour
         return equipmentSlots.TryGetValue(slotName, out var slot) ? slot : null;
     }
 
-    public List<InventoryItem> GetAllEquippedItems()
+    public List<ItemDataInstance> GetAllEquippedItems()
     {
-        var equippedItems = new List<InventoryItem>();
+        var equippedItems = new List<ItemDataInstance>();
         foreach (var slot in equipmentSlots.Values)
         {
             if (slot.HasItem())
@@ -385,7 +385,7 @@ public class EquipmentControl : MonoBehaviour
         foreach (var (slotKey, slotValue) in equipmentSlots)
         {
             Debug.Log($"Checking slot {slotKey} for item ID {itemID}");
-            if (slotValue.HasItem() && slotValue.item.ItemID == itemID)
+            if (slotValue.HasItem() && slotValue.item._definition.ItemID == itemID)
             {
                 return (string)slotKey;
             }
@@ -406,7 +406,7 @@ public class EquipmentControl : MonoBehaviour
                     if (origin.GetComponent<Player_controller>()?.isPickingUp != null) origin.GetComponent<Player_controller>().isPickingUp = true;
                     mainMenuController.AddItemToInventory(item);
                     hitCollider.gameObject.SetActive(false);
-                    Debug.Log($"Picked up item: {item.ItemName}");
+                    Debug.Log($"Picked up item: {item._definition.ItemName}");
                     break;
                 }
             }
@@ -449,31 +449,31 @@ public class EquipmentControl : MonoBehaviour
         }
     }
 
-    internal void EquipToQuickItem(InventoryItem item)
+    internal void EquipToQuickItem(ItemDataInstance item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.EquipmentItems);
         EquipItem(item, selectedSlot);
     }
 
-    internal void EquipToWeapon(InventoryItem item)
+    internal void EquipToWeapon(ItemDataInstance item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Weapon);
         EquipItem(item, selectedSlot);
     }
 
-    internal void EquipToArmor(InventoryItem item)
+    internal void EquipToArmor(ItemDataInstance item)
     {
-        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Armor, item.ItemSubType);
+        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Armor, item._definition.ItemSubType);
         EquipItem(item, selectedSlot);
     }
 
-    internal void EquipToAmmo(InventoryItem item)
+    internal void EquipToAmmo(ItemDataInstance item)
     {
-        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Ammo, item.ItemSubType);
+        selectedSlot = FindEmptySlot(MainMenuController.CategoryType.Ammo, item._definition.ItemSubType);
         EquipItem(item, selectedSlot);
     }
 
-    internal void EquipToMagicItem(InventoryItem item)
+    internal void EquipToMagicItem(ItemDataInstance item)
     {
         selectedSlot = FindEmptySlot(MainMenuController.CategoryType.MagicItems);
         EquipItem(item, selectedSlot);
@@ -525,10 +525,10 @@ public class EquipmentControl : MonoBehaviour
     {
         public Button button;
         public MainMenuController.CategoryType category;
-        public InventoryItem item;
+        public ItemDataInstance item;
         private string name;
 
-        public EquipmentSlot(Button button, MainMenuController.CategoryType category, InventoryItem item, string name)
+        public EquipmentSlot(Button button, MainMenuController.CategoryType category, ItemDataInstance item, string name)
         {
             this.button = button;
             this.category = category;
@@ -536,7 +536,7 @@ public class EquipmentControl : MonoBehaviour
             this.name = name;
         }
 
-        public void SetItem(InventoryItem newItem)
+        public void SetItem(ItemDataInstance newItem)
         {
             item = newItem;
         }

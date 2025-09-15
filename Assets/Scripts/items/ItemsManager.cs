@@ -52,9 +52,9 @@ public static class ItemsManager
         };
     }
 
-    public static List<InventoryItem> FilterItemsByType(MainMenuController.CategoryType type, Dictionary<int, SavePlayerData.ItemData> items = null)
+    public static List<ItemDataInstance> FilterItemsByType(MainMenuController.CategoryType type, Dictionary<int, ItemDataInstance> items = null)
     {
-        List<InventoryItem> filteredItems = new List<InventoryItem>();
+        List<ItemDataInstance> filteredItems = new List<ItemDataInstance>();
         foreach (var (myItemKey, myItemValue) in items)
         {
             foreach (var item in allItems)
@@ -62,25 +62,68 @@ public static class ItemsManager
                 Debug.Log($"Comparing item ID {myItemValue.itemID} with {item.ItemID} of type {item.ItemCategory}");
                 if (item.ItemCategory == type && myItemValue.itemID == item.ItemID)
                 {
-                    filteredItems.Append(item);
+                    filteredItems.Add(new ItemDataInstance(item, myItemValue.quantity)
+                    {
+                        currentDurability = myItemValue.currentDurability,
+                        equippedSlotName = myItemValue.equippedSlotName,
+                        isFavorite = myItemValue.isFavorite,
+                        enchantmentLevel = myItemValue.enchantmentLevel,
+                        damageModifier = myItemValue.damageModifier
+                    });
                 }
             }
         }
         return filteredItems;
     }
-    public static List<InventoryItem> ConvertDataArrayToInventoryItemsArray(Dictionary<int, SavePlayerData.ItemData> items = null)
+    public static List<ItemDataInstance> ConvertDataDicToInventoryItemsArrayOptimized(Dictionary<int, ItemDataInstance> items = null)
     {
-        List<InventoryItem> filteredItems = new List<InventoryItem>();
-        foreach (var myItem in items)
+        List<ItemDataInstance> filteredItems = new List<ItemDataInstance>();
+
+        // Null checks
+        if (items == null || allItems == null)
         {
-            foreach (var item in allItems)
+            Debug.LogError("ConvertDataDicToInventoryItemsArray: items or allItems is null");
+            return filteredItems;
+        }
+
+        // Create a lookup dictionary for better performance
+        var itemLookup = allItems.Where(item => item != null)
+                                 .ToDictionary(item => item.ItemID, item => item);
+
+        foreach (var kvp in items)
+        {
+            if (kvp.Value == null)
             {
-                if (myItem.Value.itemID == item.ItemID)
+                Debug.LogWarning($"Null ItemDataInstance found at key {kvp.Key}");
+                continue;
+            }
+
+            if (itemLookup.TryGetValue(kvp.Value.itemID, out InventoryItem matchingItem))
+            {
+                try
                 {
-                    filteredItems.Add(item);
+                    var newItem = new ItemDataInstance(matchingItem, kvp.Value.quantity)
+                    {
+                        currentDurability = kvp.Value.currentDurability,
+                        equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty,
+                        isFavorite = kvp.Value.isFavorite,
+                        enchantmentLevel = kvp.Value.enchantmentLevel,
+                        damageModifier = kvp.Value.damageModifier
+                    };
+
+                    filteredItems.Add(newItem);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Error creating ItemDataInstance for itemID {kvp.Value.itemID}: {e.Message}");
                 }
             }
+            else
+            {
+                Debug.LogWarning($"No matching item found for itemID {kvp.Value.itemID}");
+            }
         }
+
         return filteredItems;
     }
 
