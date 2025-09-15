@@ -85,7 +85,6 @@ public static class SaveAndLoad
 
             // Deserialize with Newtonsoft.Json (supports Dictionary)
             var data = JsonConvert.DeserializeObject<Dictionary<int, SceneManager.PickableItem>>(json);
-            Debug.Log(data[0].itemID);
             pickableItems = data;
         }
         catch (System.Exception ex)

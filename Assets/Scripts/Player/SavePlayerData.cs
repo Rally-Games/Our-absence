@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 
 public class SavePlayerData : MonoBehaviour
@@ -15,7 +16,24 @@ public class SavePlayerData : MonoBehaviour
         InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
         PlayerSaveData.Data data = SaveAndLoad.LoadPlayerState();
         ItemsManager.Initialize(() =>
-            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items))
+        {
+            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items));
+            EquipmentControl equipmentControl = mainMenuController?.GetEquipmentControl();
+            if (equipmentControl != null)
+            {
+                foreach (var item in data.items)
+                {
+                    if (!string.IsNullOrEmpty(item.Value.equipSlot))
+                    {
+                        InventoryItem inventoryItem = ItemsManager.GetItemByID(item.Value.itemID);
+                        if (inventoryItem != null)
+                        {
+                            equipmentControl.EquipItem(inventoryItem, equipmentControl.GetSlot(item.Value.equipSlot));
+                        }
+                    }
+                }
+            }
+        }
         );
         if (data?.position != null && data.position.Length == 3)
             playerController.transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
@@ -78,10 +96,10 @@ public class SavePlayerData : MonoBehaviour
                 {
                     string equipSlot = "";
                     if (mainMenuController?.GetEquipmentControl() != null)
-                        equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item.itemID) ?? "";
+                        equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item.ItemID) ?? "";
 
-                    items[i++] = new ItemData(item.itemName,
-                    item.itemID,
+                    items[i++] = new ItemData(item.ItemName,
+                    item.ItemID,
                     equipSlot);
                 }
             }

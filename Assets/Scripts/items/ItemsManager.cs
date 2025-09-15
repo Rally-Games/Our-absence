@@ -35,10 +35,10 @@ public static class ItemsManager
             {
                 foreach (var item in allItems)
                 {
-                    if (!itemsById.ContainsKey(item.itemID))
-                        itemsById.Add(item.itemID, item);
+                    if (!itemsById.ContainsKey(item.ItemID))
+                        itemsById.Add(item.ItemID, item);
                     else
-                        Debug.LogWarning($"Duplicate ID detected: {item.itemID} ({item.name})");
+                        Debug.LogWarning($"Duplicate ID detected: {item.ItemID} ({item.name})");
                 }
 
                 isLoaded = true;
@@ -59,8 +59,8 @@ public static class ItemsManager
         {
             foreach (var item in allItems)
             {
-                Debug.Log($"Comparing item ID {myItemValue.itemID} with {item.itemID} of type {item.itemCategory}");
-                if (item.itemCategory == type && myItemValue.itemID == item.itemID)
+                Debug.Log($"Comparing item ID {myItemValue.itemID} with {item.ItemID} of type {item.ItemCategory}");
+                if (item.ItemCategory == type && myItemValue.itemID == item.ItemID)
                 {
                     filteredItems.Append(item);
                 }
@@ -75,7 +75,7 @@ public static class ItemsManager
         {
             foreach (var item in allItems)
             {
-                if (myItem.Value.itemID == item.itemID)
+                if (myItem.Value.itemID == item.ItemID)
                 {
                     filteredItems.Add(item);
                 }
@@ -88,7 +88,7 @@ public static class ItemsManager
     {
         foreach (var item in allItems)
         {
-            if (item.itemID == ID)
+            if (item.ItemID == ID)
             {
                 return item;
             }
@@ -110,10 +110,10 @@ public static class ItemsManager
         {
             if (item == null) continue;
 
-            if (!idMap.ContainsKey(item.itemID))
-                idMap[item.itemID] = new List<InventoryItem>();
+            if (!idMap.ContainsKey(item.ItemID))
+                idMap[item.ItemID] = new List<InventoryItem>();
 
-            idMap[item.itemID].Add(item);
+            idMap[item.ItemID].Add(item);
         }
 
         // Check duplicates

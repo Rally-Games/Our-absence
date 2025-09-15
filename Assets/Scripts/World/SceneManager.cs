@@ -105,7 +105,7 @@ public class SceneManager : MonoBehaviour
                 Debug.Log($"Spawning item {obj.itemID} at {obj.position[0]}, {obj.position[1]}, {obj.position[2]}");
 
                 Instantiate(
-                    itemDef.objectRef,
+                    itemDef.ObjectRef,
                     new Vector3(obj.position[0], obj.position[1], obj.position[2]),
                     Quaternion.identity
                 );
@@ -124,7 +124,7 @@ public class SceneManager : MonoBehaviour
             isExistInScene = obj.activeSelf;
             position = new float[] { obj.transform.position.x, obj.transform.position.y, obj.transform.position.z };
             var itemComponent = obj.GetComponent<PickUpItem>();
-            itemID = itemComponent != null ? itemComponent.Item.itemID : -1;
+            itemID = itemComponent != null ? itemComponent.Item.ItemID : -1;
         }
     }
 

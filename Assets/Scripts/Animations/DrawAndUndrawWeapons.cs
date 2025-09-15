@@ -65,13 +65,13 @@ public class DrawAndUndrawWeapons : MonoBehaviour
         var item = equipmentManager.equipmentSlots["RW1"]?.item;
 
         if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-            attackAnimations.TriggerRightWeaponAttack(item?.itemID ?? 0.0f);
+            attackAnimations.TriggerRightWeaponAttack(item?.ItemID ?? 0.0f);
         else
         {
             animationManager.TriggerAnimation("drawWeapon");
 
             var spawnedItem = Instantiate(
-                                item.objectRef,
+                                item.ObjectRef,
                                 rightWeaponPrefab.transform.position,
                                 rightWeaponPrefab.transform.rotation,
                                 rightWeaponPrefab.transform
@@ -96,13 +96,13 @@ public class DrawAndUndrawWeapons : MonoBehaviour
         var item = equipmentManager.equipmentSlots["LW1"]?.item;
 
         if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-            attackAnimations.TriggerLeftWeaponAttack(item?.itemID ?? 0.0f);
+            attackAnimations.TriggerLeftWeaponAttack(item?.ItemID ?? 0.0f);
         else
         {
             animationManager.TriggerAnimation("drawWeapon");
 
             var spawnedItem = Instantiate(
-                item.objectRef,
+                item.ObjectRef,
                 leftWeaponPrefab.transform.position,
                 leftWeaponPrefab.transform.rotation,
                 leftWeaponPrefab.transform
