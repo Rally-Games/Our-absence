@@ -10,6 +10,7 @@ public class SavePlayerData : MonoBehaviour
 {
     public Player_controller playerController;
     public MainMenuController mainMenuController;
+    public EquipmentControl equipmentControl;
     [SerializeField] private float autoSaveInterval = 60 * 5f; // Auto-save every 5 minutes default
     PlayerSaveData.Data data;
 
@@ -22,7 +23,6 @@ public class SavePlayerData : MonoBehaviour
         {
             var itemData = ItemsManager.ConvertDataDicToInventoryItemsArrayOptimized(data.items);
             mainMenuController?.InitializeSavedItemsInInventory(itemData);
-            EquipmentControl equipmentControl = mainMenuController?.GetEquipmentControl();
             if (equipmentControl != null)
             {
                 foreach (var item in itemData)
@@ -54,6 +54,22 @@ public class SavePlayerData : MonoBehaviour
         Debug.Log("Autosave complete!");
     }
 
+    private PlayerSaveData.Data NewSaveData()
+    {
+        data = new PlayerSaveData.Data()
+        {
+            position = new float[] { playerController.transform.position.x, playerController.transform.position.y, playerController.transform.position.z },
+            items = new Dictionary<int, PlayerSaveData.ItemData>()
+        };
+
+        foreach (var itemInstance in mainMenuController.GetAllInventory())
+        {
+            foreach (var item in itemInstance.items)
+                data.items[item.GetHashCode()] = new PlayerSaveData.ItemData(item);
+        }
+        return data;
+    }
+
     private void Save()
     {
         if (playerController == null || mainMenuController == null)
@@ -62,7 +78,8 @@ public class SavePlayerData : MonoBehaviour
             return;
         }
 
-        SaveAndLoad.Save<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState, data);
+        var newData = NewSaveData();
+        SaveAndLoad.Save<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState, newData);
     }
 
     [System.Serializable]
@@ -86,14 +103,24 @@ public class SavePlayerData : MonoBehaviour
                     InventoryItem def = ItemsManager.GetItemByID(kvp.Value.itemID);
                     if (def != null)
                     {
-                        itemsInstance[kvp.Key] = new ItemDataInstance(def, kvp.Value.quantity)
-                        {
-                            currentDurability = kvp.Value.currentDurability,
-                            equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty,
-                            isFavorite = kvp.Value.isFavorite,
-                            enchantmentLevel = kvp.Value.enchantmentLevel,
-                            damageModifier = kvp.Value.damageModifier
-                        };
+                        // Create a hidden GameObject
+                        GameObject go = new GameObject("Item_" + kvp.Key);
+                        go.hideFlags = HideFlags.HideInHierarchy; // invisible in hierarchy
+
+                        // Add the ItemDataInstance component
+                        var instance = go.AddComponent<ItemDataInstance>();
+
+                        // Initialize fields
+                        instance._definition = def;
+                        instance.quantity = kvp.Value.quantity;
+                        instance.currentDurability = kvp.Value.currentDurability;
+                        instance.equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty;
+                        instance.isFavorite = kvp.Value.isFavorite;
+                        instance.enchantmentLevel = kvp.Value.enchantmentLevel;
+                        instance.damageModifier = kvp.Value.damageModifier;
+
+                        // Add to the dictionary
+                        itemsInstance[kvp.Key] = instance;
                     }
                     else
                     {

@@ -93,11 +93,13 @@ public class EquipmentControl : MonoBehaviour
             {
                 var slot = new EquipmentSlot(button, category, null, slotName);
                 equipmentSlots[slotName] = slot;
+                UpdateSlotDisplay(slot);
             }
             else
             {
                 Debug.LogWarning($"EquipmentControl: Button '{slotName}' not found in UI!");
             }
+
         }
     }
 
@@ -176,17 +178,17 @@ public class EquipmentControl : MonoBehaviour
         // Change previous item slot to null if existed
         if (previousItem != null)
         {
-            //previousItem.SetEquipmentSlot(false);
+            previousItem.equippedSlotName = null;
         }
 
         // Change new item slot name
-        //item.SetEquipmentSlot(true);
+        slot.item.equippedSlotName = slot.button.name;
 
-        Debug.Log($"Equipped {item._definition.ItemName} to {selectedSlot.button.name}");
+        Debug.Log($"Equipped {item._definition.ItemName} to {slot.button.name}");
         selectedSlot = null;
     }
 
-    private void UnequipItem(EquipmentSlot slot)
+    public void UnequipItem(EquipmentSlot slot)
     {
         if (!slot.HasItem()) return;
 
@@ -200,7 +202,7 @@ public class EquipmentControl : MonoBehaviour
         }
 
         // Return item to inventory
-        //item.SetEquipmentSlot(false);
+        item.equippedSlotName = null;
 
         Debug.Log($"Unequipped {item._definition.ItemName} from {slot.button.name}");
         ClearOptionMenu();
@@ -250,17 +252,25 @@ public class EquipmentControl : MonoBehaviour
     {
         if (slot.HasItem())
         {
-            slot.button.text = slot.item._definition.ItemName;
-            slot.button.style.color = new StyleColor(Color.white);
+            // UI Toolkit buttons often use a child label
+            var label = slot.button.Q<Label>();
+            if (label != null)
+                label.text = slot.item._definition.ItemName;
+            else
+                slot.button.text = slot.item._definition.ItemName; // fallback
 
-            // Could add item icon here
+            slot.button.style.color = new StyleColor(Color.white);
         }
         else
         {
-            slot.button.text = GetEmptySlotText(slot.button.name);
+            var label = slot.button.Q<Label>();
+            if (label != null)
+                label.text = GetEmptySlotText(slot.button.name);
+            else
+                slot.button.text = GetEmptySlotText(slot.button.name);
+
             slot.button.style.color = Color.white;
             slot.button.style.backgroundImage = null;
-            // set defult empty slot image
         }
     }
 
@@ -543,7 +553,7 @@ public class EquipmentControl : MonoBehaviour
 
         public bool HasItem()
         {
-            return item != null;
+            return item?._definition != null;
         }
 
         public bool IsEmpty()

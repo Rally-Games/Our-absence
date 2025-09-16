@@ -62,14 +62,24 @@ public static class ItemsManager
                 Debug.Log($"Comparing item ID {myItemValue.itemID} with {item.ItemID} of type {item.ItemCategory}");
                 if (item.ItemCategory == type && myItemValue.itemID == item.ItemID)
                 {
-                    filteredItems.Add(new ItemDataInstance(item, myItemValue.quantity)
-                    {
-                        currentDurability = myItemValue.currentDurability,
-                        equippedSlotName = myItemValue.equippedSlotName,
-                        isFavorite = myItemValue.isFavorite,
-                        enchantmentLevel = myItemValue.enchantmentLevel,
-                        damageModifier = myItemValue.damageModifier
-                    });
+                    // Create a hidden GameObject for the ItemDataInstance
+                    GameObject go = new GameObject("Item_" + item.ItemID);
+                    go.hideFlags = HideFlags.HideInHierarchy; // invisible in the hierarchy
+
+                    // Attach the MonoBehaviour
+                    var instance = go.AddComponent<ItemDataInstance>();
+
+                    // Initialize fields
+                    instance._definition = item;
+                    instance.quantity = myItemValue.quantity;
+                    instance.currentDurability = myItemValue.currentDurability;
+                    instance.equippedSlotName = myItemValue.equippedSlotName;
+                    instance.isFavorite = myItemValue.isFavorite;
+                    instance.enchantmentLevel = myItemValue.enchantmentLevel;
+                    instance.damageModifier = myItemValue.damageModifier;
+
+                    // Add to your list
+                    filteredItems.Add(instance);
                 }
             }
         }
@@ -102,14 +112,21 @@ public static class ItemsManager
             {
                 try
                 {
-                    var newItem = new ItemDataInstance(matchingItem, kvp.Value.quantity)
-                    {
-                        currentDurability = kvp.Value.currentDurability,
-                        equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty,
-                        isFavorite = kvp.Value.isFavorite,
-                        enchantmentLevel = kvp.Value.enchantmentLevel,
-                        damageModifier = kvp.Value.damageModifier
-                    };
+                    // Create a hidden GameObject for the item
+                    GameObject go = new GameObject("Item_" + kvp.Key);
+                    go.hideFlags = HideFlags.HideInHierarchy; // invisible in editor
+
+                    // Add the ItemDataInstance component
+                    var newItem = go.AddComponent<ItemDataInstance>();
+
+                    // Initialize fields
+                    newItem._definition = matchingItem;
+                    newItem.quantity = kvp.Value.quantity;
+                    newItem.currentDurability = kvp.Value.currentDurability;
+                    newItem.equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty;
+                    newItem.isFavorite = kvp.Value.isFavorite;
+                    newItem.enchantmentLevel = kvp.Value.enchantmentLevel;
+                    newItem.damageModifier = kvp.Value.damageModifier;
 
                     filteredItems.Add(newItem);
                 }

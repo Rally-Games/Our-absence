@@ -54,6 +54,8 @@ public class MainMenuController : MonoBehaviour
     private void InitializeDependencies()
     {
         globalVars = FindObjectOfType<ObjectsState>();
+        currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
+
         if (globalVars == null)
         {
             Debug.LogError("MainMenuController: ObjectsState not found!");
@@ -232,7 +234,9 @@ public class MainMenuController : MonoBehaviour
         if (isEquipmentMode && currentEquipmentControl != null)
         {
             var allowedTypes = currentEquipmentControl.GetAllowedItemTypes();
-            itemsList.itemsSource = items.Where(item => ((IEnumerable<ItemType>)allowedTypes).Contains(item._definition.ItemSubType)).ToList();
+            itemsList.itemsSource = items.Where(item => !ReferenceEquals(item, null) &&
+                   ((IEnumerable<ItemType>)allowedTypes).Contains(item._definition.ItemSubType))
+            .ToList();
         }
 
         itemsList.makeItem = () => new Button();
@@ -422,12 +426,25 @@ public class MainMenuController : MonoBehaviour
         // Add menu options
         var equipButton = new Button(() =>
         {
+
             debugMenu.DebugLog($"Quick equip {item._definition.ItemName}");
-            currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
             QuickEquipment(item);
+
             ClearOptionMenu();
         })
         { text = "Quick Equip" };
+
+        var unequipButton = new Button(() =>
+        {
+            if (currentEquipmentControl != null)
+            {
+                currentEquipmentControl.UnequipItem(currentEquipmentControl.GetSlot(item.equippedSlotName));
+                debugMenu.DebugLog($"Unequipped {item._definition.ItemName}");
+            }
+            ClearOptionMenu();
+        })
+        { text = "Unequip" };
+
 
         var removeButton = new Button(() =>
         {
@@ -462,7 +479,7 @@ public class MainMenuController : MonoBehaviour
         })
         { text = "Info" };
 
-        optionMenu.Add(equipButton);
+        if (item.equippedSlotName != null) optionMenu.Add(unequipButton); else optionMenu.Add(equipButton);
         optionMenu.Add(removeButton);
         optionMenu.Add(infoButton);
 

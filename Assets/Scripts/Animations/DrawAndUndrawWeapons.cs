@@ -64,9 +64,9 @@ public class DrawAndUndrawWeapons : MonoBehaviour
     {
         var item = equipmentManager.equipmentSlots["RW1"]?.item;
 
-        if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
+        if (animationManager.animator.GetBool("isWeaponDrawn") || item?._definition == null)
             attackAnimations.TriggerRightWeaponAttack(item?._definition.ItemID ?? 0.0f);
-        else
+        else if (item?._definition != null)
         {
             animationManager.TriggerAnimation("drawWeapon");
 
@@ -95,9 +95,11 @@ public class DrawAndUndrawWeapons : MonoBehaviour
     {
         var item = equipmentManager.equipmentSlots["LW1"]?.item;
 
-        if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
+        if (animationManager.animator.GetBool("isWeaponDrawn") || item?._definition == null)
+        {
             attackAnimations.TriggerLeftWeaponAttack(item?._definition.ItemID ?? 0.0f);
-        else
+        }
+        else if (item?._definition != null)
         {
             animationManager.TriggerAnimation("drawWeapon");
 
@@ -127,8 +129,8 @@ public class DrawAndUndrawWeapons : MonoBehaviour
             // Remove the weapon from the left hand
             foreach (Transform child in leftWeaponPrefab.transform)
             {
-                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
-                item2?.name != null ? child.name.Contains(item2.name) : false)
+                if (item1?._definition != null ? child.name.Contains(item1._definition.name) : false ||
+                item2?._definition != null ? child.name.Contains(item2._definition.name) : false)
                 {
                     Destroy(child.gameObject);
                     Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
@@ -138,8 +140,8 @@ public class DrawAndUndrawWeapons : MonoBehaviour
 
             foreach (Transform child in rightWeaponPrefab.transform)
             {
-                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
-                item2?.name != null ? child.name.Contains(item2.name) : false)
+                if (item1?._definition != null ? child.name.Contains(item1._definition.name) : false ||
+                item2?._definition != null ? child.name.Contains(item2._definition.name) : false)
                 {
                     Destroy(child.gameObject);
                     Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
