@@ -17,12 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 3f173269238ee3640971fcd60d6c66b6
   m_SerializeEntries:
-  - m_GUID: 09b3098f34ccd114b92b6141b78aece2
-    m_Address: Assets/Scripts/items/ScriptableObjects/apple.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InventoryItems
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3f8e897fba62c8a4dafd710856086fe3
     m_Address: Assets/Scripts/items/ScriptableObjects/ShortSword1.asset
     m_ReadOnly: 0

@@ -1,21 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
+using Newtonsoft.Json;
+using System.Net.WebSockets;
 
 
 public class SavePlayerData : MonoBehaviour
 {
     public Player_controller playerController;
     public MainMenuController mainMenuController;
+    public EquipmentControl equipmentControl;
     [SerializeField] private float autoSaveInterval = 60 * 5f; // Auto-save every 5 minutes default
+    PlayerSaveData.Data data;
 
     private void Start()
     {
         // Start automatic saving
         InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
-        PlayerSaveData.Data data = SaveAndLoad.LoadPlayerState();
+        data = SaveAndLoad.Load<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState);
         ItemsManager.Initialize(() =>
-            mainMenuController?.InitializeSavedItemsInInventory(ItemsManager.ConvertDataArrayToInventoryItemsArray(data.items))
+        {
+            var itemData = ItemsManager.ConvertDataDicToInventoryItemsArrayOptimized(data.items);
+            mainMenuController?.InitializeSavedItemsInInventory(itemData);
+            if (equipmentControl != null)
+            {
+                foreach (var item in itemData)
+                {
+                    if (!string.IsNullOrEmpty(item.equippedSlotName))
+                    {
+                        equipmentControl.EquipItem(item, equipmentControl.GetSlot(item.equippedSlotName));
+                    }
+                }
+            }
+        }
         );
         if (data?.position != null && data.position.Length == 3)
             playerController.transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
@@ -36,6 +54,22 @@ public class SavePlayerData : MonoBehaviour
         Debug.Log("Autosave complete!");
     }
 
+    private PlayerSaveData.Data NewSaveData()
+    {
+        data = new PlayerSaveData.Data()
+        {
+            position = new float[] { playerController.transform.position.x, playerController.transform.position.y, playerController.transform.position.z },
+            items = new Dictionary<int, PlayerSaveData.ItemData>()
+        };
+
+        foreach (var itemInstance in mainMenuController.GetAllInventory())
+        {
+            foreach (var item in itemInstance.items)
+                data.items[item.GetHashCode()] = new PlayerSaveData.ItemData(item);
+        }
+        return data;
+    }
+
     private void Save()
     {
         if (playerController == null || mainMenuController == null)
@@ -44,77 +78,81 @@ public class SavePlayerData : MonoBehaviour
             return;
         }
 
-        PlayerSaveData playerData = new PlayerSaveData(
-            playerController.transform.position,
-            mainMenuController.GetAllInventory(),
-            mainMenuController
-        );
-
-        SaveAndLoad.SavePlayerState(new PlayerSaveData.Data(
-            playerData.position,
-            playerData.items
-        ));
+        var newData = NewSaveData();
+        SaveAndLoad.Save<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState, newData);
     }
 
     [System.Serializable]
     public class PlayerSaveData
     {
-        //public int health;
-        //public int stamina;
-        private MainMenuController mainMenuController;
-        public float[] position; // x, y, z
-        public Dictionary<int, ItemData> items; // IDs of items in inventory
-
-        public PlayerSaveData(Vector3 position, List<MainMenuController.ItemsCategory> inventory, MainMenuController mainMenuController = null)
+        [System.Serializable]
+        public class Data
         {
-            this.position = new float[] { (float)position.x, (float)position.y, (float)position.z };
-            this.items = new Dictionary<int, ItemData>();
-            this.mainMenuController = mainMenuController;
+            public float[] position;
+            public Dictionary<int, ItemData> items = new Dictionary<int, ItemData>();
 
-            foreach (var category in inventory)
+            [JsonIgnore]
+            public Dictionary<int, ItemDataInstance> itemsInstance;
+
+            // Rebuild runtime objects after load
+            public void RebuildRuntimeItems()
             {
-                int i = 0;
-                foreach (var item in category.items)
+                itemsInstance = new Dictionary<int, ItemDataInstance>();
+                foreach (var kvp in items)
                 {
-                    string equipSlot = "";
-                    if (mainMenuController?.GetEquipmentControl() != null)
-                        equipSlot = mainMenuController.GetEquipmentControl().HasItemEquipped(item.itemID) ?? "";
+                    InventoryItem def = ItemsManager.GetItemByID(kvp.Value.itemID);
+                    if (def != null)
+                    {
+                        // Create a hidden GameObject
+                        GameObject go = new GameObject("Item_" + kvp.Key);
+                        go.hideFlags = HideFlags.HideInHierarchy; // invisible in hierarchy
 
-                    items[i++] = new ItemData(item.itemName,
-                    item.itemID,
-                    equipSlot);
+                        // Add the ItemDataInstance component
+                        var instance = go.AddComponent<ItemDataInstance>();
+
+                        // Initialize fields
+                        instance._definition = def;
+                        instance.quantity = kvp.Value.quantity;
+                        instance.currentDurability = kvp.Value.currentDurability;
+                        instance.equippedSlotName = kvp.Value.equippedSlotName ?? string.Empty;
+                        instance.isFavorite = kvp.Value.isFavorite;
+                        instance.enchantmentLevel = kvp.Value.enchantmentLevel;
+                        instance.damageModifier = kvp.Value.damageModifier;
+
+                        // Add to the dictionary
+                        itemsInstance[kvp.Key] = instance;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Cannot find InventoryItem for ID {kvp.Value.itemID}");
+                    }
                 }
             }
         }
 
         [System.Serializable]
-        public class Data
+        public class ItemData
         {
-            public float[] position; // x, y, z
-            public Dictionary<int, ItemData> items; // IDs of items in inventory
+            public int itemID;
+            public int quantity;
+            public float currentDurability;
+            public string equippedSlotName;
+            public bool isFavorite;
+            public int enchantmentLevel;
+            public float damageModifier;
 
-            public Data(float[] position, Dictionary<int, ItemData> items)
+            public ItemData() { }
+
+            public ItemData(ItemDataInstance item)
             {
-                this.position = position;
-                this.items = items;
+                itemID = item.itemID;
+                quantity = item.quantity;
+                currentDurability = item.currentDurability;
+                equippedSlotName = item.equippedSlotName;
+                isFavorite = item.isFavorite;
+                enchantmentLevel = item.enchantmentLevel;
+                damageModifier = item.damageModifier;
             }
-        }
-    }
-
-
-
-    [System.Serializable]
-    public class ItemData
-    {
-        public string itemName;
-        public int itemID;
-        public string equipSlot;
-
-        public ItemData(string itemName, int itemID, string equipSlot = null)
-        {
-            this.itemName = itemName;
-            this.itemID = itemID;
-            this.equipSlot = equipSlot;
         }
     }
 }

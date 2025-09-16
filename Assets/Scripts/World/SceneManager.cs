@@ -49,7 +49,7 @@ public class SceneManager : MonoBehaviour
         {
             pickableItemsInScene[i++] = new PickableItem(obj);
         }
-        SaveAndLoad.SaveScenePickableItems(pickableItemsInScene);
+        SaveAndLoad.Save<Dictionary<int, PickableItem>>(SaveAndLoad.savePathSceneState, pickableItemsInScene);
     }
 
     private IEnumerator WaitForItemsManagerAndLoad()
@@ -65,11 +65,11 @@ public class SceneManager : MonoBehaviour
 
     private void Load()
     {
-        SaveAndLoad.LoadScenePickableItems(ref pickableItemsInScene);
+        pickableItemsInScene = SaveAndLoad.Load<Dictionary<int, PickableItem>>(SaveAndLoad.savePathSceneState);
 
         if (pickableItemsInScene == null)
         {
-            Debug.LogError("pickableItemsInScene is NULL after LoadScenePickableItems!");
+            Debug.LogWarning("pickableItemsInScene is NULL after LoadScenePickableItems!");
             return;
         }
         int i = pickableItemsInScene.Last().Key + 1;
@@ -83,7 +83,7 @@ public class SceneManager : MonoBehaviour
         {
             if (obj.itemID == -1)
             {
-                Debug.LogError("Found invalid PickableItem (itemID == -1) in pickableItemsInScene!");
+                Debug.LogWarning("Found invalid PickableItem (itemID == -1) in pickableItemsInScene!");
                 continue;
             }
 
@@ -105,7 +105,7 @@ public class SceneManager : MonoBehaviour
                 Debug.Log($"Spawning item {obj.itemID} at {obj.position[0]}, {obj.position[1]}, {obj.position[2]}");
 
                 Instantiate(
-                    itemDef.objectRef,
+                    itemDef.ObjectRef,
                     new Vector3(obj.position[0], obj.position[1], obj.position[2]),
                     Quaternion.identity
                 );
@@ -123,8 +123,8 @@ public class SceneManager : MonoBehaviour
         {
             isExistInScene = obj.activeSelf;
             position = new float[] { obj.transform.position.x, obj.transform.position.y, obj.transform.position.z };
-            var itemComponent = obj.GetComponentInChildren<PickUpItem>();
-            itemID = itemComponent != null ? itemComponent.Item.itemID : -1;
+            var itemComponent = obj.GetComponent<PickUpItem>();
+            itemID = itemComponent != null ? itemComponent.Item._definition.ItemID : -1;
         }
     }
 

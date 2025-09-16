@@ -17,6 +17,7 @@ public class Player_controller : MonoBehaviour
     private AnimationManager animationManager;
     private MovementAnimationController movementAnimations;
     private AttackAnimationController attackAnimations;
+    private EquipmentControl equipmentControl;
     private Rig playerRig;
 
     private Vector3 velocity;
@@ -28,6 +29,7 @@ public class Player_controller : MonoBehaviour
     [SerializeField] private float gravity = 9.81f;
     [SerializeField] private float rotateSpeed = 3f;
     [SerializeField] private float pushForce = 1f;
+    [SerializeField] private float rangeOfItemDetection = 2.0f;
     public bool isPickingUp = false;
 
     [Header("Target Settings")]
@@ -36,16 +38,6 @@ public class Player_controller : MonoBehaviour
     private InputAction rollAction;
     private InputAction runAction;
     private InputAction lockOnAction;
-    private InputAction playerLeftAttack;
-    private InputAction playerRightAttack;
-    private InputAction undrawWeaponAction;
-
-    [Header("Equipment")]
-    private EquipmentControl equipmentManager;
-
-    [Header("Equipment Prefabs")]
-    public GameObject leftWeaponPrefab;
-    public GameObject rightWeaponPrefab;
 
     public bool isLockOn = false;
 
@@ -62,9 +54,9 @@ public class Player_controller : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         animationManager = GetComponent<AnimationManager>();
-        equipmentManager = FindObjectOfType<EquipmentControl>();
         playerRig = GetComponentInChildren<Rig>();
         mainCamera = Camera.main;
+        equipmentControl = FindObjectOfType<EquipmentControl>();
 
         // Initialize movement animation controller
         movementAnimations = new MovementAnimationController(animationManager);
@@ -77,9 +69,6 @@ public class Player_controller : MonoBehaviour
         rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
         lockOnAction = playerInput.actions["LockOn"];
-        playerLeftAttack = playerInput.actions["Fire"];
-        playerRightAttack = playerInput.actions["SecFire"];
-        undrawWeaponAction = playerInput.actions["UndrawWeapon"];
     }
 
     void Start()
@@ -87,100 +76,11 @@ public class Player_controller : MonoBehaviour
         GlobalVariables = FindObjectOfType<ObjectsState>();
     }
 
-    public void UndrawWeapon(InventoryItem item1, InventoryItem item2)
-    {
-        if (animationManager.animator.GetBool("isWeaponDrawn"))
-        {
-            animationManager.SetBoolParam("isWeaponDrawn", false);
-
-            // Remove the weapon from the left hand
-            foreach (Transform child in leftWeaponPrefab.transform)
-            {
-                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
-                item2?.name != null ? child.name.Contains(item2.name) : false)
-                {
-                    Destroy(child.gameObject);
-                    Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
-                    break;
-                }
-            }
-
-            foreach (Transform child in rightWeaponPrefab.transform)
-            {
-                if (item1?.name != null ? child.name.Contains(item1.name) : false ||
-                item2?.name != null ? child.name.Contains(item2.name) : false)
-                {
-                    Destroy(child.gameObject);
-                    Debug.Log($"Destroyed weapon: {child.name} (matched by name)");
-                    break;
-                }
-            }
-        }
-    }
-
     private void Update()
     {
         GetInput();
 
-        if (undrawWeaponAction.triggered && GlobalVariables.menuOpen == false)
-        {
-            var item1 = equipmentManager.equipmentSlots["LW1"]?.item;
-            var item2 = equipmentManager.equipmentSlots["RW1"]?.item;
-            UndrawWeapon(item1, item2);
-        }
-
-        if (playerLeftAttack.triggered && GlobalVariables.menuOpen == false)
-        {
-            var item = equipmentManager.equipmentSlots["LW1"]?.item;
-
-            if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-                attackAnimations.TriggerLeftWeaponAttack(item?.itemID ?? 0.0f);
-            else
-            {
-                animationManager.TriggerAnimation("drawWeapon");
-
-                var spawnedItem = Instantiate(
-                    item.objectRef,
-                    leftWeaponPrefab.transform.position,
-                    leftWeaponPrefab.transform.rotation,
-                    leftWeaponPrefab.transform
-                );
-                spawnedItem.transform.SetParent(leftWeaponPrefab.transform, false);
-                spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
-                spawnedItem.GetComponentInChildren<Collider>().enabled = false;
-                spawnedItem.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
-                spawnedItem.transform.localPosition = new Vector3(0f, 0.05f, 0f);
-                spawnedItem.tag = leftWeaponPrefab.tag;
-                spawnedItem.layer = leftWeaponPrefab.layer;
-
-            }
-        }
-
-        if (playerRightAttack.triggered && GlobalVariables.menuOpen == false)
-        {
-            var item = equipmentManager.equipmentSlots["RW1"]?.item;
-
-            if (animationManager.animator.GetBool("isWeaponDrawn") || item == null)
-                attackAnimations.TriggerRightWeaponAttack(item?.itemID ?? 0.0f);
-            else
-            {
-                animationManager.TriggerAnimation("drawWeapon");
-
-                var spawnedItem = Instantiate(
-                                    item.objectRef,
-                                    rightWeaponPrefab.transform.position,
-                                    rightWeaponPrefab.transform.rotation,
-                                    rightWeaponPrefab.transform
-                                );
-                spawnedItem.transform.SetParent(rightWeaponPrefab.transform, false);
-                spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
-                spawnedItem.GetComponentInChildren<Collider>().enabled = false;
-                spawnedItem.transform.localRotation = Quaternion.Euler(90f, 0, 90f);
-                spawnedItem.transform.localPosition = new Vector3(0f, 0.05f, 0f);
-                spawnedItem.tag = rightWeaponPrefab.tag;
-                spawnedItem.layer = rightWeaponPrefab.layer;
-            }
-        }
+        if (isPickingUp == false) equipmentControl.PickUpItem(this.gameObject, rangeOfItemDetection);
 
         if (lockOnAction.triggered)
         {
