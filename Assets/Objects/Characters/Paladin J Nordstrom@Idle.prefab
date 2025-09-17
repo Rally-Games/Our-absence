@@ -2248,8 +2248,8 @@ Transform:
   m_GameObject: {fileID: 7392617814582920060}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.2888014, y: 7.162789, z: 75.897}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 232.967, y: 317.847, z: -329.09}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2417404802696657234}
@@ -2265,7 +2265,7 @@ CharacterController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7392617814582920060}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: fdbd3742efbeb4b02972a0c41ef66a70, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2473,10 +2473,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 0}
-  speed: 2.5
+  speed: 7
   gravity: 9.81
   rotateSpeed: 7
   pushForce: 1
+  rangeOfItemDetection: 2
   isPickingUp: 0
   isLockOn: 0
 --- !u!114 &7046477095831893512
@@ -2507,6 +2508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 5764245016520509895}
   mainMenuController: {fileID: 0}
+  equipmentControl: {fileID: 0}
   autoSaveInterval: 300
 --- !u!114 &2186055105918183177
 MonoBehaviour:

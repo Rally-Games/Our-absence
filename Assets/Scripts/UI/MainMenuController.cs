@@ -148,7 +148,7 @@ public class MainMenuController : MonoBehaviour
     public void OnInventoryButtonClicked()
     {
         ShowInventoryView();
-        currentEquipmentControl = null; // Clear equipment context
+        currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
         debugMenu.DebugLog("Switched to Inventory view");
     }
 
@@ -468,6 +468,7 @@ public class MainMenuController : MonoBehaviour
                 debugMenu.DebugLog("Player not found in scene.");
             }
             RemoveItemFromInventory(item);
+            currentEquipmentControl.UnequipItem(currentEquipmentControl.GetSlot(item.equippedSlotName));
             ClearOptionMenu();
         })
         { text = "Drop" };
@@ -479,7 +480,7 @@ public class MainMenuController : MonoBehaviour
         })
         { text = "Info" };
 
-        if (item.equippedSlotName != null) optionMenu.Add(unequipButton); else optionMenu.Add(equipButton);
+        if (item.equippedSlotName == null || item.equippedSlotName == "") optionMenu.Add(equipButton); else optionMenu.Add(unequipButton);
         optionMenu.Add(removeButton);
         optionMenu.Add(infoButton);
 
