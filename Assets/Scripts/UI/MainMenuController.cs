@@ -3,11 +3,12 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
 using System.Security.Cryptography;
+using System;
 
 public class MainMenuController : MonoBehaviour
 {
     [Header("Debug")]
-    private DebugMenu debugMenu = new DebugMenu(true);
+    private DebugMenu debugMenu = new DebugMenu(false);
 
     [Header("Dependencies")]
     private ObjectsState globalVars;
@@ -28,7 +29,7 @@ public class MainMenuController : MonoBehaviour
     [Header("Data")]
     private List<ItemsCategory> categories = new List<ItemsCategory>();
     private ItemsCategory selectedCategory;
-    private InventoryItem selectedItem;
+    private ItemDataInstance selectedItem;
 
     [Header("Equipment Integration")]
     private EquipmentControl currentEquipmentControl;
@@ -38,7 +39,7 @@ public class MainMenuController : MonoBehaviour
     {
         InitializeDependencies();
         InitializeUI();
-        InitializeExampleData();
+        InitializeData();
         PopulateCategories();
         SetInitialView();
     }
@@ -53,6 +54,8 @@ public class MainMenuController : MonoBehaviour
     private void InitializeDependencies()
     {
         globalVars = FindObjectOfType<ObjectsState>();
+        currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
+
         if (globalVars == null)
         {
             Debug.LogError("MainMenuController: ObjectsState not found!");
@@ -94,62 +97,49 @@ public class MainMenuController : MonoBehaviour
         ShowInventoryView();
     }
 
-    private void InitializeExampleData()
+    private void InitializeData()
     {
         categories.Clear();
-
         categories.Add(new ItemsCategory
         {
             categoryName = "Weapons",
             categoryType = CategoryType.Weapon,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Armor",
             categoryType = CategoryType.Armor,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Ammunition",
             categoryType = CategoryType.Ammo,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Magic Items",
             categoryType = CategoryType.MagicItems,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Quick Items",
             categoryType = CategoryType.EquipmentItems,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
 
         categories.Add(new ItemsCategory
         {
             categoryName = "Miscellaneous",
             categoryType = CategoryType.Misc,
-            items = new List<InventoryItem>
-            {
-            }
+            items = new List<ItemDataInstance>()
         });
     }
     #endregion
@@ -235,16 +225,18 @@ public class MainMenuController : MonoBehaviour
     #endregion
 
     #region Item List Management
-    private void PopulateItems(List<InventoryItem> items, bool isEquipmentMode = false)
+    private void PopulateItems(List<ItemDataInstance> items, bool isEquipmentMode = false)
     {
         if (itemsList == null) return;
 
         selectedItem = null;
-        itemsList.itemsSource = new List<InventoryItem>(items);
+        itemsList.itemsSource = new List<ItemDataInstance>(items);
         if (isEquipmentMode && currentEquipmentControl != null)
         {
             var allowedTypes = currentEquipmentControl.GetAllowedItemTypes();
-            itemsList.itemsSource = items.Where(item => ((IEnumerable<ItemType>)allowedTypes).Contains(item.itemType)).ToList();
+            itemsList.itemsSource = items.Where(item => !ReferenceEquals(item, null) &&
+                   ((IEnumerable<ItemType>)allowedTypes).Contains(item._definition.ItemSubType))
+            .ToList();
         }
 
         itemsList.makeItem = () => new Button();
@@ -253,10 +245,10 @@ public class MainMenuController : MonoBehaviour
         {
             if (index >= itemsList.itemsSource.Count) return;
 
-            var item = (InventoryItem)itemsList.itemsSource[index];
+            var item = (ItemDataInstance)itemsList.itemsSource[index];
             var button = element as Button;
 
-            button.text = item.itemName;
+            button.text = item._definition.ItemName;
 
             // Clear previous event handlers
             button.clicked -= null;
@@ -274,10 +266,10 @@ public class MainMenuController : MonoBehaviour
         itemsList.Rebuild();
     }
 
-    private void HandleNormalItemClick(InventoryItem item, Button button)
+    private void HandleNormalItemClick(ItemDataInstance item, Button button)
     {
         selectedItem = item;
-        debugMenu.DebugLog($"Selected item: {item.itemName}");
+        debugMenu.DebugLog($"Selected item: {item._definition.ItemName}");
 
         var worldPos = button.worldBound.position;
         var menuPos = worldPos + new Vector2(0, button.resolvedStyle.height);
@@ -285,20 +277,20 @@ public class MainMenuController : MonoBehaviour
         ShowItemOptionMenu(menuPos, item, button);
     }
 
-    private void HandleEquipmentModeItemClick(InventoryItem item)
+    private void HandleEquipmentModeItemClick(ItemDataInstance item)
     {
         if (currentEquipmentControl != null)
         {
-            currentEquipmentControl.EquipItem(item);
+            currentEquipmentControl.EquipItem(item, currentEquipmentControl.selectedSlot);
             OnEquipmentButtonClicked(); // Return to equipment view
         }
     }
     #endregion
 
     #region Equipment Integration
-    public void QuickEquipment(InventoryItem item)
+    public void QuickEquipment(ItemDataInstance item)
     {
-        switch (item.itemType)
+        switch (item._definition.ItemSubType)
         {
             case ItemType.QuickItem:
                 currentEquipmentControl?.EquipToQuickItem(item);
@@ -323,7 +315,7 @@ public class MainMenuController : MonoBehaviour
                 currentEquipmentControl?.EquipToMagicItem(item);
                 break;
             default:
-                debugMenu.DebugLog($"No quick equip slot for item type: {item.itemType}");
+                debugMenu.DebugLog($"No quick equip slot for item type: {item._definition.ItemSubType}");
                 break;
         }
         OnEquipmentButtonClicked();
@@ -343,28 +335,28 @@ public class MainMenuController : MonoBehaviour
         debugMenu.DebugLog($"Opened inventory for equipment: {categoryType}");
     }
 
-    public void RemoveItemFromInventory(InventoryItem item)
+    public void RemoveItemFromInventory(ItemDataInstance item)
     {
         foreach (var category in categories)
         {
             if (category.items.Remove(item))
             {
-                debugMenu.DebugLog($"Removed {item.itemName} from inventory");
+                debugMenu.DebugLog($"Removed {item._definition.ItemName} from inventory");
                 RefreshCurrentView();
                 return;
             }
         }
     }
 
-    public void ReturnItemToInventory(InventoryItem item)
+    public void ReturnItemToInventory(ItemDataInstance item)
     {
-        var itemCategory = GetItemCategory(item.itemType);
+        var itemCategory = GetItemCategory(item._definition.ItemSubType);
         var category = GetCategoryByType(itemCategory);
 
         if (category != null)
         {
             category.items.Add(item);
-            debugMenu.DebugLog($"Returned {item.itemName} to inventory");
+            debugMenu.DebugLog($"Returned {item._definition.ItemName} to inventory");
             RefreshCurrentView();
         }
     }
@@ -393,7 +385,7 @@ public class MainMenuController : MonoBehaviour
     #endregion
 
     #region Item Option Menu
-    private void ShowItemOptionMenu(Vector2 position, InventoryItem item, VisualElement ownerButton)
+    private void ShowItemOptionMenu(Vector2 position, ItemDataInstance item, VisualElement ownerButton)
     {
         ClearOptionMenu();
 
@@ -434,28 +426,41 @@ public class MainMenuController : MonoBehaviour
         // Add menu options
         var equipButton = new Button(() =>
         {
-            debugMenu.DebugLog($"Quick equip {item.itemName}");
-            currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
+
+            debugMenu.DebugLog($"Quick equip {item._definition.ItemName}");
             QuickEquipment(item);
+
             ClearOptionMenu();
         })
         { text = "Quick Equip" };
 
+        var unequipButton = new Button(() =>
+        {
+            if (currentEquipmentControl != null)
+            {
+                currentEquipmentControl.UnequipItem(currentEquipmentControl.GetSlot(item.equippedSlotName));
+                debugMenu.DebugLog($"Unequipped {item._definition.ItemName}");
+            }
+            ClearOptionMenu();
+        })
+        { text = "Unequip" };
+
+
         var removeButton = new Button(() =>
         {
-            var player = GameObject.FindWithTag("Player");
+            var player = FindObjectOfType<Player_controller>();
             if (player != null)
             {
 
-                if (item.objectRef != null)
+                if (item._definition.ObjectRef != null)
                 {
-                    var spawnPosition = player.transform.position + player.transform.forward * 2f + Vector3.up * 0.5f;
-                    var droppedItem = Instantiate(item.objectRef, spawnPosition, Quaternion.identity);
-                    debugMenu.DebugLog($"Dropped {item.itemName} on the ground at {spawnPosition}");
+                    var spawnPosition = player.transform.position + player.transform.forward + Vector3.up * 0.5f;
+                    var droppedItem = Instantiate(item._definition.ObjectRef, spawnPosition, Quaternion.identity);
+                    debugMenu.DebugLog($"Dropped {item._definition.ItemName} on the ground at {spawnPosition}");
                 }
                 else
                 {
-                    debugMenu.DebugLog($"Prefab not found for item: {item.itemName}");
+                    debugMenu.DebugLog($"Prefab not found for item: {item._definition.ItemName}");
                 }
             }
             else
@@ -474,7 +479,7 @@ public class MainMenuController : MonoBehaviour
         })
         { text = "Info" };
 
-        optionMenu.Add(equipButton);
+        if (item.equippedSlotName != null) optionMenu.Add(unequipButton); else optionMenu.Add(equipButton);
         optionMenu.Add(removeButton);
         optionMenu.Add(infoButton);
 
@@ -500,42 +505,59 @@ public class MainMenuController : MonoBehaviour
         clickCatcher = null;
     }
 
-    private void ShowItemInfo(InventoryItem item)
+    private void ShowItemInfo(ItemDataInstance item)
     {
-        debugMenu.DebugLog($"Item Info - Name: {item.itemName}, Type: {item.itemType}, ID: {item.itemID}");
+        debugMenu.DebugLog($"Item Info - Name: {item._definition.ItemName}, Type: {item._definition.ItemSubType}, ID: {item._definition.ItemID}");
         // Could open a detailed info panel here
     }
     #endregion
 
     #region Public API
-    public InventoryItem GetSelectedItem()
+    public ItemDataInstance GetSelectedItem()
     {
         return selectedItem;
     }
 
-    public void AddItemToInventory(InventoryItem item)
+    public void AddItemToInventory(ItemDataInstance item)
     {
-        var itemCategory = GetItemCategory(item.itemType);
+        var itemCategory = GetItemCategory(item._definition.ItemSubType);
         var category = GetCategoryByType(itemCategory);
 
         if (category != null)
         {
             category.items.Add(item);
             RefreshCurrentView();
-            debugMenu.DebugLog($"Added {item.itemName} to inventory");
         }
     }
 
-    public bool HasItem(int itemID)
+    public void InitializeSavedItemsInInventory(List<ItemDataInstance> items)
     {
-        return categories.Any(category => category.items.Any(item => item.itemID == itemID));
+        debugMenu.DebugLog($"Initializing inventory with {items.Count} saved items");
+        foreach (var item in items)
+        {
+            AddItemToInventory(item);
+        }
     }
 
-    public InventoryItem GetItemByID(int itemID)
+    public List<ItemsCategory> GetAllInventory()
+    {
+        return categories;
+    }
+
+    public EquipmentControl GetEquipmentControl()
+    {
+        return currentEquipmentControl;
+    }
+    public bool HasItem(int itemID)
+    {
+        return categories.Any(category => category.items.Any(item => item._definition.ItemID == itemID));
+    }
+
+    public ItemDataInstance GetItemByID(int itemID)
     {
         foreach (var category in categories)
         {
-            var item = category.items.FirstOrDefault(i => i.itemID == itemID);
+            var item = category.items.FirstOrDefault(i => i._definition.ItemID == itemID);
             if (item != null) return item;
         }
         return null;
@@ -548,7 +570,7 @@ public class MainMenuController : MonoBehaviour
     {
         public string categoryName;
         public CategoryType categoryType;
-        public List<InventoryItem> items = new List<InventoryItem>();
+        public List<ItemDataInstance> items = new List<ItemDataInstance>();
     }
 
     [System.Serializable]

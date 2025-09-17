@@ -6,6 +6,7 @@ Build/
 Builds/
 Logs/
 UserSettings/
+.plastic/
 
 # Unity crash and debug reports
 MemoryCaptures/

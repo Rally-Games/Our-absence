@@ -6,31 +6,27 @@ using UnityEngine.InputSystem;
 
 public class PickUpItem : MonoBehaviour
 {
-    public InventoryItem Item;
-    private Player_controller playerScript;
+    public ItemDataInstance Item;
     public float detectionRadius = 3.0f;
-    private MainMenuController mainMenu;
     private PlayerInput playerInput;
 
-    void Start()
+    void Awake()
     {
-        mainMenu = FindAnyObjectByType<MainMenuController>();
         playerInput = FindAnyObjectByType<PlayerInput>();
-        playerScript = FindAnyObjectByType<Player_controller>();
+        Item = GetComponent<ItemDataInstance>();
     }
 
-    void Update()
+    public ItemDataInstance IsPickUpItemInRange()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Player") && playerInput.actions["Interact"].triggered)
             {
-                playerScript.isPickingUp = true;
-                mainMenu.AddItemToInventory(Item);
-                Destroy(gameObject);
+                return Item;
             }
         }
+        return null;
     }
 
 }

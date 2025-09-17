@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: ShortSword1
   m_EditorClassIdentifier: 
   itemName: Simple short sword
-  itemType: 1
+  itemSubType: 1
+  itemCategory: 0
   itemID: 1
   icon: {fileID: 0}
-  value: 10
   objectRef: {fileID: 352565146651498298, guid: 26cf473098d95c44eb005b0d35a91eca, type: 3}
+  isStackable: 0
+  maxStackSize: 1
+  maxDurability: 100
+  isDroppable: 1

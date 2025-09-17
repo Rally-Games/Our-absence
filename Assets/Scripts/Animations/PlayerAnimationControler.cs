@@ -17,9 +17,6 @@ public class AnimationManager : MonoBehaviour
     private AttackAnimationController attackAnimations;
     private DodgeAnimationController dodgeAnimations;
 
-    private bool isAttackFinished = false;
-    private bool isInAttackAnimation = false;
-
     public int[] ActiveLayersIndex { get; private set; } = new int[3];
 
     private void Awake()
@@ -103,10 +100,6 @@ public class AnimationManager : MonoBehaviour
 public class AttackAnimationController
 {
     private AnimationManager animationManager;
-
-    // Animation names
-    private const string BOXING_LEFT = "Boxing left";
-    private const string BOXING_RIGHT = "Boxing right";
 
     // Triggers names
     private const string ATTACK_TRIGGER_LEFT = "isAttackingLeft";
