@@ -190,6 +190,11 @@ public class EquipmentControl : MonoBehaviour
 
     public void UnequipItem(EquipmentSlot slot)
     {
+        if (slot == null)
+        {
+            Debug.LogWarning("EquipmentControl: No slot selected for unequipping!");
+            return;
+        }
         if (!slot.HasItem()) return;
 
         var item = slot.item;
@@ -425,7 +430,18 @@ public class EquipmentControl : MonoBehaviour
 
     internal object GetAllowedItemTypes()
     {
-        if (selectedSlot == null) return null;
+        if (selectedSlot == null) return new[] { MainMenuController.ItemType.LightWeapon,
+        MainMenuController.ItemType.HeavyWeapon,
+        MainMenuController.ItemType.Bow,
+        MainMenuController.ItemType.Crossbow,
+        MainMenuController.ItemType.Helmet,
+        MainMenuController.ItemType.Chestplate,
+        MainMenuController.ItemType.Leggings,
+        MainMenuController.ItemType.Gauntlets,
+        MainMenuController.ItemType.MagicItem,
+        MainMenuController.ItemType.Bolts,
+        MainMenuController.ItemType.Arrows,
+        MainMenuController.ItemType.QuickItem};
 
         switch (selectedSlot.button.name)
         {
