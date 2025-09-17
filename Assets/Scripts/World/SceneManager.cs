@@ -26,10 +26,6 @@ public class SceneManager : MonoBehaviour
         {
             Save();
         }
-        if (Input.GetKeyDown(KeyCode.F6))
-        {
-            Load();
-        }
     }
 
     private void AutoSave()
@@ -70,9 +66,10 @@ public class SceneManager : MonoBehaviour
         if (pickableItemsInScene == null)
         {
             Debug.LogWarning("pickableItemsInScene is NULL after LoadScenePickableItems!");
+            pickableItemsInScene = new Dictionary<int, PickableItem>();
             return;
         }
-        int i = pickableItemsInScene.Last().Key + 1;
+        int i = (pickableItemsInScene.Count() > 0 ? pickableItemsInScene.Last().Key : 0) + 1;
         foreach (var obj in allObjects)
         {
             pickableItemsInScene[i++] = new PickableItem(obj);

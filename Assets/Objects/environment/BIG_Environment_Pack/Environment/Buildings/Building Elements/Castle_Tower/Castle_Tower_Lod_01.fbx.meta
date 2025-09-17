@@ -1,0 +1,161 @@
+fileFormatVersion: 2
+guid: eb5503563478e3c46ac9f53c13ee7767
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: CT_Braces
+    100004: CT_Planks
+    100006: CT_Roof
+    100008: CT_Wall
+    100010: door_08
+    100012: windows_01
+    400000: //RootNode
+    400002: CT_Braces
+    400004: CT_Planks
+    400006: CT_Roof
+    400008: CT_Wall
+    400010: door_08
+    400012: windows_01
+    2300000: CT_Braces
+    2300002: CT_Planks
+    2300004: CT_Roof
+    2300006: CT_Wall
+    2300008: door_08
+    2300010: windows_01
+    3300000: CT_Braces
+    3300002: CT_Planks
+    3300004: CT_Roof
+    3300006: CT_Wall
+    3300008: door_08
+    3300010: windows_01
+    4300000: Brace_Stones_04_001
+    4300002: window_01_001
+    4300004: CT_Planks
+    4300006: CT_Roof
+    4300008: CT_Wall
+    4300010: CT_BraceStones
+    4300012: CT_Braces
+    4300014: door_08
+    4300016: windows_01
+    4300018: old_tower
+    4300020: ivy_01
+    4300022: stairs_01
+    4300024: tower_02
+    4300026: door_03
+    4300028: plank_01
+    4300030: Brace_Stones_02
+    4300032: stonewall_021
+    4300034: stonewall_03
+    4300036: Brace_Stones_03
+    4300038: Brace_Stones_04
+    4300040: Brace_Stones_01
+    4300042: stonewall_04
+    4300044: stonewall_01
+    4300046: door_01
+    4300048: door_05
+    4300050: tower_stone_braces_01
+    4300052: bridge_01
+    4300054: plank_06
+    4300056: house_roofs
+    4300058: houses_01
+    4300060: chains
+    4300062: tower_01_planks
+    4300064: door_02
+    4300066: towergate
+    4300068: plank_02
+    4300070: tower_03
+    4300072: door_04
+    4300074: plank_05
+    4300076: housestonebracer_01
+    4300078: houses_wood_01
+    4300080: tower_planks
+    4300082: plank_07
+    4300084: tower_roof_01
+    4300086: plank_04
+    4300088: door_06
+    4300090: tower_01
+    4300092: window_01
+    4300094: door_07
+    11100000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
