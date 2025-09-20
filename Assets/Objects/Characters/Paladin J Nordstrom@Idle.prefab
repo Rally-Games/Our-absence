@@ -2473,9 +2473,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 0}
-  speed: 7
+  speed: 5
   gravity: 9.81
-  rotateSpeed: 7
+  rotateSpeed: 5
   pushForce: 1
   rangeOfItemDetection: 2
   isPickingUp: 0
