@@ -1837,22 +1837,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   patrolPoints: []
-  speed: 4
+  speed: 5
   currentState: 0
   meleeAttackRange: 1
-  stopChasingRange: 10
+  stopChasingRange: 20
   optimalCombatRange: 4
-  detectionRadius: 7
-  detectionAngle: 45
+  distanceBuffer: 0.5
+  detectionRadius: 100
+  detectionAngle: 100
   maxRetreatDistance: 5
   orbitRadius: 10
   orbitSpeed: 1
   strafeJitter: 0.5
-  aggression: 0.6
+  aggression: 0.8
   caution: 0.3
   combatStateTimer: 0
-  minCombatTime: 1
-  maxCombatTime: 3
+  minCombatTime: 0
+  maxCombatTime: 1.5
   consecutiveAttacks: 0
   maxConsecutiveAttacks: 2
   lastAttackTime: 0
@@ -1860,6 +1861,11 @@ MonoBehaviour:
   playerMovingTowardsMe: 0
   playerMovingAway: 0
   lastPlayerPosition: {x: 0, y: 0, z: 0}
+  minSpeed: 0.1
+  approachThreshold: 0.2
+  ignoreYForAnalysis: 1
+  smoothing: 0.5
+  stateTransitionCooldown: 0.3
 --- !u!1 &7653164757048617511
 GameObject:
   m_ObjectHideFlags: 0
