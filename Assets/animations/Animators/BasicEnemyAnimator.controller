@@ -273,6 +273,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: isAttacking
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1102 &-4998988518416036027
 AnimatorState:
   serializedVersion: 6
@@ -751,6 +753,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: isAttacking
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1101 &1648582618561126467
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1073,6 +1077,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: 
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1101 &4126674195697836180
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
