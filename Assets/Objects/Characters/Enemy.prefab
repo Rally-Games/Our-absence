@@ -1751,7 +1751,7 @@ GameObject:
   - component: {fileID: 5701723127887832382}
   - component: {fileID: 4508166217511250249}
   - component: {fileID: 6084471995622745966}
-  - component: {fileID: 3999993964229710857}
+  - component: {fileID: 9060513308337652291}
   m_Layer: 11
   m_Name: Enemy
   m_TagString: Enemy
@@ -1769,7 +1769,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -12.32, y: 7.162789, z: 75.897}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2379458284240345546}
@@ -1815,7 +1815,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 16a5390ca3cc3134687e8946e06784bc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -1823,7 +1823,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3999993964229710857
+--- !u!114 &9060513308337652291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1832,15 +1832,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 7539980551190463051}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2507a3d6d5ca1d4c93a9d8a143c2a1e, type: 3}
+  m_Script: {fileID: 11500000, guid: 51d9ff75d45ad9948adb741d9dd4d1d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  player: {fileID: 0}
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  speed: 5
   currentState: 0
-  meleeAttackRange: 2
-  stopChasingRange: 10
-  detectionRadius: 10
-  detectionAngle: 45
+  gravity: 9.81
+  meleeAttackRange: 1
+  stopChasingRange: 20
+  optimalCombatRange: 4
+  distanceBuffer: 0.5
+  detectionRadius: 20
+  detectionAngle: 100
+  maxRetreatDistance: 5
+  orbitRadius: 10
+  orbitSpeed: 1
+  strafeJitter: 0.5
+  aggression: 0.8
+  caution: 0.3
+  combatStateTimer: 0
+  minCombatTime: 0
+  maxCombatTime: 1.5
+  consecutiveAttacks: 0
+  maxConsecutiveAttacks: 2
+  lastAttackTime: 0
+  attackCooldown: 1.5
+  playerMovingTowardsMe: 0
+  playerMovingAway: 0
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
+  minSpeed: 0.1
+  approachThreshold: 0.2
+  ignoreYForAnalysis: 1
+  smoothing: 0.5
+  stateTransitionCooldown: 0.3
+  agent: {fileID: 0}
 --- !u!1 &7653164757048617511
 GameObject:
   m_ObjectHideFlags: 0

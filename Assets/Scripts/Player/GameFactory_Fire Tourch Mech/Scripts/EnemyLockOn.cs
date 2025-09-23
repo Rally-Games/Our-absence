@@ -14,6 +14,7 @@ public class EnemyLockOn : MonoBehaviour
 {
 
     [Header("References")]
+    Animator animator;
     [Tooltip("Layer Mask for Target Detection")]
     [SerializeField] LayerMask targetLayers;
     [Tooltip("Transform for Enemy Target Locator, empty object to not depend on other objects")]
@@ -47,6 +48,7 @@ public class EnemyLockOn : MonoBehaviour
         cam = Camera.main.transform;
         lockOnCanvas.gameObject.SetActive(false);
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -58,6 +60,7 @@ public class EnemyLockOn : MonoBehaviour
             if (currentTarget)
             {
                 ResetTarget();
+                animator.SetLayerWeight(1, weight: 0.0f); // Ensure Target_layer is inactive when not locked on
                 return;
             }
             if (currentTarget = ScanNearBy()) FoundTarget(); else ResetTarget();
@@ -66,6 +69,7 @@ public class EnemyLockOn : MonoBehaviour
         {
             if (!TargetOnRange()) ResetTarget();
             LookAtTarget();
+            animator.SetLayerWeight(1, weight: 1.0f); // Ensure Target_layer is active when locked on
         }
 
     }
@@ -131,7 +135,7 @@ public class EnemyLockOn : MonoBehaviour
     bool Blocked(Vector3 t)
     {
         RaycastHit hit;
-        if (Physics.Linecast(transform.position + Vector3.up * 0.5f, t, out hit))
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, t - (transform.position + Vector3.up * 0.5f), out hit))
         {
             if (!hit.transform.CompareTag("Enemy")) return true;
         }
