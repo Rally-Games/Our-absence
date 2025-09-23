@@ -1815,7 +1815,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 16a5390ca3cc3134687e8946e06784bc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -1836,14 +1836,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  patrolPoints: []
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   speed: 5
   currentState: 0
+  gravity: 9.81
   meleeAttackRange: 1
   stopChasingRange: 20
   optimalCombatRange: 4
   distanceBuffer: 0.5
-  detectionRadius: 100
+  detectionRadius: 20
   detectionAngle: 100
   maxRetreatDistance: 5
   orbitRadius: 10
@@ -1866,6 +1870,7 @@ MonoBehaviour:
   ignoreYForAnalysis: 1
   smoothing: 0.5
   stateTransitionCooldown: 0.3
+  agent: {fileID: 0}
 --- !u!1 &7653164757048617511
 GameObject:
   m_ObjectHideFlags: 0

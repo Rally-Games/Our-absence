@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -13,8 +15,10 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private Transform[] patrolPoints;
-    public float speed = 2f;
+    [SerializeField] private float speed = 2f;
     public State currentState;
+    private Vector3 velocity;
+    public float gravity = 9.81f;
 
     [Header("Combat")]
     [SerializeField] private float meleeAttackRange = 2f;
@@ -67,6 +71,9 @@ public class EnemyAI : MonoBehaviour
     public float stateTransitionCooldown = 0.3f;
     private float lastStateChangeTime = 0f;
 
+    [Header("Pathfinding Obstacle Avoidance")]
+    public NavMeshAgent agent;
+
     public enum State
     {
         Idle,
@@ -99,6 +106,7 @@ public class EnemyAI : MonoBehaviour
         decisionTimer -= Time.deltaTime;
         combatStateTimer += Time.deltaTime;
 
+        ApplyGravity();
         AnalyzePlayerBehavior();
         CheckState();
         HandleState();
@@ -169,7 +177,7 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.Detect_Player:
-                LookAtPlayer();
+                LookAt(player.position);
                 break;
 
             case State.Engage:
@@ -220,8 +228,17 @@ public class EnemyAI : MonoBehaviour
         switch (currentState)
         {
             case State.Idle:
+                if (patrolPoints.Length > 0)
+                {
+                    ChangeState(State.Patrol);
+                }
+                else if (CheckPlayerInVisionCone())
+                {
+                    ChangeState(State.Detect_Player);
+                }
+                break;
             case State.Patrol:
-                if (CheckPlayerInVisionCone())
+                if (CheckPlayerInVisionCone() && distance <= detectionRadius)
                 {
                     ChangeState(State.Detect_Player);
                 }
@@ -441,7 +458,8 @@ public class EnemyAI : MonoBehaviour
     private void TacticalEngage()
     {
         animator.SetLayerWeight(animator.GetLayerIndex("Target_layer"), 1f);
-        LookAtPlayer();
+        LookAt(player.position);
+        agent.destination = player.position;
 
         float distance = Vector3.Distance(transform.position, player.position);
 
@@ -449,7 +467,7 @@ public class EnemyAI : MonoBehaviour
         if (distance > optimalCombatRange + distanceBuffer)
         {
             // Move forward
-            controller.Move(transform.forward * speed * 1.1f * Time.deltaTime);
+            agent.speed = speed;
             animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);
             animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
         }
@@ -457,7 +475,8 @@ public class EnemyAI : MonoBehaviour
         {
             // Move back slightly
             Vector3 backDir = (transform.position - player.position).normalized;
-            controller.Move(backDir * speed * 1f * Time.deltaTime);
+            agent.destination = backDir;
+            agent.speed = speed;
             animator.SetFloat("Vertical", -1f, 0.1f, Time.deltaTime);
             animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
         }
@@ -480,11 +499,10 @@ public class EnemyAI : MonoBehaviour
         Vector3 repositionTarget = transform.position + right * direction * 3f;
 
         MoveTowards(repositionTarget, speed * 1.2f);
-        LookAtPlayer();
+        LookAt(player.position);
 
-        Vector3 localDir = transform.InverseTransformDirection((repositionTarget - transform.position).normalized);
-        animator.SetFloat("Vertical", localDir.z, 0.1f, Time.deltaTime);
-        animator.SetFloat("Horizontal", localDir.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("Vertical", 0f, 0.1f, Time.deltaTime);
+        animator.SetFloat("Horizontal", Mathf.Sign(direction), 0.1f, Time.deltaTime);
     }
 
     private void PrepareForCombat()
@@ -492,7 +510,7 @@ public class EnemyAI : MonoBehaviour
         animator.SetLayerWeight(animator.GetLayerIndex("Target_layer"), 1f);
         animator.SetFloat("Vertical", 0f);
         animator.SetFloat("Horizontal", 0f);
-        LookAtPlayer();
+        LookAt(player.position);
         SetSpeed(0f);
     }
 
@@ -522,14 +540,26 @@ public class EnemyAI : MonoBehaviour
     // Movement Methods
     // --------------------
 
+    // Replace your PatrolPath() method with this improved version
     private void PatrolPath()
     {
         if (patrolPoints.Length == 0) return;
 
+        // Current patrol target
         Transform target = patrolPoints[currentPatrolIndex];
+
+        // Get movement direction with obstacle avoidance
+
+        // --- Movement ---
+        LookAt(target.position);
         MoveTowards(target.position, speed * 0.5f);
 
-        if (Vector3.Distance(transform.position, target.position) < 0.5f)
+        // --- Animator Blend Tree ---
+        animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);
+        animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
+
+        // --- Arrived at waypoint ---
+        if (Vector3.Distance(transform.position, target.position) < 2f)
             currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
     }
 
@@ -549,11 +579,10 @@ public class EnemyAI : MonoBehaviour
         Vector3 orbitTarget = player.position + orbitOffset;
 
         MoveTowards(orbitTarget, speed * 0.8f);
-        LookAtPlayer();
+        LookAt(player.position);
 
-        Vector3 localDir = transform.InverseTransformDirection((orbitTarget - transform.position).normalized);
-        animator.SetFloat("Vertical", localDir.z, 0.1f, Time.deltaTime);
-        animator.SetFloat("Horizontal", localDir.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("Vertical", Mathf.Sign(offsetZ), 0.1f, Time.deltaTime);
+        animator.SetFloat("Horizontal", Mathf.Sign(offsetX), 0.1f, Time.deltaTime);
     }
 
     private void RetreatFromPlayer()
@@ -564,11 +593,11 @@ public class EnemyAI : MonoBehaviour
         Vector3 targetPos = transform.position + dir * 2f; // Reduced retreat distance
 
         MoveTowards(targetPos, speed);
-        LookAtPlayer();
+        LookAt(player.position);
 
         Vector3 localDir = transform.InverseTransformDirection((targetPos - transform.position).normalized);
-        animator.SetFloat("Vertical", localDir.z, 0.1f, Time.deltaTime);
-        animator.SetFloat("Horizontal", localDir.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("Vertical", -1f, 0.1f, Time.deltaTime);
+        animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
         SetSpeed(1.5f);
     }
 
@@ -576,27 +605,32 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetLayerWeight(animator.GetLayerIndex("Target_layer"), 1f);
 
-        controller.Move(transform.forward * speed * Time.deltaTime);
-        LookAtPlayer();
+        agent.destination = player.position;
+        agent.speed = speed;
+        LookAt(player.position);
 
         animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);
         animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
     }
 
-    private void LookAtPlayer()
+    private void LookAt(Vector3 moveDir)
     {
-        Vector3 dir = (player.position - transform.position).normalized;
+        Vector3 dir = (moveDir - transform.position).normalized;
         dir.y = 0;
         if (dir != Vector3.zero)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
+        {
+            // Smooth rotation using Quaternion.Lerp for extra smoothness
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 8f);
+        }
 
         animator.SetLayerWeight(animator.GetLayerIndex("Target_layer"), 1f);
     }
 
     private void MoveTowards(Vector3 target, float spd)
     {
-        Vector3 move = (target - transform.position).normalized;
-        controller.Move(move * spd * Time.deltaTime);
+        agent.destination = target;
+        agent.speed = spd;
     }
 
     private bool IsAttacking()
@@ -628,5 +662,10 @@ public class EnemyAI : MonoBehaviour
     private void SetSpeed(float value)
     {
         animator.SetFloat("speed", value);
+    }
+    private void ApplyGravity()
+    {
+        if (velocity.y > -10)
+            velocity.y -= Time.deltaTime * gravity;
     }
 }

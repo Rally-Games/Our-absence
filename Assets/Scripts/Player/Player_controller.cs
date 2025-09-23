@@ -37,7 +37,6 @@ public class Player_controller : MonoBehaviour
     private InputAction moveAction;
     private InputAction rollAction;
     private InputAction runAction;
-    private InputAction lockOnAction;
 
     public bool isLockOn = false;
 
@@ -68,7 +67,6 @@ public class Player_controller : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
-        lockOnAction = playerInput.actions["LockOn"];
     }
 
     void Start()
@@ -81,14 +79,6 @@ public class Player_controller : MonoBehaviour
         GetInput();
 
         if (isPickingUp == false) equipmentControl.PickUpItem(this.gameObject, rangeOfItemDetection);
-
-        if (lockOnAction.triggered)
-        {
-            if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 0)
-                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 1.0f);
-            else if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 1)
-                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 0.0f);
-        }
 
         if (!attackAnimations.IsAttacking())
         {
