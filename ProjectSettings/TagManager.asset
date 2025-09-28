@@ -8,6 +8,7 @@ TagManager:
   - PickableItem
   - Ragdoll
   - Die
+  - Weapon
   layers:
   - Default
   - TransparentFX
