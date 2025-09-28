@@ -8,15 +8,16 @@ public class CameraFollow : MonoBehaviour
 {
     [SerializeField] Transform target;
     [SerializeField] Vector3 offset;
+    [SerializeField] Vector3 additionalOffset = Vector3.zero;
     [SerializeField] Vector2 clampAxis = new Vector2(-40, 80);
     [SerializeField] float follow_smoothing = 5;
     [SerializeField] float rotate_Smoothing = 5;
     [SerializeField] float sensitivity = 60;
 
+    public bool lockedTarget = false;
     private float rotX, rotY;
     private bool cursorFree = false;
     private Transform cam;
-    public bool lockedTarget = false;
     private Transform lockOnTarget;
 
     private PlayerInput playerInput;
@@ -44,7 +45,7 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        Vector3 targetPosition = target.position + offset;
+        Vector3 targetPosition = target.position + offset + additionalOffset;
         transform.position = Vector3.Lerp(transform.position, targetPosition, follow_smoothing * Time.deltaTime);
 
         if (!lockedTarget && !menuOpen)
@@ -94,6 +95,11 @@ public class CameraFollow : MonoBehaviour
     {
         lockedTarget = false;
         lockOnTarget = null;
+    }
+
+    public void SetAdditionalOffset(Vector3 newOffset)
+    {
+        additionalOffset = newOffset;
     }
 
     private void ToggleLockOn()

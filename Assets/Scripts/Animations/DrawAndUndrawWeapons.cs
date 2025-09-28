@@ -78,10 +78,9 @@ public class DrawAndUndrawWeapons : MonoBehaviour
                             );
             spawnedItem.transform.SetParent(rightWeaponPrefab.transform, false);
             spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
-            spawnedItem.GetComponentInChildren<Collider>().enabled = false;
             spawnedItem.transform.localRotation = Quaternion.Euler(90f, 0, 90f);
             spawnedItem.transform.localPosition = new Vector3(0f, 0.05f, 0f);
-            spawnedItem.tag = rightWeaponPrefab.tag;
+            spawnedItem.tag = "Weapon";
             spawnedItem.layer = rightWeaponPrefab.layer;
         }
     }
@@ -111,10 +110,9 @@ public class DrawAndUndrawWeapons : MonoBehaviour
             );
             spawnedItem.transform.SetParent(leftWeaponPrefab.transform, false);
             spawnedItem.GetComponentInChildren<Rigidbody>().isKinematic = true;
-            spawnedItem.GetComponentInChildren<Collider>().enabled = false;
             spawnedItem.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
             spawnedItem.transform.localPosition = new Vector3(0f, 0.05f, 0f);
-            spawnedItem.tag = leftWeaponPrefab.tag;
+            spawnedItem.tag = "Weapon";
             spawnedItem.layer = leftWeaponPrefab.layer;
 
         }
