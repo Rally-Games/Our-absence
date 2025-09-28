@@ -8,7 +8,6 @@ using UnityEngine.UIElements;
 public class EnemyAI : MonoBehaviour
 {
     private Animator animator;
-    private CharacterController controller;
 
     [Header("References")]
     public Transform player;
@@ -94,9 +93,16 @@ public class EnemyAI : MonoBehaviour
         if (player) lastPlayerPosition = player.position;
 
         animator = GetComponent<Animator>();
-        controller = GetComponent<CharacterController>();
         currentState = State.Idle;
         lastPlayerPosition = player ? player.position : Vector3.zero;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.freezeRotation = true;
+        }
     }
 
     void Update()
@@ -106,7 +112,6 @@ public class EnemyAI : MonoBehaviour
         decisionTimer -= Time.deltaTime;
         combatStateTimer += Time.deltaTime;
 
-        ApplyGravity();
         AnalyzePlayerBehavior();
         CheckState();
         HandleState();
@@ -629,7 +634,7 @@ public class EnemyAI : MonoBehaviour
 
     private void MoveTowards(Vector3 target, float spd)
     {
-        agent.destination = target;
+        agent.SetDestination(target);
         agent.speed = spd;
     }
 
@@ -662,10 +667,5 @@ public class EnemyAI : MonoBehaviour
     private void SetSpeed(float value)
     {
         animator.SetFloat("speed", value);
-    }
-    private void ApplyGravity()
-    {
-        if (velocity.y > -10)
-            velocity.y -= Time.deltaTime * gravity;
     }
 }

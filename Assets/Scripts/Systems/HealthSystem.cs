@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
-    [SerializeField] private UIDocument uiDocument;
-    //[SerializeField] private DeathSystem deathSystem;
-    private int health = 100;
-    private int maxHealth = 100;
+    [SerializeField] private Slider uiSlider;
+    [SerializeField] private GameObject enemyGameObject;
+    [SerializeField] private int health = 100;
+    [SerializeField] private int maxHealth = 100;
     private Dictionary<string, int> healthModifiers = new Dictionary<string, int>();
     //private Dictionary<string, Item> armorModifiers = new Dictionary<string, Item>();
     private Dictionary<string, int> damageEffects = new Dictionary<string, int>();
@@ -17,20 +17,22 @@ public class HealthSystem : MonoBehaviour
 
     void Start()
     {
-        uiDocument = GetComponent<UIDocument>();
+        uiSlider.maxValue = maxHealth;
+        uiSlider.value = health;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            TakeDamage(10);
-        }
         effectTimer += Time.deltaTime;
         if (effectTimer >= 1f)
         {
             ApplyEffects();
             effectTimer = 0f;
+        }
+
+        if (health <= 0)
+        {
+            Death();
         }
     }
 
@@ -108,6 +110,30 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
+    public void Death()
+    {
+        foreach (var component in enemyGameObject.GetComponents<MonoBehaviour>())
+        {
+            component.enabled = false;
+        }
+        var animator = enemyGameObject.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+        var collider = enemyGameObject.GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+        var characterController = enemyGameObject.GetComponent<CharacterController>();
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
+        enemyGameObject.tag = "Die";
+    }
+
     public void RemoveDamageEffect(string name)
     {
         if (damageEffects.ContainsKey(name))
@@ -125,13 +151,8 @@ public class HealthSystem : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        if (uiDocument == null) return;
-        var root = uiDocument.rootVisualElement;
-        var healthLabel = root.Q<Label>("HealthLabel");
-        if (healthLabel != null)
-        {
-            healthLabel.text = $"Health: {health}/{maxHealth}";
-        }
+        if (uiSlider == null) return;
+        uiSlider.value = health;
     }
 
 }

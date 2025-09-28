@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - PickableItem
+  - Ragdoll
+  - Die
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -45,6 +48,9 @@ TagManager:
     locked: 0
   - name: player
     uniqueID: 2076601409
+    locked: 0
+  - name: OverlayUI
+    uniqueID: 1468786439
     locked: 0
   - name: UI
     uniqueID: 4013110895
