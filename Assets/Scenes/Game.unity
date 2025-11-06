@@ -17206,6 +17206,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1195607749}
+    - target: {fileID: 8139465097560194266, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9060513308337652291, guid: f4e423f7c7d6f10419636f857832f768, type: 3}
       propertyPath: player
       value: 
