@@ -12,7 +12,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(AnimationManager))]
 public class Player_controller : MonoBehaviour
 {
-    // Health defenitions
     public int MaxHealth;
     public Action OnHealthChange;
     public int CurrentHealth => Mathf.CeilToInt(m_CurrentHealth);
