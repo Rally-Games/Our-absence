@@ -54,35 +54,20 @@ public class EquipmentControl : MonoBehaviour
         {
             // Weapons
             ("LW1", MainMenuController.CategoryType.Weapon),
-            ("LW2", MainMenuController.CategoryType.Weapon),
-            ("LW3", MainMenuController.CategoryType.Weapon),
             ("RW1", MainMenuController.CategoryType.Weapon),
-            ("RW2", MainMenuController.CategoryType.Weapon),
-            ("RW3", MainMenuController.CategoryType.Weapon),
             
             // Armor
             ("Helmet", MainMenuController.CategoryType.Armor),
             ("Chestplate", MainMenuController.CategoryType.Armor),
             ("Leggings", MainMenuController.CategoryType.Armor),
-            ("Gauntlets", MainMenuController.CategoryType.Armor),
-            
-            // Ammunition
-            ("Arrows1", MainMenuController.CategoryType.Ammo),
-            ("Arrows2", MainMenuController.CategoryType.Ammo),
-            ("Bolts1", MainMenuController.CategoryType.Ammo),
-            ("Bolts2", MainMenuController.CategoryType.Ammo),
+            ("GauntletsL", MainMenuController.CategoryType.Armor),
+            ("GauntletsR", MainMenuController.CategoryType.Armor),
+            ("Boots", MainMenuController.CategoryType.Armor),
             
             // Magic Items
             ("MagicItem1", MainMenuController.CategoryType.MagicItems),
             ("MagicItem2", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem3", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem4", MainMenuController.CategoryType.MagicItems),
-            
-            // Quick Items
-            ("QuickItem1", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem2", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem3", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem4", MainMenuController.CategoryType.EquipmentItems)
+
         };
 
         // Create equipment slots
@@ -268,14 +253,7 @@ public class EquipmentControl : MonoBehaviour
         }
         else
         {
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = GetEmptySlotText(slot.button.name);
-            else
-                slot.button.text = GetEmptySlotText(slot.button.name);
-
             slot.button.style.color = Color.white;
-            slot.button.style.backgroundImage = null;
         }
     }
 
@@ -288,7 +266,8 @@ public class EquipmentControl : MonoBehaviour
             "Helmet" => "Helmet",
             "Chestplate" => "Chestplate",
             "Leggings" => "Leggings",
-            "Gauntlets" => "Gauntlets",
+            "GauntletsL" => "GauntletsL",
+            "GauntletsR" => "GauntletsR",
             "Arrows1" or "Arrows2" => "Arrows",
             "Bolts1" or "Bolts2" => "Bolts",
             var name when name.StartsWith("MagicItem") => "Magic Item",

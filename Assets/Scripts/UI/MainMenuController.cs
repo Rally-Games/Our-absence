@@ -33,6 +33,9 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Equipment Integration")]
     private EquipmentControl currentEquipmentControl;
+    [Header("templets")]
+    public Texture2D itemTemp;
+    public Font myFont;
 
     #region Unity Lifecycle
     void Start()
@@ -207,6 +210,26 @@ public class MainMenuController : MonoBehaviour
                 text = $"{category.categoryName} ({category.items.Count})"
             };
 
+            // ⭐ Apply custom background image
+            button.style.backgroundImage = new StyleBackground(itemTemp);
+
+            // ⭐ Background color tint (optional)
+            button.style.backgroundColor = new Color(0.12f, 0.12f, 0.12f, 0.7f);
+
+            // ⭐ Custom font
+            button.style.unityFontDefinition = new StyleFontDefinition(myFont);
+            button.style.fontSize = 18;
+            button.style.color = Color.white;
+
+            // ⭐ Optional: padding, border, radius
+            button.style.paddingLeft = 8;
+            button.style.paddingRight = 8;
+            button.style.borderTopLeftRadius = 6;
+            button.style.borderTopRightRadius = 6;
+            button.style.borderBottomLeftRadius = 6;
+            button.style.borderBottomRightRadius = 6;
+
+
             itemsCategories.Add(button);
         }
     }
@@ -249,6 +272,19 @@ public class MainMenuController : MonoBehaviour
             var button = element as Button;
 
             button.text = item._definition.ItemName;
+
+            button.style.backgroundImage = new StyleBackground(itemTemp);
+
+            button.style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.6f);
+
+            button.style.unityFontDefinition = new StyleFontDefinition(myFont);
+            button.style.fontSize = 18;
+            button.style.color = Color.white;
+
+            button.style.paddingLeft = 8;
+            button.style.paddingRight = 8;
+            button.style.borderTopLeftRadius = 6;
+            button.style.borderBottomLeftRadius = 6;
 
             // Clear previous event handlers
             button.clicked -= null;

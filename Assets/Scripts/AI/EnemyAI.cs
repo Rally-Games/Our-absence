@@ -73,6 +73,12 @@ public class EnemyAI : MonoBehaviour
     [Header("Pathfinding Obstacle Avoidance")]
     public NavMeshAgent agent;
 
+    [Header("Weapons and damage")]
+    public GameObject hend;
+    public GameObject weapon; //make this a list of optional weapons for if the enemy has a range it will use it or only chase for meele attacks
+    public int damage = 0;
+
+
     public enum State
     {
         Idle,
@@ -102,6 +108,15 @@ public class EnemyAI : MonoBehaviour
             rb.isKinematic = true;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             rb.freezeRotation = true;
+        }
+
+        if (weapon)
+        {
+            //set weapon to hend and set damage to the weapon damage
+        }
+        else
+        {
+            damage = 2; //default damage feast
         }
     }
 
@@ -525,6 +540,7 @@ public class EnemyAI : MonoBehaviour
         animator.SetInteger("attackType", attackType);
         animator.SetBool("isAttacking", true);
         lastAttackTime = Time.time;
+
     }
 
     private int DetermineAttackType()
@@ -638,7 +654,7 @@ public class EnemyAI : MonoBehaviour
         agent.speed = spd;
     }
 
-    private bool IsAttacking()
+    public bool IsAttacking()
     {
         return animator.GetBool("isAttacking");
     }
