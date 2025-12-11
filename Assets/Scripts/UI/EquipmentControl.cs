@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,35 +55,20 @@ public class EquipmentControl : MonoBehaviour
         {
             // Weapons
             ("LW1", MainMenuController.CategoryType.Weapon),
-            ("LW2", MainMenuController.CategoryType.Weapon),
-            ("LW3", MainMenuController.CategoryType.Weapon),
             ("RW1", MainMenuController.CategoryType.Weapon),
-            ("RW2", MainMenuController.CategoryType.Weapon),
-            ("RW3", MainMenuController.CategoryType.Weapon),
             
             // Armor
             ("Helmet", MainMenuController.CategoryType.Armor),
             ("Chestplate", MainMenuController.CategoryType.Armor),
             ("Leggings", MainMenuController.CategoryType.Armor),
-            ("Gauntlets", MainMenuController.CategoryType.Armor),
-            
-            // Ammunition
-            ("Arrows1", MainMenuController.CategoryType.Ammo),
-            ("Arrows2", MainMenuController.CategoryType.Ammo),
-            ("Bolts1", MainMenuController.CategoryType.Ammo),
-            ("Bolts2", MainMenuController.CategoryType.Ammo),
+            ("GauntletsL", MainMenuController.CategoryType.Armor),
+            ("GauntletsR", MainMenuController.CategoryType.Armor),
+            ("Boots", MainMenuController.CategoryType.Armor),
             
             // Magic Items
             ("MagicItem1", MainMenuController.CategoryType.MagicItems),
             ("MagicItem2", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem3", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem4", MainMenuController.CategoryType.MagicItems),
-            
-            // Quick Items
-            ("QuickItem1", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem2", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem3", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem4", MainMenuController.CategoryType.EquipmentItems)
+
         };
 
         // Create equipment slots
@@ -257,25 +243,64 @@ public class EquipmentControl : MonoBehaviour
     {
         if (slot.HasItem())
         {
-            // UI Toolkit buttons often use a child label
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = slot.item._definition.ItemName;
-            else
-                slot.button.text = slot.item._definition.ItemName; // fallback
+            // Get the child visual element named "Display"
+            var display = slot.button.Q<VisualElement>("Display");
 
-            slot.button.style.color = new StyleColor(Color.white);
+            if (display != null)
+            {
+                // Assign the icon to the background
+                display.style.backgroundImage = new StyleBackground(slot.item._definition.Icon);
+            }
+            else
+            {
+                Debug.LogWarning("Display element not found inside button.");
+            }
         }
         else
         {
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = GetEmptySlotText(slot.button.name);
-            else
-                slot.button.text = GetEmptySlotText(slot.button.name);
+            // Clear display back to default
+            var display = slot.button.Q<VisualElement>("Display");
+            if (display != null)
+                display.style.backgroundImage = GetDefaultIconForSlot(slot.button.name);
+        }
+    }
 
-            slot.button.style.color = Color.white;
-            slot.button.style.backgroundImage = null;
+    private Texture2D GetDefaultIconForSlot(string type)
+    {
+        switch (type)
+        {
+            case "LW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "RW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "Helmet":
+                return Resources.Load<Texture2D>("Equipment/Icons/Helment-temp");
+
+            case "Chestplate":
+                return Resources.Load<Texture2D>("Equipment/Icons/Chestplate-temp");
+
+            case "Leggings":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "GauntletsL":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "GauntletsR":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "Boots":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "MagicItem1":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            case "MagicItem2":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            default:
+                return Resources.Load<Texture2D>("Icons/Defaults/empty");
         }
     }
 
@@ -288,7 +313,8 @@ public class EquipmentControl : MonoBehaviour
             "Helmet" => "Helmet",
             "Chestplate" => "Chestplate",
             "Leggings" => "Leggings",
-            "Gauntlets" => "Gauntlets",
+            "GauntletsL" => "GauntletsL",
+            "GauntletsR" => "GauntletsR",
             "Arrows1" or "Arrows2" => "Arrows",
             "Bolts1" or "Bolts2" => "Bolts",
             var name when name.StartsWith("MagicItem") => "Magic Item",

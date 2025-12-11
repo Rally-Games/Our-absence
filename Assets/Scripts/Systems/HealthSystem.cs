@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private Slider uiSlider;
-    [SerializeField] private GameObject enemyGameObject;
+    [SerializeField] private GameObject gameObject;
     [SerializeField] private int health = 100;
     [SerializeField] private int maxHealth = 100;
     private Dictionary<string, int> healthModifiers = new Dictionary<string, int>();
@@ -17,8 +17,11 @@ public class HealthSystem : MonoBehaviour
 
     void Start()
     {
-        uiSlider.maxValue = maxHealth;
-        uiSlider.value = health;
+        if (uiSlider)
+        {
+            uiSlider.maxValue = maxHealth;
+            uiSlider.value = health;
+        }
     }
 
     private void Update()
@@ -112,26 +115,26 @@ public class HealthSystem : MonoBehaviour
 
     public void Death()
     {
-        foreach (var component in enemyGameObject.GetComponents<MonoBehaviour>())
+        foreach (var component in gameObject.GetComponents<MonoBehaviour>())
         {
             component.enabled = false;
         }
-        var animator = enemyGameObject.GetComponent<Animator>();
+        var animator = gameObject.GetComponent<Animator>();
         if (animator != null)
         {
             animator.enabled = false;
         }
-        var collider = enemyGameObject.GetComponent<Collider>();
+        var collider = gameObject.GetComponent<Collider>();
         if (collider != null)
         {
             collider.enabled = false;
         }
-        var characterController = enemyGameObject.GetComponent<CharacterController>();
+        var characterController = gameObject.GetComponent<CharacterController>();
         if (characterController != null)
         {
             characterController.enabled = false;
         }
-        enemyGameObject.tag = "Die";
+        gameObject.tag = "Die";
     }
 
     public void RemoveDamageEffect(string name)
