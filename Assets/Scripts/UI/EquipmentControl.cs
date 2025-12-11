@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -242,18 +243,64 @@ public class EquipmentControl : MonoBehaviour
     {
         if (slot.HasItem())
         {
-            // UI Toolkit buttons often use a child label
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = slot.item._definition.ItemName;
-            else
-                slot.button.text = slot.item._definition.ItemName; // fallback
+            // Get the child visual element named "Display"
+            var display = slot.button.Q<VisualElement>("Display");
 
-            slot.button.style.color = new StyleColor(Color.white);
+            if (display != null)
+            {
+                // Assign the icon to the background
+                display.style.backgroundImage = new StyleBackground(slot.item._definition.Icon);
+            }
+            else
+            {
+                Debug.LogWarning("Display element not found inside button.");
+            }
         }
         else
         {
-            slot.button.style.color = Color.white;
+            // Clear display back to default
+            var display = slot.button.Q<VisualElement>("Display");
+            if (display != null)
+                display.style.backgroundImage = GetDefaultIconForSlot(slot.button.name);
+        }
+    }
+
+    private Texture2D GetDefaultIconForSlot(string type)
+    {
+        switch (type)
+        {
+            case "LW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "RW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "Helmet":
+                return Resources.Load<Texture2D>("Equipment/Icons/Helment-temp");
+
+            case "Chestplate":
+                return Resources.Load<Texture2D>("Equipment/Icons/Chestplate-temp");
+
+            case "Leggings":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "GauntletsL":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "GauntletsR":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "Boots":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "MagicItem1":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            case "MagicItem2":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            default:
+                return Resources.Load<Texture2D>("Icons/Defaults/empty");
         }
     }
 
