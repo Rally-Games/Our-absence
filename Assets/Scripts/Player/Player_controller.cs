@@ -182,6 +182,16 @@ public class Player_controller : MonoBehaviour
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
         }
+
+        if (hit.gameObject.GetComponentInChildren<DamageSystem>())
+        {
+            if (hit.gameObject.GetComponentInChildren<DamageSystem>().script.IsAttacking())
+            {
+                var HS = transform.GetComponent<HealthSystem>();
+                int damage = hit.gameObject.GetComponentInChildren<DamageSystem>().script.damage;
+                HS.TakeDamage(damage);
+            }
+        }
     }
 
     private void HandleShortcuts()
