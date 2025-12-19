@@ -26,13 +26,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!193 &19300000
 Tree:
@@ -62,7 +61,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
@@ -96,109 +94,66 @@ MeshRenderer:
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!21 &2100000
 Material:
-  serializedVersion: 8
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Optimized Bark Material
-  m_Shader: {fileID: 4800000, guid: 99134b1f0c27d54469a840832a28fadf, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _WINDQUALITY_NONE
-  m_InvalidKeywords: []
+  m_Shader: {fileID: 10604, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BumpSpecMap:
         m_Texture: {fileID: 2800000, guid: 2f383ca14668ee24b91a016be8a413fc, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ExtraTex:
-        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: fd8f3998355a4bb49bea4b3c8f8cf6f9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SubsurfaceTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
         m_Texture: {fileID: 2800000, guid: 17ac663d9ce1c0a438a9497475f8459b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
     m_Floats:
-    - _BillboardKwToggle: 0
-    - _BillboardShadowFade: 0.5
     - _Cutoff: 0.3
-    - _Glossiness: 0.5
-    - _HueVariationKwToggle: 0
-    - _Metallic: 0
-    - _NormalMapKwToggle: 0
     - _SquashAmount: 1
-    - _SubsurfaceIndirect: 0.25
-    - _SubsurfaceKwToggle: 0
-    - _TwoSided: 2
-    - _WindQuality: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HueVariationColor: {r: 1, g: 0.5, b: 0, a: 0.1}
     - _Scale: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SubsurfaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!21 &2100002
 Material:
-  serializedVersion: 8
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Optimized Leaf Material
-  m_Shader: {fileID: 4800000, guid: 99134b1f0c27d54469a840832a28fadf, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _WINDQUALITY_NONE
-  m_InvalidKeywords: []
+  m_Shader: {fileID: 10605, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BumpSpecMap:
         m_Texture: {fileID: 2800000, guid: 2f383ca14668ee24b91a016be8a413fc, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ExtraTex:
-        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -209,36 +164,19 @@ Material:
         m_Texture: {fileID: 2800000, guid: 7d13c5b5181e4ef4b86359bf1342822a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SubsurfaceTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
         m_Texture: {fileID: 2800000, guid: 17ac663d9ce1c0a438a9497475f8459b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
     m_Floats:
-    - _BillboardKwToggle: 0
-    - _BillboardShadowFade: 0.5
     - _Cutoff: 0.4
-    - _Glossiness: 0.5
-    - _HueVariationKwToggle: 0
-    - _Metallic: 0
-    - _NormalMapKwToggle: 0
     - _ShadowOffsetScale: 1
     - _ShadowStrength: 0.8
     - _SquashAmount: 1
-    - _SubsurfaceIndirect: 0.25
-    - _SubsurfaceKwToggle: 0
     - _TranslucencyViewDependency: 0.7
-    - _TwoSided: 2
-    - _WindQuality: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HueVariationColor: {r: 1, g: 0.5, b: 0, a: 0.1}
     - _Scale: {r: 1, g: 1, b: 1, a: 1}
-    - _SubsurfaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TranslucencyColor: {r: 0.75373137, g: 0.74535304, b: 0.35436627, a: 1}
     - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
@@ -250,7 +188,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mesh
-  serializedVersion: 11
+  serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -285,8 +223,8 @@ Mesh:
     m_Data: 
   m_MeshCompression: 0
   m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
+  m_KeepVertices: 0
+  m_KeepIndices: 0
   m_IndexFormat: 0
   m_IndexBuffer: 0500000006000000010006000600010007000100020007000700020008000200030008000800030009000300040009000a0005000b00050006000b000b0006000c00060007000c000c0007000d00070008000d000d0008000e00080009000e000f000a0010000a000b00100010000b0011000b000c00110011000c0012000c000d00120012000d0013000d000e001300190014001a00140015001a001a0015001b00150016001b001b0016001c00160017001c001c0017001d00170018001d0023001e0024001e001f00240024001f0025001f00200025002500200026002000210026002600210027002100220027002d0028002e00280029002e002e0029002f0029002a002f002f002a0030002a002b00300030002b0031002b002c003100370032003800320033003800380033003900330034003900390034003a00340035003a003a0035003b00350036003b003c003d003e003f00400041004200430044004300420045004500460043004200470045004500480046004500470048004600480049004800470049004a004b004c004a004d004b004e004f00500050004f005100520050005100520053005000520054005300540052005500550056005400550052005700580059005a005b005c005d005e005f0060005f005e006100610062005f005e00630061006100640062006100630064006200640065006400630065006600670068006600690067006a006b006c006c006b006d006e006c006d006e006f006c006e0070006f0070006e00710071007200700071006e0073007400750076007700780079007a007b007c007b007a007d007d007e007b007a007f007d007d0080007e007d007f0080007e008000810080007f0081008200830084008200850083008600870088008800870089008a00880089008a008b0088008a008c008b008c008a008d008d008e008c008d008a008f0090009100920093009400950096009700980097009600990099009a00970096009b00990099009c009a0099009b009c009a009c009d009c009b009d009e009f00a0009e00a1009f00a200a300a400a400a300a500a600a400a500a600a700a400a600a800a700a800a600a900a900aa00a800a900a600ab00ac00ad00ae00af00b000b100b200b300b400b300b200b500b500b600b300b200b700b500b500b800b600b500b700b800b600b800b900b800b700b900ba00bb00bc00ba00bd00bb00be00bf00c000c000bf00c100c200c000c100c200c300c000c200c400c300c400c200c500c500c600c400c500c200c700c800c900ca00cb00cc00cd00ce00cf00d000cf00ce00d100d100d200cf00ce00d300d100d100d400d200d100d300d400d200d400d500d400d300d500d600d700d800d600d900d700da00db00dc00dc00db00dd00de00dc00dd00de00df00dc00de00e000df00e000de00e100e100e200e000e100de00e300e400e500e600e700e800e900ea00eb00ec00eb00ea00ed00ed00ee00eb00ea00ef00ed00ed00f000ee00ed00ef00f000ee00f000f100f000ef00f100f200f300f400f200f500f300f600f700f800f800f700f900fa00f800f900fa00fb00f800fa00fc00fb00fc00fa00fd00fd00fe00fc00fd00fa00ff0000010101020103010401050106010701080107010601090109010a01070106010b01090109010c010a0109010b010c010a010c010d010c010b010d010e010f0110010e0111010f0112011301140114011301150116011401150116011701140116011801170118011601190119011a011801190116011b011c011d011e011f01200121012201230124012301220125012501260123012201270125012501280126012501270128012601280129012801270129012a012b012c012a012d012b012e012f01300130012f013101320130013101320133013001320134013301340132013501350136013401350132013701380139013a013b013c013d013e013f0140013f013e014101410142013f013e01430141014101440142014101430144014201440145014401430145014601470148014601490147014a014b014c014c014b014d014e014c014d014e014f014c014e0150014f0150014e01510151015201500151014e0153015401550156015701580159015a015b015c015b015a015d015d015e015b015a015f015d015d0160015e015d015f0160015e016001610160015f0161016201630164016201650163016601670168016801670169016a01680169016a016b0168016a016c016b016c016a016d016d016e016c016d016a016f0170017101720173017401750176017701780177017601790179017a01770176017b01790179017c017a0179017b017c017a017c017d017c017b017d017e017f0180017e0181017f0182018301840184018301850186018401850186018701840186018801870188018601890189018a018801890186018b018c018d018e018f01900191019201930194019301920195019501960193019201970195019501980196019501970198019601980199019801970199019a019b019c019a019d019b019e019f01a001a0019f01a101a201a001a101a201a301a001a201a401a301a401a201a501a501a601a401a501a201a701a801a901aa01ab01ac01ad01ae01af01b001af01ae01b101b101b201af01ae01b301b101b101b401b201b101b301b401b201b401b501b401b301b501b601b701b801b601b901b701ba01bb01bc01bc01bb01bd01be01bc01bd01be01bf01bc01be01c001bf01c001be01c101c101c201c001c101be01c301c401c501c601c701c801c901ca01cb01cc01cb01ca01cd01cd01ce01cb01ca01cf01cd01cd01d001ce01cd01cf01d001ce01d001d101d001cf01d101d201d301d401d201d501d301d601d701d801d801d701d901da01d801d901da01db01d801da01dc01db01dc01da01dd01dd01de01dc01dd01da01df01e001e101e201e301e401e501e601e701e801e701e601e901e901ea01e701e601eb01e901e901ec01ea01e901eb01ec01ea01ec01ed01ec01eb01ed01ee01ef01f001ee01f101ef01f201f301f401f401f301f501f601f401f501f601f701f401f601f801f701f801f601f901f901fa01f801f901f601fb01fc01fd01fe01ff01000201020202030204020302020205020502060203020202070205020502080206020502070208020602080209020802070209020a020b020c020a020d020b020e020f02100210020f021102120210021102120213021002120214021302140212021502150216021402150212021702180219021a021b021c021d021e021f0220021f021e022102210222021f021e02230221022102240222022102230224022202240225022402230225022602270228022602290227022a022b022c022c022b022d022e022c022d022e022f022c022e0230022f0230022e02310231023202300231022e023302
   m_VertexData:
@@ -407,7 +345,6 @@ Mesh:
     m_Center: {x: 0.22759378, y: 4.141223, z: 0.20180857}
     m_Extent: {x: 3.27172, y: 4.3293953, z: 2.742083}
   m_MeshUsageFlags: 0
-  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
