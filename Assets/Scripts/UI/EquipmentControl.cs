@@ -359,15 +359,15 @@ public class EquipmentControl : MonoBehaviour
         {
             style = {
                 position = Position.Absolute,
-                left = position.x,
-                top = position.y,
-                backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f),
+                left = position.x + 50,
+                top = position.y + 15,
+                backgroundImage = Resources.Load<Texture2D>("Sprites&images/Hub/Button-005"),
                 paddingLeft = 8, paddingRight = 8,
                 paddingTop = 6, paddingBottom = 6,
                 borderTopLeftRadius = 4, borderTopRightRadius = 4,
                 borderBottomLeftRadius = 4, borderBottomRightRadius = 4,
-                borderLeftWidth = 1, borderRightWidth = 1,
-                borderTopWidth = 1, borderBottomWidth = 1,
+                borderLeftWidth = 0, borderRightWidth = 0,
+                borderTopWidth = 0, borderBottomWidth = 0,
                 borderLeftColor = Color.gray, borderRightColor = Color.gray,
                 borderTopColor = Color.gray, borderBottomColor = Color.gray
             }
@@ -376,8 +376,60 @@ public class EquipmentControl : MonoBehaviour
         // Add option buttons
         foreach (var (text, action) in options)
         {
-            var button = new Button(action) { text = text };
+            var button = new Button(action)
+            {
+                text = text
+            };
+
+            // Load assets
+            var bg = Resources.Load<Texture2D>("Sprites&images/Hub/item_frame-001");
+            var bg2 = Resources.Load<Texture2D>("Sprites&images/Hub/item_frame-002");
+            var font = Resources.Load<Font>("Fonts/WashingtonText");
+
+            // Base style
             button.style.marginBottom = 2;
+            button.style.marginTop = 2;
+            button.style.backgroundImage = new StyleBackground(bg);
+            button.style.backgroundColor = new Color(0f, 0f, 0f, 0f);
+            button.style.unityFontDefinition = FontDefinition.FromFont(font);
+            button.style.fontSize = 14;
+            button.style.borderTopWidth = 0;
+            button.style.borderLeftWidth = 0;
+            button.style.borderRightWidth = 0;
+            button.style.borderBottomWidth = 0;
+            button.style.color = new Color(178, 178, 178, 255);
+
+            // ------------------------
+            // HOVER EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerEnterEvent>(evt =>
+            {
+                button.style.backgroundImage = new StyleBackground(bg2);
+            });
+
+            // ------------------------
+            // UNHOVER EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerLeaveEvent>(evt =>
+            {
+                button.style.backgroundImage = new StyleBackground(bg);
+            });
+
+            // ------------------------
+            // PRESS EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                button.style.scale = new Vector2(0.95f, 0.95f); // slight shrink effect
+            });
+
+            // ------------------------
+            // RELEASE EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerUpEvent>(evt =>
+            {
+                button.style.scale = new Vector2(1f, 1f);
+            });
             optionMenu.Add(button);
         }
 
