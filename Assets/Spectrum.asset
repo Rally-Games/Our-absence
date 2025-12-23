@@ -15,24 +15,24 @@ MonoBehaviour:
   _version: 1
   _fetch: 500000
   _waveDirectionVariance: 90
-  _gravityScale: 1
+  _gravityScale: 1.2
   _smallWavelengthMultiplier: 1
-  _multiplier: 1
+  _multiplier: 0.55
   _powerLog:
-  - -7.11
-  - -6.4279404
-  - -5.93794
-  - -5.04
-  - -4.67794
-  - -3.7179399
-  - -3.52
-  - -2.6079402
-  - -1.9379401
-  - -1.79
-  - -0.85794
-  - 0.16
-  - 0.042060018
-  - -8
+  - -7.593099
+  - -6.840524
+  - -6.0879493
+  - -5.3353744
+  - -4.5827994
+  - -3.8302243
+  - -3.0776494
+  - -2.3250742
+  - -1.5724993
+  - -0.8199243
+  - -0.06734933
+  - 0.68522567
+  - 1.4378006
+  - 2.1903756
   _powerDisabled: 0000000000000000000000000000
   _chopScales:
   - 1
@@ -64,6 +64,6 @@ MonoBehaviour:
   - 1
   - 1
   - 1
-  _chop: 1.6
+  _chop: 1.8
   _showAdvancedControls: 0
-  _model: 0
+  _model: 1
