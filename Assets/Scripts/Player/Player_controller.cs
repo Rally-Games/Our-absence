@@ -150,7 +150,7 @@ public class Player_controller : MonoBehaviour
         if (isRolling)
             return speed * 0.7f;
         else if (isRunning)
-            return speed * 1.7f;
+            return speed * 2f;
         else
             return speed;
     }

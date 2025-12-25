@@ -504,7 +504,8 @@ public class MainMenuController : MonoBehaviour
                 debugMenu.DebugLog("Player not found in scene.");
             }
             RemoveItemFromInventory(item);
-            currentEquipmentControl.UnequipItem(currentEquipmentControl.GetSlot(item.equippedSlotName));
+            if (item.equippedSlotName != null)
+                currentEquipmentControl.UnequipItem(currentEquipmentControl.GetSlot(item.equippedSlotName));
             ClearOptionMenu();
         })
         { text = "Drop" };

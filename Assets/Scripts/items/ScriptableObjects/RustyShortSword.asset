@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1efebd01bf27b3409f54e1323308383, type: 3}
+  m_Name: RustyShortSword
+  m_EditorClassIdentifier: 
+  itemName: Rusty Sword
+  itemSubType: 1
+  itemCategory: 0
+  itemID: 2
+  icon: {fileID: 2800000, guid: 8b7664b1098440c4c93ddd0f27faf534, type: 3}
+  objectRef: {fileID: 249592252839765630, guid: 8c8fca4b46b12dc48a23fd435894264b, type: 3}
+  isStackable: 0
+  maxStackSize: 1
+  maxDurability: 100
+  isDroppable: 1
