@@ -8,7 +8,7 @@ public class PickUpItem : MonoBehaviour
 {
     public ItemDataInstance Item;
     public float detectionRadius = 3.0f;
-    private PlayerInput playerInput;
+    [SerializeField] private PlayerInput playerInput;
 
     void Awake()
     {
