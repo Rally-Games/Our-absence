@@ -2280,9 +2280,9 @@ CharacterController:
   serializedVersion: 3
   m_Height: 1.8
   m_Radius: 0.25
-  m_SlopeLimit: 45
+  m_SlopeLimit: 90
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!95 &8053291653770536430
@@ -2513,6 +2513,7 @@ MonoBehaviour:
   mainMenuController: {fileID: 0}
   equipmentControl: {fileID: 0}
   autoSaveInterval: 300
+  useSaveAndLoadSystem: 1
 --- !u!114 &2186055105918183177
 MonoBehaviour:
   m_ObjectHideFlags: 0

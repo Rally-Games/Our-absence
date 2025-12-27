@@ -12,8 +12,8 @@ public class PickUpItem : MonoBehaviour
 
     void Awake()
     {
-        playerInput = FindAnyObjectByType<PlayerInput>();
         Item = GetComponent<ItemDataInstance>();
+        playerInput = FindAnyObjectByType<PlayerInput>();
     }
 
     public ItemDataInstance IsPickUpItemInRange()
