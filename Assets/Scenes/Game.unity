@@ -3472,6 +3472,14 @@ PrefabInstance:
       propertyPath: MaxHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5972208744022198534, guid: fabd054acc829da4ebb9d70004360190, type: 3}
+      propertyPath: UIDoc
+      value: 
+      objectReference: {fileID: 1947097409}
+    - target: {fileID: 5972208744022198534, guid: fabd054acc829da4ebb9d70004360190, type: 3}
+      propertyPath: Player_controller
+      value: 
+      objectReference: {fileID: 543450651672532668}
     - target: {fileID: 7392617814582920060, guid: fabd054acc829da4ebb9d70004360190, type: 3}
       propertyPath: m_Name
       value: Player
