@@ -14,7 +14,6 @@ public class HealthSystem : MonoBehaviour
     private VisualElement m_HealthBarMask;
 
     [SerializeField] private UnityEngine.UI.Slider uiSlider;
-    [SerializeField] private new GameObject gameObject;
     [SerializeField] private int health = 100;
     [SerializeField] private int maxHealth = 100;
     private Dictionary<string, int> healthModifiers = new Dictionary<string, int>();
