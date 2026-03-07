@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
-    [SerializeField] private Slider uiSlider;
-    [SerializeField] private GameObject gameObject;
+    public Player_controller Player_controller;
+    public UIDocument UIDoc;
+
+    private Label m_HealthLabel;
+    private VisualElement m_HealthBarMask;
+
+    [SerializeField] private UnityEngine.UI.Slider uiSlider;
+    [SerializeField] private new GameObject gameObject;
     [SerializeField] private int health = 100;
     [SerializeField] private int maxHealth = 100;
     private Dictionary<string, int> healthModifiers = new Dictionary<string, int>();
@@ -22,6 +29,12 @@ public class HealthSystem : MonoBehaviour
             uiSlider.maxValue = maxHealth;
             uiSlider.value = health;
         }
+
+        Player_controller.OnHealthChange += UpdateHealthUI;
+        m_HealthLabel = UIDoc.rootVisualElement.Q<Label>("HealthLabel");
+        m_HealthBarMask = UIDoc.rootVisualElement.Q<VisualElement>("HealthBarMask");
+
+        UpdateHealthUI();
     }
 
     private void Update()
@@ -154,8 +167,11 @@ public class HealthSystem : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        if (uiSlider == null) return;
-        uiSlider.value = health;
+        m_HealthLabel.text = $"{Player_controller.CurrentHealth}/{Player_controller.MaxHealth}";
+
+        float healthRatio = (float)Player_controller.CurrentHealth / Player_controller.MaxHealth;
+        float healthPrecent = Mathf.Lerp(1, 99, healthRatio);
+        m_HealthBarMask.style.width = Length.Percent(healthPrecent);
     }
 
 }
