@@ -14,7 +14,7 @@ public class InventoryItem : ScriptableObject
     [SerializeField] private MainMenuController.ItemType itemSubType;
     [SerializeField] private MainMenuController.CategoryType itemCategory;
     [SerializeField] private int itemID;
-    [SerializeField] private Sprite icon;
+    [SerializeField] private Texture2D icon;
     [SerializeField] private GameObject objectRef;
     [SerializeField] private bool isStackable;
     [SerializeField] private int maxStackSize;
@@ -40,7 +40,7 @@ public class InventoryItem : ScriptableObject
     public MainMenuController.ItemType ItemSubType => itemSubType;
     public MainMenuController.CategoryType ItemCategory => itemCategory;
     public int ItemID => itemID;
-    public Sprite Icon => icon;
+    public Texture2D Icon => icon;
     public GameObject ObjectRef => objectRef;
     public bool IsStackable => isStackable;
     public int MaxStackSize => maxStackSize;

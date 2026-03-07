@@ -273,6 +273,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: isAttacking
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1102 &-4998988518416036027
 AnimatorState:
   serializedVersion: 6
@@ -688,18 +690,6 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Combat_layer
-    m_StateMachine: {fileID: 3728732393316754227}
-    m_Mask: {fileID: 0}
-    m_Motions: []
-    m_Behaviours: []
-    m_BlendingMode: 0
-    m_SyncedLayerIndex: -1
-    m_DefaultWeight: 1
-    m_IKPass: 0
-    m_SyncedLayerAffectsTiming: 0
-    m_Controller: {fileID: 9100000}
-  - serializedVersion: 5
     m_Name: Target_layer
     m_StateMachine: {fileID: 2674200302907442956}
     m_Mask: {fileID: 0}
@@ -708,6 +698,18 @@ AnimatorController:
     m_BlendingMode: 0
     m_SyncedLayerIndex: -1
     m_DefaultWeight: 0
+    m_IKPass: 0
+    m_SyncedLayerAffectsTiming: 0
+    m_Controller: {fileID: 9100000}
+  - serializedVersion: 5
+    m_Name: Combat_layer
+    m_StateMachine: {fileID: 3728732393316754227}
+    m_Mask: {fileID: 0}
+    m_Motions: []
+    m_Behaviours: []
+    m_BlendingMode: 0
+    m_SyncedLayerIndex: -1
+    m_DefaultWeight: 1
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
@@ -751,6 +753,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: isAttacking
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1101 &1648582618561126467
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1073,6 +1077,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerName: 
+  isTriggerBoolField: 1
+  setBoolTrue: 0
 --- !u!1101 &4126674195697836180
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

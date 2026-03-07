@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,35 +55,20 @@ public class EquipmentControl : MonoBehaviour
         {
             // Weapons
             ("LW1", MainMenuController.CategoryType.Weapon),
-            ("LW2", MainMenuController.CategoryType.Weapon),
-            ("LW3", MainMenuController.CategoryType.Weapon),
             ("RW1", MainMenuController.CategoryType.Weapon),
-            ("RW2", MainMenuController.CategoryType.Weapon),
-            ("RW3", MainMenuController.CategoryType.Weapon),
             
             // Armor
             ("Helmet", MainMenuController.CategoryType.Armor),
             ("Chestplate", MainMenuController.CategoryType.Armor),
             ("Leggings", MainMenuController.CategoryType.Armor),
-            ("Gauntlets", MainMenuController.CategoryType.Armor),
-            
-            // Ammunition
-            ("Arrows1", MainMenuController.CategoryType.Ammo),
-            ("Arrows2", MainMenuController.CategoryType.Ammo),
-            ("Bolts1", MainMenuController.CategoryType.Ammo),
-            ("Bolts2", MainMenuController.CategoryType.Ammo),
+            ("GauntletsL", MainMenuController.CategoryType.Armor),
+            ("GauntletsR", MainMenuController.CategoryType.Armor),
+            ("Boots", MainMenuController.CategoryType.Armor),
             
             // Magic Items
             ("MagicItem1", MainMenuController.CategoryType.MagicItems),
             ("MagicItem2", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem3", MainMenuController.CategoryType.MagicItems),
-            ("MagicItem4", MainMenuController.CategoryType.MagicItems),
-            
-            // Quick Items
-            ("QuickItem1", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem2", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem3", MainMenuController.CategoryType.EquipmentItems),
-            ("QuickItem4", MainMenuController.CategoryType.EquipmentItems)
+
         };
 
         // Create equipment slots
@@ -257,25 +243,64 @@ public class EquipmentControl : MonoBehaviour
     {
         if (slot.HasItem())
         {
-            // UI Toolkit buttons often use a child label
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = slot.item._definition.ItemName;
-            else
-                slot.button.text = slot.item._definition.ItemName; // fallback
+            // Get the child visual element named "Display"
+            var display = slot.button.Q<VisualElement>("Display");
 
-            slot.button.style.color = new StyleColor(Color.white);
+            if (display != null)
+            {
+                // Assign the icon to the background
+                display.style.backgroundImage = new StyleBackground(slot.item._definition.Icon);
+            }
+            else
+            {
+                Debug.LogWarning("Display element not found inside button.");
+            }
         }
         else
         {
-            var label = slot.button.Q<Label>();
-            if (label != null)
-                label.text = GetEmptySlotText(slot.button.name);
-            else
-                slot.button.text = GetEmptySlotText(slot.button.name);
+            // Clear display back to default
+            var display = slot.button.Q<VisualElement>("Display");
+            if (display != null)
+                display.style.backgroundImage = GetDefaultIconForSlot(slot.button.name);
+        }
+    }
 
-            slot.button.style.color = Color.white;
-            slot.button.style.backgroundImage = null;
+    private Texture2D GetDefaultIconForSlot(string type)
+    {
+        switch (type)
+        {
+            case "LW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "RW1":
+                return Resources.Load<Texture2D>("Equipment/Icons/sword-temp");
+
+            case "Helmet":
+                return Resources.Load<Texture2D>("Equipment/Icons/Helment-temp");
+
+            case "Chestplate":
+                return Resources.Load<Texture2D>("Equipment/Icons/Chestplate-temp");
+
+            case "Leggings":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "GauntletsL":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "GauntletsR":
+                return Resources.Load<Texture2D>("Equipment/Icons/Gauntlets-temp");
+
+            case "Boots":
+                return Resources.Load<Texture2D>("Equipment/Icons/Leggings-temp");
+
+            case "MagicItem1":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            case "MagicItem2":
+                return Resources.Load<Texture2D>("Equipment/Icons/ring-temp");
+
+            default:
+                return Resources.Load<Texture2D>("Icons/Defaults/empty");
         }
     }
 
@@ -288,7 +313,8 @@ public class EquipmentControl : MonoBehaviour
             "Helmet" => "Helmet",
             "Chestplate" => "Chestplate",
             "Leggings" => "Leggings",
-            "Gauntlets" => "Gauntlets",
+            "GauntletsL" => "GauntletsL",
+            "GauntletsR" => "GauntletsR",
             "Arrows1" or "Arrows2" => "Arrows",
             "Bolts1" or "Bolts2" => "Bolts",
             var name when name.StartsWith("MagicItem") => "Magic Item",
@@ -333,15 +359,15 @@ public class EquipmentControl : MonoBehaviour
         {
             style = {
                 position = Position.Absolute,
-                left = position.x,
-                top = position.y,
-                backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f),
+                left = position.x + 50,
+                top = position.y + 15,
+                backgroundImage = Resources.Load<Texture2D>("Sprites&images/Hub/Button-005"),
                 paddingLeft = 8, paddingRight = 8,
                 paddingTop = 6, paddingBottom = 6,
                 borderTopLeftRadius = 4, borderTopRightRadius = 4,
                 borderBottomLeftRadius = 4, borderBottomRightRadius = 4,
-                borderLeftWidth = 1, borderRightWidth = 1,
-                borderTopWidth = 1, borderBottomWidth = 1,
+                borderLeftWidth = 0, borderRightWidth = 0,
+                borderTopWidth = 0, borderBottomWidth = 0,
                 borderLeftColor = Color.gray, borderRightColor = Color.gray,
                 borderTopColor = Color.gray, borderBottomColor = Color.gray
             }
@@ -350,8 +376,60 @@ public class EquipmentControl : MonoBehaviour
         // Add option buttons
         foreach (var (text, action) in options)
         {
-            var button = new Button(action) { text = text };
+            var button = new Button(action)
+            {
+                text = text
+            };
+
+            // Load assets
+            var bg = Resources.Load<Texture2D>("Sprites&images/Hub/item_frame-001");
+            var bg2 = Resources.Load<Texture2D>("Sprites&images/Hub/item_frame-002");
+            var font = Resources.Load<Font>("Fonts/WashingtonText");
+
+            // Base style
             button.style.marginBottom = 2;
+            button.style.marginTop = 2;
+            button.style.backgroundImage = new StyleBackground(bg);
+            button.style.backgroundColor = new Color(0f, 0f, 0f, 0f);
+            button.style.unityFontDefinition = FontDefinition.FromFont(font);
+            button.style.fontSize = 14;
+            button.style.borderTopWidth = 0;
+            button.style.borderLeftWidth = 0;
+            button.style.borderRightWidth = 0;
+            button.style.borderBottomWidth = 0;
+            button.style.color = new Color(178, 178, 178, 255);
+
+            // ------------------------
+            // HOVER EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerEnterEvent>(evt =>
+            {
+                button.style.backgroundImage = new StyleBackground(bg2);
+            });
+
+            // ------------------------
+            // UNHOVER EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerLeaveEvent>(evt =>
+            {
+                button.style.backgroundImage = new StyleBackground(bg);
+            });
+
+            // ------------------------
+            // PRESS EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                button.style.scale = new Vector2(0.95f, 0.95f); // slight shrink effect
+            });
+
+            // ------------------------
+            // RELEASE EFFECT
+            // ------------------------
+            button.RegisterCallback<PointerUpEvent>(evt =>
+            {
+                button.style.scale = new Vector2(1f, 1f);
+            });
             optionMenu.Add(button);
         }
 

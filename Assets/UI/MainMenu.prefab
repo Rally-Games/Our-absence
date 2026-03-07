@@ -94,6 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a217370c369fae4a894bf3169ca4ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemTemp: {fileID: 2800000, guid: 804eb61f3f003b845b954cd570c207d9, type: 3}
+  myFont: {fileID: 12800000, guid: 9bbb911127583fd469646257bdb3ea9f, type: 3}
 --- !u!114 &7199301339018839777
 MonoBehaviour:
   m_ObjectHideFlags: 0

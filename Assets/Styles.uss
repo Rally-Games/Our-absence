@@ -21,6 +21,8 @@
     color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
+    background-image: url("project://database/Assets/Sprites&images/Hub/Button-005.png?fileID=2800000&guid=804eb61f3f003b845b954cd570c207d9&type=3#Button-005");
+    opacity: 1;
 }
 
 .ManuOptionsButtonStyle:hover {
@@ -46,7 +48,11 @@
     color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(180, 180, 180, 0);
+    background-image: url("project://database/Assets/Sprites&images/Hub/item_frame-002.png?fileID=2800000&guid=569c5323bd1ac164887bd2ccfd4e6a87&type=3#item_frame-002");
+    opacity: 1;
+    scale: 1.1 1.1;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
 .ManuOptionsButtonStyle:active {
@@ -72,5 +78,118 @@
     color: rgb(0, 0, 0);
     -unity-font-style: bold;
     font-size: 18px;
-    background-color: rgb(217, 217, 217);
+    background-color: rgba(217, 217, 217, 0);
+    background-image: url("project://database/Assets/Sprites&images/Hub/item_frame-002.png?fileID=2800000&guid=569c5323bd1ac164887bd2ccfd4e6a87&type=3#item_frame-002");
+    scale: 0.9 0.9;
+}
+
+.EquipmentSlotStyle {
+    flex-grow: 1;
+    flex-shrink: 1;
+    align-items: center;
+    width: 40%;
+    flex-direction: row;
+    justify-content: center;
+    -unity-text-align: middle-right;
+    height: 20%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 0;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 18px;
+    background-image: url("project://database/Assets/Sprites&images/Hub/item_frame-001.png?fileID=2800000&guid=5451721a11a53a8499255430d0d63734&type=3#item_frame-001");
+    scale: 1 1;
+    align-self: center;
+    overflow: hidden;
+    -unity-background-scale-mode: stretch-to-fill;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(255, 255, 255, 0);
+    border-right-color: rgba(255, 255, 255, 0);
+    border-top-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
+
+.EquipmentSlotStyle:hover {
+    flex-grow: 1;
+    flex-shrink: 1;
+    align-items: center;
+    width: 40%;
+    flex-direction: row;
+    justify-content: center;
+    -unity-text-align: middle-right;
+    height: 20%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 0;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 18px;
+    background-image: url("project://database/Assets/Sprites&images/Hub/item_frame-002.png?fileID=2800000&guid=569c5323bd1ac164887bd2ccfd4e6a87&type=3#item_frame-002");
+    scale: 1.05 1.05;
+    align-self: center;
+    overflow: hidden;
+    -unity-background-scale-mode: stretch-to-fill;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(255, 255, 255, 0);
+    border-right-color: rgba(255, 255, 255, 0);
+    border-top-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
+
+.EquipmentSlotStyle:active {
+    flex-grow: 1;
+    flex-shrink: 1;
+    align-items: center;
+    width: 40%;
+    flex-direction: row;
+    justify-content: center;
+    -unity-text-align: middle-right;
+    height: 20%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -unity-text-outline-width: 0;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 18px;
+    background-image: url("project://database/Assets/Sprites&images/Hub/item_frame-001.png?fileID=2800000&guid=5451721a11a53a8499255430d0d63734&type=3#item_frame-001");
+    scale: 1 1;
+    align-self: center;
+    overflow: hidden;
+    -unity-background-scale-mode: stretch-to-fill;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(255, 255, 255, 0);
+    border-right-color: rgba(255, 255, 255, 0);
+    border-top-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
+
+.ImageTemplate {
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.59);
+    width: 100%;
+    height: 100%;
 }

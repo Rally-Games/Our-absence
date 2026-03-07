@@ -12,31 +12,35 @@ public class SavePlayerData : MonoBehaviour
     public MainMenuController mainMenuController;
     public EquipmentControl equipmentControl;
     [SerializeField] private float autoSaveInterval = 60 * 5f; // Auto-save every 5 minutes default
+    [SerializeField] private bool useSaveAndLoadSystem = true;
     PlayerSaveData.Data data;
 
     private void Start()
     {
-        // Start automatic saving
-        InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
-        data = SaveAndLoad.Load<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState);
-        ItemsManager.Initialize(() =>
+        if (useSaveAndLoadSystem)
         {
-            var itemData = ItemsManager.ConvertDataDicToInventoryItemsArrayOptimized(data.items);
-            mainMenuController?.InitializeSavedItemsInInventory(itemData);
-            if (equipmentControl != null)
+            // Start automatic saving
+            InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
+            data = SaveAndLoad.Load<PlayerSaveData.Data>(SaveAndLoad.savePathPlayerState);
+            ItemsManager.Initialize(() =>
             {
-                foreach (var item in itemData)
+                var itemData = ItemsManager.ConvertDataDicToInventoryItemsArrayOptimized(data.items);
+                mainMenuController?.InitializeSavedItemsInInventory(itemData);
+                if (equipmentControl != null)
                 {
-                    if (!string.IsNullOrEmpty(item.equippedSlotName))
+                    foreach (var item in itemData)
                     {
-                        equipmentControl.EquipItem(item, equipmentControl.GetSlot(item.equippedSlotName));
+                        if (!string.IsNullOrEmpty(item.equippedSlotName))
+                        {
+                            equipmentControl.EquipItem(item, equipmentControl.GetSlot(item.equippedSlotName));
+                        }
                     }
                 }
             }
+            );
+            if (data?.position != null && data.position.Length == 3)
+                playerController.transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
         }
-        );
-        if (data?.position != null && data.position.Length == 3)
-            playerController.transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
     }
 
     private void Update()

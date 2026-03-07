@@ -8,12 +8,12 @@ public class PickUpItem : MonoBehaviour
 {
     public ItemDataInstance Item;
     public float detectionRadius = 3.0f;
-    private PlayerInput playerInput;
+    [SerializeField] private PlayerInput playerInput;
 
     void Awake()
     {
-        playerInput = FindAnyObjectByType<PlayerInput>();
         Item = GetComponent<ItemDataInstance>();
+        playerInput = FindAnyObjectByType<PlayerInput>();
     }
 
     public ItemDataInstance IsPickUpItemInRange()

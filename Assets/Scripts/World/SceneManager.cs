@@ -8,16 +8,20 @@ public class SceneManager : MonoBehaviour
     private Dictionary<int, PickableItem> pickableItemsInScene;
     private GameObject[] allObjects;
     [SerializeField] private float autoSaveInterval = 60 * 5f; // Auto-save every 5 minutes default
+    [SerializeField] private bool useSaveAndLoadSystem = true;
 
     void Start()
     {
-        allObjects = Resources.FindObjectsOfTypeAll<GameObject>()
+        if (useSaveAndLoadSystem)
+        {
+            allObjects = Resources.FindObjectsOfTypeAll<GameObject>()
             .Where(obj => obj.CompareTag("PickableItem") && obj.scene.IsValid())
             .ToArray();
 
-        pickableItemsInScene = new Dictionary<int, PickableItem>();
-        StartCoroutine(WaitForItemsManagerAndLoad());
-        InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
+            pickableItemsInScene = new Dictionary<int, PickableItem>();
+            StartCoroutine(WaitForItemsManagerAndLoad());
+            InvokeRepeating(nameof(AutoSave), autoSaveInterval, autoSaveInterval);
+        }
     }
     private void Update()
     {

@@ -1,7 +1,8 @@
 {
   "dependencies": {
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.22.3",
-    "com.unity.ai.navigation": "1.1.6",
+    "com.unity.ai.navigation": "1.1.7",
     "com.unity.animation.rigging": "1.2.1",
     "com.unity.cinemachine": "2.10.3",
     "com.unity.collab-proxy": "2.7.1",

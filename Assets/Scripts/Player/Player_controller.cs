@@ -6,11 +6,17 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(AnimationManager))]
 public class Player_controller : MonoBehaviour
 {
+    public int MaxHealth;
+    public Action OnHealthChange;
+    public int CurrentHealth => Mathf.CeilToInt(m_CurrentHealth);
+    private float m_CurrentHealth;
+
     private CharacterController controller;
     private PlayerInput playerInput;
     private Camera mainCamera;
@@ -37,7 +43,6 @@ public class Player_controller : MonoBehaviour
     private InputAction moveAction;
     private InputAction rollAction;
     private InputAction runAction;
-    private InputAction lockOnAction;
 
     public bool isLockOn = false;
 
@@ -68,12 +73,12 @@ public class Player_controller : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         rollAction = playerInput.actions["Roll"];
         runAction = playerInput.actions["Run"];
-        lockOnAction = playerInput.actions["LockOn"];
     }
 
     void Start()
     {
         GlobalVariables = FindObjectOfType<ObjectsState>();
+        m_CurrentHealth = MaxHealth;
     }
 
     private void Update()
@@ -81,14 +86,6 @@ public class Player_controller : MonoBehaviour
         GetInput();
 
         if (isPickingUp == false) equipmentControl.PickUpItem(this.gameObject, rangeOfItemDetection);
-
-        if (lockOnAction.triggered)
-        {
-            if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 0)
-                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 1.0f);
-            else if (animationManager.ActiveLayersIndex[animationManager.GetLayerIndexByName("Target_layer")] == 1)
-                animationManager.SetLayerWeight(animationManager.GetLayerIndexByName("Target_layer"), weight: 0.0f);
-        }
 
         if (!attackAnimations.IsAttacking())
         {
@@ -103,6 +100,12 @@ public class Player_controller : MonoBehaviour
 
         if (isPickingUp || playerRig.weight > 0.0f)
             PickUpItemAnimation();
+    }
+
+    public void ChangeHealth(float changeAmount)
+    {
+        m_CurrentHealth += changeAmount;
+        OnHealthChange?.Invoke();
     }
 
     private void GetInput()
@@ -160,7 +163,7 @@ public class Player_controller : MonoBehaviour
         if (isRolling)
             return speed * 0.7f;
         else if (isRunning)
-            return speed * 1.7f;
+            return speed * 2f;
         else
             return speed;
     }
@@ -191,6 +194,16 @@ public class Player_controller : MonoBehaviour
         {
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
+        }
+
+        if (hit.gameObject.GetComponentInChildren<DamageSystem>())
+        {
+            if (hit.gameObject.GetComponentInChildren<DamageSystem>().script.IsAttacking())
+            {
+                var HS = transform.GetComponent<HealthSystem>();
+                int damage = hit.gameObject.GetComponentInChildren<DamageSystem>().script.damage;
+                HS.TakeDamage(damage);
+            }
         }
     }
 
