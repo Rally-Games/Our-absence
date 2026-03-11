@@ -152,18 +152,28 @@ public class MainMenuController : MonoBehaviour
     {
         ShowInventoryView();
         currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
+
+        inventoryButton.style.color = Color.yellow;
+        equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
         debugMenu.DebugLog("Switched to Inventory view");
     }
 
     public void OnEquipmentButtonClicked()
     {
         ShowEquipmentView();
+        inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        equipmentButton.style.color = Color.yellow;
+        settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
         debugMenu.DebugLog("Switched to Equipment view");
     }
 
     private void OnSettingsButtonClicked()
     {
         ShowSettingsView();
+        inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        settingsButton.style.color = Color.yellow;
         debugMenu.DebugLog("Switched to Settings view");
     }
 
@@ -262,29 +272,54 @@ public class MainMenuController : MonoBehaviour
             .ToList();
         }
 
-        itemsList.makeItem = () => new Button();
+        itemsList.makeItem = () =>
+{
+    var button = new Button();
+    button.style.flexDirection = FlexDirection.Row;
+    button.style.alignItems = Align.Center;
+    button.style.width = Length.Percent(100);
+    button.style.height = Length.Percent(20);
+
+    // Icon
+    var icon = new VisualElement();
+    icon.name = "icon";
+    icon.style.width = 32;
+    icon.style.height = 32;
+    icon.style.marginLeft = 6;
+    icon.style.marginRight = 8;
+    icon.style.backgroundSize = new StyleBackgroundSize(StyleKeyword.Auto);
+
+    // Text
+    var label = new Label();
+    label.name = "label";
+    label.style.flexGrow = 1;
+    label.style.unityTextAlign = TextAnchor.MiddleLeft;
+
+    button.Add(icon);
+    button.Add(label);
+
+    return button;
+};
 
         itemsList.bindItem = (element, index) =>
         {
             if (index >= itemsList.itemsSource.Count) return;
 
             var item = (ItemDataInstance)itemsList.itemsSource[index];
+
             var button = element as Button;
+            var icon = button.Q<VisualElement>("icon");
+            var label = button.Q<Label>("label");
 
-            button.text = item._definition.ItemName;
+            label.text = item._definition.ItemName;
+            label.style.unityFontDefinition = new StyleFontDefinition(myFont);
 
-            button.style.backgroundImage = new StyleBackground(itemTemp);
+            icon.style.backgroundImage =
+                new StyleBackground(item._definition.Icon);
 
-            button.style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.6f);
+            button.style.backgroundColor =
+                new Color(0.1f, 0.1f, 0.1f, 1f);
 
-            button.style.unityFontDefinition = new StyleFontDefinition(myFont);
-            button.style.fontSize = 18;
-            button.style.color = Color.white;
-
-            button.style.paddingLeft = 8;
-            button.style.paddingRight = 8;
-            button.style.borderTopLeftRadius = 6;
-            button.style.borderBottomLeftRadius = 6;
 
             // Clear previous event handlers
             button.clicked -= null;
