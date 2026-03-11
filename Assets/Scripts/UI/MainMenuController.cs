@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using System.Security.Cryptography;
 using System;
+using UnityEditor.Animations;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class MainMenuController : MonoBehaviour
     private EquipmentControl currentEquipmentControl;
     [Header("templets")]
     public Texture2D itemTemp;
+    public Texture2D itemTempHover;
     public Font myFont;
 
     #region Unity Lifecycle
@@ -272,34 +274,59 @@ public class MainMenuController : MonoBehaviour
             .ToList();
         }
 
+        itemsList.fixedItemHeight = 85;
         itemsList.makeItem = () =>
-{
-    var button = new Button();
-    button.style.flexDirection = FlexDirection.Row;
-    button.style.alignItems = Align.Center;
-    button.style.width = Length.Percent(100);
-    button.style.height = Length.Percent(20);
+        {
+            var button = new Button();
+            button.style.flexDirection = FlexDirection.Row;
+            button.style.alignItems = Align.Center;
+            button.style.width = Length.Percent(100);
+            button.style.marginBottom = 6;
+            button.style.borderTopWidth = 0;
+            button.style.borderBottomWidth = 0;
+            button.style.borderLeftWidth = 0;
+            button.style.borderRightWidth = 0;
 
-    // Icon
-    var icon = new VisualElement();
-    icon.name = "icon";
-    icon.style.width = 32;
-    icon.style.height = 32;
-    icon.style.marginLeft = 6;
-    icon.style.marginRight = 8;
-    icon.style.backgroundSize = new StyleBackgroundSize(StyleKeyword.Auto);
 
-    // Text
-    var label = new Label();
-    label.name = "label";
-    label.style.flexGrow = 1;
-    label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            // Icon
+            var icon = new VisualElement();
+            icon.name = "icon";
+            icon.style.width = 74;
+            icon.style.height = 74;
+            icon.style.marginTop = 5;
+            icon.style.backgroundPositionX = BackgroundPropertyHelper.ConvertScaleModeToBackgroundPosition(ScaleMode.StretchToFill);
+            icon.style.backgroundPositionY = BackgroundPropertyHelper.ConvertScaleModeToBackgroundPosition(ScaleMode.StretchToFill);
+            icon.style.backgroundRepeat = BackgroundPropertyHelper.ConvertScaleModeToBackgroundRepeat(ScaleMode.StretchToFill);
+            icon.style.backgroundSize = BackgroundPropertyHelper.ConvertScaleModeToBackgroundSize(ScaleMode.StretchToFill);
 
-    button.Add(icon);
-    button.Add(label);
+            // Text
+            var label = new Label();
+            label.name = "label";
+            label.style.flexGrow = 1;
+            label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            label.style.height = Length.Percent(100);
+            //label.style.unityTextOutlineColor = new Color(1f, 0.35f, 0f, 1f);
+            //label.style.unityTextOutlineWidth = 0.1f;
+            label.style.color = new Color(0.7f, 0.7f, 0.7f, 1f);
 
-    return button;
-};
+            // Hover start
+            button.RegisterCallback<PointerEnterEvent>(evt =>
+            {
+                button.style.backgroundImage = itemTempHover;
+            });
+
+            // Hover end
+            button.RegisterCallback<PointerLeaveEvent>(evt =>
+            {
+                button.style.backgroundImage = itemTemp;
+            });
+
+
+            button.Add(icon);
+            button.Add(label);
+
+            return button;
+        };
 
         itemsList.bindItem = (element, index) =>
         {
@@ -314,11 +341,10 @@ public class MainMenuController : MonoBehaviour
             label.text = item._definition.ItemName;
             label.style.unityFontDefinition = new StyleFontDefinition(myFont);
 
-            icon.style.backgroundImage =
-                new StyleBackground(item._definition.Icon);
+            icon.style.backgroundImage = item._definition.Icon;
 
-            button.style.backgroundColor =
-                new Color(0.1f, 0.1f, 0.1f, 1f);
+            button.style.backgroundImage = itemTemp;
+            button.style.backgroundColor = new Color(0f, 0f, 0f, 0f);
 
 
             // Clear previous event handlers
