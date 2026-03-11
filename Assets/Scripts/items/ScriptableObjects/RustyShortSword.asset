@@ -16,7 +16,7 @@ MonoBehaviour:
   itemSubType: 1
   itemCategory: 0
   itemID: 2
-  icon: {fileID: 2800000, guid: ba40e4142ba7c9040a06b644974bdd3e, type: 3}
+  icon: {fileID: 2800000, guid: dba9cc2f9c8e11940905026fdc17b1ea, type: 3}
   objectRef: {fileID: 249592252839765630, guid: 8c8fca4b46b12dc48a23fd435894264b, type: 3}
   isStackable: 0
   maxStackSize: 1
