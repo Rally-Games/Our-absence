@@ -94,6 +94,8 @@ public class MainMenuController : MonoBehaviour
         inventoryButton.clicked += OnInventoryButtonClicked;
         equipmentButton.clicked += OnEquipmentButtonClicked;
         settingsButton.clicked += OnSettingsButtonClicked;
+
+        SetSelectedOption("");
     }
 
     private void SetInitialView()
@@ -154,29 +156,50 @@ public class MainMenuController : MonoBehaviour
     {
         ShowInventoryView();
         currentEquipmentControl = FindAnyObjectByType<EquipmentControl>();
-
-        inventoryButton.style.color = Color.yellow;
-        equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
-        settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        SetSelectedOption("Inventory");
         debugMenu.DebugLog("Switched to Inventory view");
     }
 
     public void OnEquipmentButtonClicked()
     {
         ShowEquipmentView();
-        inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
-        equipmentButton.style.color = Color.yellow;
-        settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+        SetSelectedOption("Equipment");
         debugMenu.DebugLog("Switched to Equipment view");
     }
 
     private void OnSettingsButtonClicked()
     {
         ShowSettingsView();
-        inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
-        equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
-        settingsButton.style.color = Color.yellow;
+        SetSelectedOption("Setting");
         debugMenu.DebugLog("Switched to Settings view");
+    }
+
+    public void SetSelectedOption(string option)
+    {
+        switch (option)
+        {
+            case "Setting":
+                inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                settingsButton.style.color = Color.yellow;
+                break;
+            case "Equipment":
+                inventoryButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                equipmentButton.style.color = Color.yellow;
+                settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                break;
+            case "Inventory":
+                inventoryButton.style.color = Color.yellow;
+                equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                break;
+            default:
+                inventoryButton.style.color = Color.yellow;
+                equipmentButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                settingsButton.style.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                break;
+
+        }
     }
 
     private void ShowInventoryView()
