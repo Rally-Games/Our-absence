@@ -22,7 +22,8 @@ public class EnemyAI : MonoBehaviour
         Prepare,
         Engage,
         Reposition,
-        Roll
+        Roll,
+        Standing_Dodge_Backward
     }
 
     #endregion
@@ -218,8 +219,8 @@ public class EnemyAI : MonoBehaviour
                 CheckStateFromPrepare(hasMinCombatTime);
                 break;
 
-            case State.Roll:
-                CheckStateFromRoll();
+            case State.Standing_Dodge_Backward:
+                CheckStateFromDoge();
                 break;
 
             default:
@@ -264,8 +265,8 @@ public class EnemyAI : MonoBehaviour
             case State.Attack_Ranged:
                 animator.SetTrigger("Shoot");
                 break;
-            case State.Roll:
-                HandleRoll();
+            case State.Standing_Dodge_Backward:
+                HandleDodge();
                 break;
         }
     }
@@ -347,7 +348,7 @@ public class EnemyAI : MonoBehaviour
         if (distance > meleeAttackRange + distanceBuffer || !CheckPlayerInVisionCone())
             ChangeState(State.Engage);
         else if (CanRoll() && Random.value < rollChance)
-            ChangeState(State.Roll);                  // roll away instead of plain retreat
+            ChangeState(State.Standing_Dodge_Backward);                  // roll away instead of plain retreat
         else if (Random.value < 0.3f)
             ChangeState(State.Retreat);
     }
@@ -372,11 +373,10 @@ public class EnemyAI : MonoBehaviour
             ChangeState(State.Engage);
     }
 
-    private void CheckStateFromRoll()
+    private void CheckStateFromDoge()
     {
-        // Wait for the roll animation to finish, then re-engage
-        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Roll"))
-            ChangeState(State.Engage);
+        ChangeState(State.Engage);
+        animator.ResetTrigger("dodgeBackwards");
     }
 
     #endregion
@@ -437,7 +437,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (CanRoll() && Random.value < rollChance)
             {
-                ChangeState(State.Roll);       // dodge the incoming player
+                ChangeState(State.Standing_Dodge_Backward);       // dodge the incoming player
                 return true;
             }
             ChangeState(aggressionScore > 0.7f ? State.Prepare : State.Retreat);
@@ -725,6 +725,19 @@ public class EnemyAI : MonoBehaviour
         lastRollTime = Time.time;
 
         // Roll away from player
+        Vector3 rollDir = (transform.position - player.position).normalized;
+        rollDir.y = 0f;
+        characterController.Move(rollDir * speed * 1.8f * Time.deltaTime);
+    }
+
+    private void HandleDodge()
+    {
+        animator.SetLayerWeight(animator.GetLayerIndex("Target_layer"), 1f); // Base Layer owns the dodge
+        animator.SetTrigger("dodgeBackwards");
+
+        lastRollTime = Time.time;
+
+        // Standing_Dodge_Backward away from player
         Vector3 rollDir = (transform.position - player.position).normalized;
         rollDir.y = 0f;
         characterController.Move(rollDir * speed * 1.8f * Time.deltaTime);

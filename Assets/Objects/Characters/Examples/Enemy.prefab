@@ -51399,8 +51399,8 @@ MonoBehaviour:
   detectionRadius: 20
   detectionAngle: 100
   maxRetreatDistance: 5
-  orbitRadius: 10
-  orbitSpeed: 1
+  orbitRadius: 15
+  orbitSpeed: 0.3
   strafeJitter: 0.5
   aggression: 0.8
   caution: 0.3
@@ -51425,10 +51425,10 @@ MonoBehaviour:
   damage: 0
   minRestTime: 5
   maxRestTime: 12
-  walkSpeed: 5
-  runSpeed: 8
-  rollCooldown: 3
-  rollChance: 0.3
+  walkSpeed: 3
+  runSpeed: 5
+  rollCooldown: 7
+  rollChance: 0.2
 --- !u!114 &6768865144491458392
 MonoBehaviour:
   m_ObjectHideFlags: 0
