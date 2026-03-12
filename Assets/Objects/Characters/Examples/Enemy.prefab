@@ -51392,6 +51392,10 @@ MonoBehaviour:
   speed: 5
   currentState: 0
   gravity: 9.81
+  walkSpeed: 3
+  combatSpeed: 3.5
+  footworkSpeed: 2
+  chaseSpeed: 6
   meleeAttackRange: 1
   stopChasingRange: 20
   optimalCombatRange: 4
@@ -51405,8 +51409,6 @@ MonoBehaviour:
   aggression: 0.8
   caution: 0.3
   combatStateTimer: 0
-  minCombatTime: 0
-  maxCombatTime: 1.5
   consecutiveAttacks: 0
   maxConsecutiveAttacks: 2
   lastAttackTime: 0
@@ -51414,6 +51416,10 @@ MonoBehaviour:
   playerMovingTowardsMe: 0
   playerMovingAway: 0
   lastPlayerPosition: {x: 0, y: 0, z: 0}
+  minCombatTime: 0
+  maxCombatTime: 1.5
+  minFootworkTime: 0.4
+  maxFootworkTime: 1.2
   minSpeed: 0.1
   approachThreshold: 0.2
   ignoreYForAnalysis: 1
@@ -51425,8 +51431,6 @@ MonoBehaviour:
   damage: 0
   minRestTime: 5
   maxRestTime: 12
-  walkSpeed: 3
-  runSpeed: 5
   rollCooldown: 7
   rollChance: 0.2
 --- !u!114 &6768865144491458392
