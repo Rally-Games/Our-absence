@@ -138,6 +138,7 @@ public class EnemyAI_HTN : MonoBehaviour
         float buf = personality.distanceBuffer;
 
         bool visible = CheckPlayerInVisionCone();
+        bool isInfront = CheckPlayerInfront();
 
         // Transition from Patrol/Idle to Detect when player first becomes visible
         if (visible && !_hasGoalOverride
@@ -166,6 +167,7 @@ public class EnemyAI_HTN : MonoBehaviour
             playerApproaching = _playerApproaching,
             playerRetreating = _playerRetreating,
             playerVisible = visible,
+            playerInCombatSite = isInfront,
 
             canAttack = Time.time - _lastAttackTime > personality.attackCooldown,
             consecutiveAttacks = !_animator.GetBool("isAttacking") ? 0 : _consecutiveAttacks,
@@ -249,9 +251,11 @@ public class EnemyAI_HTN : MonoBehaviour
     private void ExecuteLookAtPlayer()
     {
         SetTargetLayerWeight(1f);
-        LookAt(player.position);
         SetSpeed(0f);
-        SetAnimatorBlend(0f, 0f);
+        LookAt(player.position);
+        Vector3 localVel = transform.InverseTransformDirection(agent.desiredVelocity);
+
+        SetAnimatorBlend(0f, Mathf.Round(localVel.x));
 
         // Advance to next task after brief look
         if (_planner.CurrentTaskTimer > 0.8f)
@@ -260,14 +264,14 @@ public class EnemyAI_HTN : MonoBehaviour
 
     private void ExecuteChase()
     {
-        SetTargetLayerWeight(1f);
-        LookAt(player.position);
-        SetSpeed(2f);  // run blend
+        SetTargetLayerWeight(0f);
+        Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
 
+        SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
+        SetSpeed(2f);
         Vector3 dir = (player.position - transform.position).normalized;
         dir.y = 0f;
         _controller.Move(dir * personality.chaseSpeed * Time.deltaTime);
-        SetAnimatorBlend(1f, 0f);
 
         // Advance when we've closed to optimal range
         float dist = Vector3.Distance(transform.position, player.position);
@@ -279,15 +283,22 @@ public class EnemyAI_HTN : MonoBehaviour
     {
         SetTargetLayerWeight(1f);
 
-        Vector3 toPlayer = (player.position - transform.position).normalized;
-        Vector3 right = Vector3.Cross(Vector3.up, toPlayer);
-        int dir = (transform.position.x > player.position.x) ? 1 : -1;
+        int dir;
+        // choose a direction once
+        if (Random.value < 0.01)
+            dir = -1; // -1 or 1 stored in the AI
+        else
+            dir = 1;
+
+        Vector3 right = transform.right;
+
         Vector3 target = transform.position + right * dir * 3f;
 
         MoveTowards(target, personality.combatSpeed * 1.2f);
-        LookAt(player.position);
-        SetAnimatorBlend(0f, Mathf.Sign(dir));
 
+        Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
+
+        SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
         if (_planner.CurrentTaskTimer > 1.5f)
             _planner.AdvanceTask();
     }
@@ -306,7 +317,6 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 orbitTarget = player.position + new Vector3(ox, 0, oz);
 
         MoveTowards(orbitTarget, personality.combatSpeed * 0.8f);
-        LookAt(player.position);
         SetAnimatorBlend(Mathf.Sign(oz), Mathf.Sign(ox));
     }
 
@@ -320,8 +330,9 @@ public class EnemyAI_HTN : MonoBehaviour
 
         MoveInDirection(moveDir, personality.combatSpeed);
         LookAt(player.position);
-        SetAnimatorBlend(-1f, lateral.x > 0 ? 0.3f : -0.3f);
-        SetSpeed(1.5f);
+        Vector3 toPlayer = transform.InverseTransformDirection(
+           (player.position - transform.position).normalized);
+        SetAnimatorBlend(toPlayer.z * 0.5f, toPlayer.x * 0.5f);
 
         float dist = Vector3.Distance(transform.position, player.position);
         if (dist >= personality.maxRetreatDistance || _planner.CurrentTaskTimer > 2f)
@@ -333,8 +344,7 @@ public class EnemyAI_HTN : MonoBehaviour
         // Fire only on the first frame of this task
         if (_planner.CurrentTaskTimer <= Time.deltaTime * 1.5f)
         {
-            LookAt(player.position);
-            int attackType = Random.Range(1, 4);
+            int attackType = Random.Range(1, 3);
             _animator.SetInteger("attackType", attackType);
             _animator.SetBool("isAttacking", true);
             _lastAttackTime = Time.time;
@@ -355,9 +365,10 @@ public class EnemyAI_HTN : MonoBehaviour
     private void ExecutePrepare()
     {
         SetTargetLayerWeight(1f);
-        SetAnimatorBlend(0f, 0f);
-        LookAt(player.position);
         SetSpeed(0f);
+        Vector3 localVel = transform.InverseTransformDirection(agent.desiredVelocity);
+
+        SetAnimatorBlend(0f, Mathf.Round(localVel.x));
 
         if (_planner.CurrentTaskTimer > 1f)
             _planner.AdvanceTask();
@@ -373,7 +384,6 @@ public class EnemyAI_HTN : MonoBehaviour
         }
 
         SetTargetLayerWeight(1f);
-        LookAt(player.position);
 
         float dist = ws.distanceToPlayer;
         Vector3 toPlayer = (player.position - transform.position).normalized;
@@ -388,10 +398,9 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 moveDir = (lateral + rangeCorrect).normalized;
         MoveInDirection(moveDir, personality.footworkSpeed);
 
-        float lateralDot = Vector3.Dot(moveDir, Vector3.Cross(Vector3.up, toPlayer));
-        SetAnimatorBlend(rangeCorrect.magnitude > 0.1f
-            ? Mathf.Sign(Vector3.Dot(moveDir, toPlayer)) * 0.4f
-            : 0f, lateralDot);
+        Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
+
+        SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
         SetSpeed(1f);
 
         _footworkTimer -= Time.deltaTime;
@@ -497,6 +506,23 @@ public class EnemyAI_HTN : MonoBehaviour
 
         float angle = Vector3.Angle(transform.forward, dir);
         if (angle >= personality.detectionAngle) return false;
+
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
+        if (Physics.Raycast(rayOrigin, dir, out RaycastHit hit, personality.detectionRadius))
+            return hit.collider.CompareTag("Player");
+
+        return false;
+    }
+
+    private bool CheckPlayerInfront()
+    {
+        Vector3 dir = (player.position - transform.position).normalized;
+        float dist = Vector3.Distance(transform.position, player.position);
+
+        if (dist >= personality.detectionRadius) return false;
+
+        float angle = Vector3.Angle(transform.forward, dir);
+        if (angle >= 45) return false; // not infront (45 is a small degree to check if infront)
 
         Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
         if (Physics.Raycast(rayOrigin, dir, out RaycastHit hit, personality.detectionRadius))

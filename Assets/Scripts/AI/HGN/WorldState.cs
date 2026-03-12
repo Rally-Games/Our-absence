@@ -10,20 +10,21 @@ public struct WorldState
 {
     // ── Spatial ──────────────────────────────────────────────────────────────
     public float distanceToPlayer;
-    public bool  playerInMeleeRange;
-    public bool  playerInOptimalRange;     // within optimalCombatRange
-    public bool  playerTooFar;             // beyond stopChasingRange
+    public bool playerInMeleeRange;
+    public bool playerInOptimalRange;     // within optimalCombatRange
+    public bool playerTooFar;             // beyond stopChasingRange
 
     // ── Player intent ─────────────────────────────────────────────────────────
     public bool playerApproaching;
     public bool playerRetreating;
     public bool playerVisible;             // passed vision-cone + raycast check
+    public bool playerInCombatSite;
 
     // ── Enemy combat state ────────────────────────────────────────────────────
-    public bool  canAttack;               // cooldown satisfied
-    public int   consecutiveAttacks;
-    public int   maxConsecutiveAttacks;
-    public bool  canRoll;
+    public bool canAttack;               // cooldown satisfied
+    public int consecutiveAttacks;
+    public int maxConsecutiveAttacks;
+    public bool canRoll;
 
     // ── Scores (computed from personality) ───────────────────────────────────
     public float aggressionScore;
@@ -39,22 +40,23 @@ public struct WorldState
     // ── Convenience constructor ───────────────────────────────────────────────
     public static WorldState Empty => new WorldState
     {
-        distanceToPlayer    = float.MaxValue,
-        playerInMeleeRange  = false,
+        distanceToPlayer = float.MaxValue,
+        playerInMeleeRange = false,
         playerInOptimalRange = false,
-        playerTooFar        = true,
-        playerApproaching   = false,
-        playerRetreating    = false,
-        playerVisible       = false,
-        canAttack           = false,
-        consecutiveAttacks  = 0,
+        playerTooFar = true,
+        playerInCombatSite = false,
+        playerApproaching = false,
+        playerRetreating = false,
+        playerVisible = false,
+        canAttack = false,
+        consecutiveAttacks = 0,
         maxConsecutiveAttacks = 2,
-        canRoll             = false,
-        aggressionScore     = 0.5f,
-        cautionScore        = 0.3f,
-        hasPatrolPoints     = false,
-        isPatrolling        = false,
-        activeGoal          = GoalType.Idle
+        canRoll = false,
+        aggressionScore = 0.5f,
+        cautionScore = 0.3f,
+        hasPatrolPoints = false,
+        isPatrolling = false,
+        activeGoal = GoalType.Idle
     };
 }
 

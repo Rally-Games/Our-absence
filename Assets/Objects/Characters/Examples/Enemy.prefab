@@ -51246,6 +51246,7 @@ GameObject:
   - component: {fileID: 2387910332057948664}
   - component: {fileID: 5555971878413194902}
   - component: {fileID: 9060513308337652291}
+  - component: {fileID: 3424560523856137423}
   - component: {fileID: 6768865144491458392}
   m_Layer: 11
   m_Name: Enemy
@@ -51433,6 +51434,29 @@ MonoBehaviour:
   maxRestTime: 12
   rollCooldown: 7
   rollChance: 0.2
+--- !u!114 &3424560523856137423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7539980551190463051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b5d58c36effec478df9a1bf12a96cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  agent: {fileID: 5555971878413194902}
+  personality: {fileID: 11400000, guid: 9a8189eef165c10408417dad26a35b0c, type: 2}
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  hend: {fileID: 0}
+  weapon: {fileID: 0}
+  damage: 2
+  gravity: -9.81
 --- !u!114 &6768865144491458392
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -107,14 +107,21 @@ public static class HTNDomain
     {
         return new List<Method>
         {
-            // 1. Player left the fight — disengage
+            // 1. Search for player if neer but not in site of view
+            new Method(
+                "SearchPlayer",
+                s => !s.playerInCombatSite && !s.playerTooFar,
+                (s, per) => Tasks(TaskType.LookAtPlayer)
+            ),
+
+            // 2. Player left the fight — disengage
             new Method(
                 "Disengage",
                 s => s.playerTooFar,
                 (s, per) => Tasks(TaskType.Idle)
             ),
 
-            // 2. In melee range, cooldown ready, aggression > caution → attack
+            // 3. In melee range, cooldown ready, aggression > caution → attack
             new Method(
                 "MeleeOpportunity",
                 s => s.playerInMeleeRange && s.canAttack
@@ -123,14 +130,14 @@ public static class HTNDomain
                 (s, per) => Tasks(TaskType.AttackMelee)
             ),
 
-            // 3. Too many consecutive attacks → forced reposition + footwork
+            // 4. Too many consecutive attacks → forced reposition + footwork
             new Method(
                 "ForcedReposition",
                 s => s.consecutiveAttacks >= s.maxConsecutiveAttacks,
                 (s, per) => Tasks(TaskType.Reposition, TaskType.CombatFootwork)
             ),
 
-            // 4. Player charging at us → dodge or counter
+            // 5. Player charging at us → dodge or counter
             new Method(
                 "CounterCharge_Dodge",
                 s => s.playerApproaching && s.canRoll,
@@ -150,7 +157,7 @@ public static class HTNDomain
                     Tasks(s.aggressionScore > 0.7f ? TaskType.Prepare : TaskType.Retreat)
             ),
 
-            // 5. Player running away & we're not in melee range → pursue
+            // 6. Player running away & we're not in melee range → pursue
             new Method(
                 "PursueRetreat",
                 s => s.playerRetreating && !s.playerInMeleeRange,
@@ -158,21 +165,21 @@ public static class HTNDomain
                     Tasks(!s.playerInOptimalRange ? TaskType.Chase : TaskType.CirclePlayer)
             ),
 
-            // 6. Too far from player → chase to close distance
+            // 7. Too far from player → chase to close distance
             new Method(
                 "ClosingDistance",
                 s => !s.playerInOptimalRange && !s.playerTooFar,
                 (s, per) => Tasks(TaskType.Chase)
             ),
 
-            // 7. In melee range but caution beats aggression → back off
+            // 8. In melee range but caution beats aggression → back off
             new Method(
                 "CautiousBackoff",
                 s => s.playerInMeleeRange && s.cautionScore > s.aggressionScore,
                 (s, per) => Tasks(TaskType.Retreat, TaskType.CombatFootwork)
             ),
 
-            // 8. Weighted tactical decision — the "anything goes" fallback
+            // 9. Weighted tactical decision — the "anything goes" fallback
             new Method(
                 "TacticalDecision",
                 s => true,
@@ -190,7 +197,8 @@ public static class HTNDomain
 
                     return new List<TaskType> { chosen, TaskType.CombatFootwork };
                 }
-            )
+            ),
+
         };
     }
 

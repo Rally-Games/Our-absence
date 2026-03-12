@@ -15,7 +15,7 @@ MonoBehaviour:
   personalityName: Aggressive
   aggression: 0.8
   caution: 0.1
-  unpredictability: 0.15
+  unpredictability: 0.497
   weightAttackMelee: 9
   weightReposition: 2
   weightRetreat: 1
@@ -26,22 +26,22 @@ MonoBehaviour:
   minCombatTime: 1
   maxCombatTime: 3
   minFootworkTime: 0.3
-  maxFootworkTime: 1.2
+  maxFootworkTime: 1
   attackCooldown: 1
   maxConsecutiveAttacks: 3
-  walkSpeed: 2
-  combatSpeed: 4.5
-  chaseSpeed: 6.5
-  footworkSpeed: 2
-  meleeAttackRange: 2.2
+  walkSpeed: 3
+  combatSpeed: 3
+  chaseSpeed: 6
+  footworkSpeed: 1.5
+  meleeAttackRange: 1
   optimalCombatRange: 3.5
-  stopChasingRange: 14
+  stopChasingRange: 20
   distanceBuffer: 0.5
-  maxRetreatDistance: 5
-  detectionRadius: 10
-  detectionAngle: 45
+  maxRetreatDistance: 10
+  detectionRadius: 15
+  detectionAngle: 90
   orbitRadius: 7
-  orbitSpeed: 1.5
+  orbitSpeed: 2
   strafeJitter: 0.3
   rollCooldown: 3
   rollChance: 0.3

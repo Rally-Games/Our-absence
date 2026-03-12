@@ -100,7 +100,7 @@ public class HTNPlanner
 
     private GoalType DeriveGoal(WorldState ws)
     {
-        if (!ws.playerVisible)
+        if (!ws.playerVisible && ws.playerTooFar)
             return ws.hasPatrolPoints ? GoalType.Patrol : GoalType.Idle;
 
         // DetectPlayer is a brief transitional goal set explicitly by EnemyAI_HTN.
