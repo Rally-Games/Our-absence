@@ -7959,6 +7959,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 543450651672532660}
+    - target: {fileID: 8757002772451038299, guid: cca0b04f93416764babeb0a56f04dded, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8787485309506922875, guid: cca0b04f93416764babeb0a56f04dded, type: 3}
       propertyPath: m_RootBone
       value: 
