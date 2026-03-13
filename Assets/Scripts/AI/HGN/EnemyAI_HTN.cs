@@ -89,6 +89,13 @@ public class EnemyAI_HTN : MonoBehaviour
     private GoalType _goalOverride = GoalType.Idle;
     private bool _hasGoalOverride = false;
 
+    // Player health system
+    private HealthSystem _playerHealth;
+
+    // Weapon hitbox (on the weapon prefab)
+    private WeaponHitbox _weaponHitbox;
+
+
     // ─────────────────────────────────────────────────────────────────────────
     //  Unity lifecycle
     // ─────────────────────────────────────────────────────────────────────────
@@ -110,6 +117,21 @@ public class EnemyAI_HTN : MonoBehaviour
         _planner = new HTNPlanner(personality);
         _lastPlayerPos = player ? player.position : transform.position;
         damage = weapon ? damage : 2;
+
+        if (weapon)
+        {
+            _weaponHitbox = weapon.GetComponent<WeaponHitbox>();
+            if (_weaponHitbox != null)
+                _weaponHitbox.damage = damage;
+            else
+                Debug.LogWarning($"[HTN] {name}: weapon has no WeaponHitbox component.", this);
+        }
+
+        if (player)
+            _playerHealth = player.GetComponent<HealthSystem>();
+
+        if (!_playerHealth)
+            Debug.LogWarning($"[HTN] {name}: No HealthSystem found on player.", this);
     }
 
     private void Update()
@@ -348,11 +370,24 @@ public class EnemyAI_HTN : MonoBehaviour
             _animator.SetBool("isAttacking", true);
             _lastAttackTime = Time.time;
             _consecutiveAttacks++;
+
+            // Open the weapon collider — WeaponHitbox.OnTriggerEnter handles the rest
+            _weaponHitbox?.Enable();
+
+            // Fallback: no weapon prefab, use plain distance + HealthSystem
+            if (_weaponHitbox == null && _playerHealth != null)
+            {
+                float dist = Vector3.Distance(transform.position, player.position);
+                if (dist <= personality.meleeAttackRange)
+                    _playerHealth.TakeDamage(damage);
+            }
         }
 
         // Advance once the animation finishes
         if (!_animator.GetBool("isAttacking") && _planner.CurrentTaskTimer > 0.2f)
         {
+            _weaponHitbox?.Disable();
+
             // Chance to reset consecutive count (mirrors original logic)
             if (_consecutiveAttacks >= personality.maxConsecutiveAttacks)
                 _consecutiveAttacks = 0;

@@ -7962,6 +7962,10 @@ PrefabInstance:
       propertyPath: m_Bones.Array.data[23]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5697505863516812640, guid: cca0b04f93416764babeb0a56f04dded, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6097303258339104729, guid: cca0b04f93416764babeb0a56f04dded, type: 3}
       propertyPath: UIDoc
       value: 
@@ -10047,6 +10051,10 @@ PrefabInstance:
     - target: {fileID: 3890387438689696913, guid: 8c8fca4b46b12dc48a23fd435894264b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857587399433441573, guid: 8c8fca4b46b12dc48a23fd435894264b, type: 3}
+      propertyPath: playerInput
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
