@@ -296,9 +296,8 @@ public class EnemyAI_HTN : MonoBehaviour
 
         MoveTowards(target, personality.combatSpeed * 1.2f);
 
-        Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
-
-        SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
+        SetAnimatorBlend(0f, dir);
+        SetSpeed(0);
         if (_planner.CurrentTaskTimer > 1.5f)
             _planner.AdvanceTask();
     }

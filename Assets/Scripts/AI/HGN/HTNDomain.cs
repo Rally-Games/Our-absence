@@ -154,7 +154,10 @@ public static class HTNDomain
                 "CounterCharge_Stand",
                 s => s.playerApproaching,
                 (s, per) =>
-                    Tasks(s.aggressionScore > 0.7f ? TaskType.Prepare : TaskType.Retreat)
+                {
+                    bool prepare = Random.value < s.aggressionScore;
+                    return Tasks(prepare ? TaskType.Prepare : TaskType.Retreat);
+                }
             ),
 
             // 6. Player running away & we're not in melee range → pursue
