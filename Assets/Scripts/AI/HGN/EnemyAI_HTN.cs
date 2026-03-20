@@ -327,6 +327,7 @@ public class EnemyAI_HTN : MonoBehaviour
     private void ExecuteCirclePlayer()
     {
         SetTargetLayerWeight(1f);
+        LookAt(player.position);
 
         if (Random.value < 0.01f)
             _orbitDirection *= -1;

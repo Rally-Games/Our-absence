@@ -156,9 +156,22 @@ public class HTNPlanner
             return;
         }
 
-        // Load queue
+        List<TaskType> shuffled = new List<TaskType>();
+
+        // skip index 0 like your original code
         for (int i = 1; i < plan.Count; i++)
-            _taskQueue.Enqueue(plan[i]);
+            shuffled.Add(plan[i]);
+
+        // shuffle
+        for (int i = 0; i < shuffled.Count; i++)
+        {
+            int randIndex = Random.Range(i, shuffled.Count);
+            (shuffled[i], shuffled[randIndex]) = (shuffled[randIndex], shuffled[i]);
+        }
+
+        // enqueue
+        foreach (var task in shuffled)
+            _taskQueue.Enqueue(task);
 
         CurrentTask = plan[0];
         CurrentTaskTimer = 0f;

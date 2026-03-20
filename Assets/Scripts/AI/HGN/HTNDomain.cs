@@ -107,9 +107,9 @@ public static class HTNDomain
     {
         return new List<Method>
         {
-            // 1. Search for player if neer but not in site of view
+            // 1. Rotate to player if neer but not in site of view
             new Method(
-                "SearchPlayer",
+                "RotateToPlayer",
                 s => !s.playerInCombatSite && !s.playerTooFar,
                 (s, per) => Tasks(TaskType.LookAtPlayer)
             ),

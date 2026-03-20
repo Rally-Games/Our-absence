@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f465abd918425d40a2aef7de43b1054, type: 3}
-  m_Name: Personality_Aggressive
+  m_Name: Personality_Goul_Willy
   m_EditorClassIdentifier: 
   personalityName: Aggressive
   aggression: 0.903
@@ -38,7 +38,7 @@ MonoBehaviour:
   stopChasingRange: 20
   distanceBuffer: 0.5
   maxRetreatDistance: 10
-  detectionRadius: 15
+  detectionRadius: 20
   detectionAngle: 90
   orbitRadius: 10
   orbitSpeed: 2
