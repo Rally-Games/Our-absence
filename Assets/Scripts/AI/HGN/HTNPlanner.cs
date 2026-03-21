@@ -32,6 +32,8 @@ public class HTNPlanner
 
     // Last method name selected (useful for debug overlays)
     public string LastMethodName { get; private set; } = "none";
+    private bool _taskLocked = false;
+    public bool IsTaskLocked => _taskLocked;
 
     // ─────────────────────────────────────────────────────────────────────────
     //  Init
@@ -52,6 +54,10 @@ public class HTNPlanner
     public TaskType Tick(WorldState ws, float deltaTime)
     {
         CurrentTaskTimer += deltaTime;
+
+        // Never interrupt a locked task — it must call AdvanceTask() itself
+        if (_taskLocked)
+            return CurrentTask;
 
         GoalType desiredGoal = DeriveGoal(ws);
 
@@ -74,10 +80,13 @@ public class HTNPlanner
 
     public void AdvanceTask()
     {
+        _taskLocked = false;
+
         if (_taskQueue.Count > 0)
         {
             CurrentTask = _taskQueue.Dequeue();
             CurrentTaskTimer = 0f;
+            _taskLocked = IsNonInterruptable(CurrentTask); // re-lock for queued tasks too
         }
         else
         {
@@ -92,6 +101,12 @@ public class HTNPlanner
         _taskQueue.Clear();
         CurrentTask = TaskType.Idle;
         CurrentTaskTimer = 0f;
+    }
+
+    /// <summary>Advance timer only — used when the current task is non-interruptable.</summary>
+    public void TickTimerOnly(float deltaTime)
+    {
+        CurrentTaskTimer += deltaTime;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -120,22 +135,22 @@ public class HTNPlanner
 
     private bool InterruptCheck(WorldState ws)
     {
-        // Only interrupt after a minimum execution time to prevent thrashing
-        if (CurrentTaskTimer < 0.3f) return false;
+        if (CurrentTaskTimer < MinTimeBeforeInterrupt(CurrentTask)) return false;
 
-        // Player just entered/left melee range — reassess immediately
-        if (ws.playerInMeleeRange != _lastInterruptSnapshot.playerInMeleeRange) return true;
 
-        // Player started charging at us
-        if (ws.playerApproaching && !_lastInterruptSnapshot.playerApproaching) return true;
+        bool interrupt = false;
 
-        // Attack cooldown just came off while we're circling — replan to use it
-        if (ws.canAttack && !_lastInterruptSnapshot.canAttack
-            && (CurrentTask == TaskType.CirclePlayer || CurrentTask == TaskType.CombatFootwork))
-            return true;
+        if (ws.playerInMeleeRange != _lastInterruptSnapshot.playerInMeleeRange)
+            interrupt = true;
+        else if (ws.playerApproaching && !_lastInterruptSnapshot.playerApproaching)
+            interrupt = true;
+        else if (ws.canAttack && !_lastInterruptSnapshot.canAttack
+                 && (CurrentTask == TaskType.CirclePlayer || CurrentTask == TaskType.CombatFootwork))
+            interrupt = true;
 
+        // Always update snapshot so the same delta doesn't trigger twice
         _lastInterruptSnapshot = ws;
-        return false;
+        return interrupt;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -145,42 +160,57 @@ public class HTNPlanner
     private void Replan(WorldState ws)
     {
         _taskQueue.Clear();
+        _taskLocked = false;
 
         List<TaskType> plan = HTNDomain.Decompose(_currentGoal, ws, _personality);
 
         if (plan == null || plan.Count == 0)
         {
-            // Domain couldn't find a matching method — fall back to idle
             LastMethodName = "fallback:Idle";
             CurrentTask = TaskType.Idle;
             return;
         }
 
         List<TaskType> shuffled = new List<TaskType>();
-
-        // skip index 0 like your original code
         for (int i = 1; i < plan.Count; i++)
             shuffled.Add(plan[i]);
 
-        // shuffle
         for (int i = 0; i < shuffled.Count; i++)
         {
             int randIndex = Random.Range(i, shuffled.Count);
             (shuffled[i], shuffled[randIndex]) = (shuffled[randIndex], shuffled[i]);
         }
 
-        // enqueue
         foreach (var task in shuffled)
             _taskQueue.Enqueue(task);
 
         CurrentTask = plan[0];
         CurrentTaskTimer = 0f;
+        _taskLocked = IsNonInterruptable(CurrentTask); // lock if needed
 
-        // Store snapshot for interrupt checks
         _lastInterruptSnapshot = ws;
 
 #if UNITY_EDITOR
         LastMethodName = string.Join(" → ", plan);
 #endif
+    }
+
+    private static bool IsNonInterruptable(TaskType task)
+    {
+        return task == TaskType.AttackMelee
+            || task == TaskType.Roll
+            || task == TaskType.DodgeBackward
+            || task == TaskType.LookAtPlayer;
+    }
+    private static float MinTimeBeforeInterrupt(TaskType task)
+    {
+        switch (task)
+        {
+            case TaskType.CombatFootwork: return 0.5f;
+            case TaskType.Retreat: return 0.5f;
+            case TaskType.Reposition: return 0.5f;
+            case TaskType.Prepare: return 0.4f;
+            default: return 0.3f; // global minimum
+        }
     }
 }

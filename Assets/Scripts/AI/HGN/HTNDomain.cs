@@ -110,8 +110,11 @@ public static class HTNDomain
             // 1. Rotate to player if neer but not in site of view
             new Method(
                 "RotateToPlayer",
-                s => !s.playerInCombatSite && !s.playerTooFar,
-                (s, per) => Tasks(TaskType.LookAtPlayer)
+                s => !s.playerInCombatSite,
+                (s, per) => {
+                    if (per.detectionRadius>= s.distanceToPlayer) return Tasks(TaskType.LookAtPlayer);
+                    else return Tasks(TaskType.PatrolWaypoints);
+                    }
             ),
 
             // 2. Player left the fight — disengage

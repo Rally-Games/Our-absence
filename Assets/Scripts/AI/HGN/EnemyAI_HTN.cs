@@ -143,7 +143,11 @@ public class EnemyAI_HTN : MonoBehaviour
         AnalyzePlayerBehavior();
 
         WorldState ws = BuildWorldState();
-        _currentTask = _planner.Tick(ws, Time.deltaTime);
+
+        if (_planner.IsTaskLocked)
+            _planner.TickTimerOnly(Time.deltaTime);
+        else
+            _currentTask = _planner.Tick(ws, Time.deltaTime);
 
         ExecuteTask(_currentTask, ws);
     }
@@ -290,10 +294,10 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
 
         SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
-        SetSpeed(2f);
+        SetSpeedFromMovement((player.position - transform.position).normalized, 2f);
         Vector3 dir = (player.position - transform.position).normalized;
         dir.y = 0f;
-        _controller.Move(dir * personality.chaseSpeed * Time.deltaTime);
+        //_controller.Move(dir * personality.chaseSpeed * Time.deltaTime);
 
         // Advance when we've closed to optimal range
         float dist = Vector3.Distance(transform.position, player.position);
@@ -339,7 +343,11 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 orbitTarget = player.position + new Vector3(ox, 0, oz);
 
         MoveTowards(orbitTarget, personality.combatSpeed * 0.8f);
-        SetAnimatorBlend(Mathf.Sign(oz), Mathf.Sign(ox));
+        SetSpeedFromMovement((orbitTarget - transform.position).normalized, 1f);
+
+        Vector3 orbitMove = (orbitTarget - transform.position).normalized;
+        Vector3 localOrbit = transform.InverseTransformDirection(orbitMove);
+        SetAnimatorBlend(Mathf.Round(localOrbit.z), Mathf.Round(localOrbit.x));
     }
 
     private void ExecuteRetreat()
@@ -351,6 +359,8 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 moveDir = (dir + lateral).normalized;
 
         MoveInDirection(moveDir, personality.combatSpeed);
+        SetSpeedFromMovement(moveDir, 1f);
+
         LookAt(player.position);
         Vector3 toPlayer = transform.InverseTransformDirection(
            (player.position - transform.position).normalized);
@@ -433,10 +443,9 @@ public class EnemyAI_HTN : MonoBehaviour
         Vector3 moveDir = (lateral + rangeCorrect).normalized;
         MoveInDirection(moveDir, personality.footworkSpeed);
 
-        Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
-
-        SetAnimatorBlend(Mathf.Round(localVel.z), Mathf.Round(localVel.x));
-        SetSpeed(1f);
+        Vector3 localMove = transform.InverseTransformDirection(moveDir);
+        SetAnimatorBlend(Mathf.Round(localMove.z), Mathf.Round(localMove.x));
+        SetSpeedFromMovement(moveDir, 1f);
 
         _footworkTimer -= Time.deltaTime;
         if (_footworkTimer <= 0f)
@@ -447,7 +456,7 @@ public class EnemyAI_HTN : MonoBehaviour
     {
         if (_planner.CurrentTaskTimer <= Time.deltaTime * 1.5f)
         {
-            SetTargetLayerWeight(0f);
+            SetTargetLayerWeight(1f);
             _animator.SetTrigger("dodgeBackwards");
             _lastRollTime = Time.time;
         }
@@ -474,7 +483,7 @@ public class EnemyAI_HTN : MonoBehaviour
 
         Vector3 rollDir = (transform.position - player.position).normalized;
         rollDir.y = 0f;
-        _controller.Move(rollDir * personality.combatSpeed * 1.8f * Time.deltaTime);
+        //_controller.Move(rollDir * personality.combatSpeed * 1.8f * Time.deltaTime);
 
         if (_planner.CurrentTaskTimer > 0.8f)
             _planner.AdvanceTask();
@@ -583,14 +592,14 @@ public class EnemyAI_HTN : MonoBehaviour
     {
         dir.y = 0f;
         if (dir.sqrMagnitude < 0.001f) return;
-        _controller.Move(dir.normalized * spd * Time.deltaTime);
+        //_controller.Move(dir.normalized * spd * Time.deltaTime);
     }
 
     private void MoveTowards(Vector3 target, float spd)
     {
         Vector3 dir = (target - transform.position).normalized;
         dir.y = 0f;
-        _controller.Move(dir * spd * Time.deltaTime);
+        //_controller.Move(dir * spd * Time.deltaTime);
     }
 
     private void LookAt(Vector3 target)
@@ -619,9 +628,15 @@ public class EnemyAI_HTN : MonoBehaviour
         _animator.SetFloat("Horizontal", horizontal, 0.1f, Time.deltaTime);
     }
 
-    private void SetSpeed(float value)
+    private void SetSpeed(float value, float damp = 0.15f)
     {
-        _animator.SetFloat("speed", value, 0.1f, Time.deltaTime);
+        _animator.SetFloat("speed", value, damp, Time.deltaTime);
+    }
+
+    private void SetSpeedFromMovement(Vector3 worldMoveDir, float maxSpeed)
+    {
+        float magnitude = worldMoveDir.sqrMagnitude > 0.001f ? maxSpeed : 0f;
+        _animator.SetFloat("speed", magnitude, 0.15f, Time.deltaTime);
     }
 
     // ─────────────────────────────────────────────────────────────────────────

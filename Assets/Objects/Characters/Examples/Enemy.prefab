@@ -51411,7 +51411,7 @@ MonoBehaviour:
   Player_controller: {fileID: 0}
   UIDoc: {fileID: 0}
   uiSlider: {fileID: 3631117227685330088}
-  gameObject: {fileID: 0}
+  gameObject: {fileID: 7539980551190463051}
   health: 100
   maxHealth: 100
 --- !u!1 &7540808236629587969
